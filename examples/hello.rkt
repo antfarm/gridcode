@@ -1,9 +1,5 @@
-#lang racket
+#lang gridcode
 
-(require "../grid/main.rkt"
-         "../main.rkt")
-
-;; Simple blinking grid
 (define my-program
   (hash 'grid-size 16
         'frame-rate 2

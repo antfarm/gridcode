@@ -1,7 +1,7 @@
 #lang racket
 
 (require rackunit
-         "../../grid/grid.rkt")
+         gridcode/grid/grid)
 
 (test-case "Grid initialization"
            (init! 10)
@@ -37,13 +37,3 @@
            (set-cell! 5 5 "state" "alive")
            (clear!)
            (check-false (get-cell 5 5 "state")))
-
-(test-case "color macro - RGB"
-           (check-equal? (color 1.0 0.5 0.2) #(1.0 0.5 0.2 1.0)))
-
-(test-case "color macro - RGBA"
-           (check-equal? (color 1.0 0.5 0.2 0.8) #(1.0 0.5 0.2 0.8)))
-
-(test-case "with-opacity modifies alpha"
-           (define blue (color 0.0 0.0 1.0))
-           (check-equal? (with-opacity blue 0.5) #(0.0 0.0 1.0 0.5)))

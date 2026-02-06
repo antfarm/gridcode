@@ -1,7 +1,4 @@
-#lang racket
-
-(require "../grid/main.rkt"
-         "../main.rkt")
+#lang gridcode
 
 (define neighborhood
   '((-1 -1) (0 -1) (1 -1) (-1  0) (1  0) (-1  1) (0  1) (1  1)))

@@ -2,8 +2,8 @@
 
 (require racket/class
          racket/gui/base
-         "grid/main.rkt"
-         "events.rkt")
+         gridcode/grid/main 
+         gridcode/events)
 
 (provide create-runtime)
 

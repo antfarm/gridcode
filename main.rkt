@@ -1,8 +1,8 @@
 #lang racket
 
-(require "grid/main.rkt"
-         "runtime.rkt"
-         "ui.rkt")
+(require gridcode/grid/main 
+         gridcode/runtime 
+         gridcode/ui)
 
 (provide run)
 

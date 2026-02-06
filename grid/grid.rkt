@@ -9,11 +9,10 @@
          delete-grid!
          get-all-xy
          delete-all!
-         clear!
-         color
-         with-opacity)
+         clear!)
 
 ;; Internal grid state
+
 (define grid (make-hash))
 
 (define (init! size)
@@ -99,16 +98,3 @@
     [(keys)
      (for ([k keys])
        (delete-all! k))]))
-
-;; Color helpers
-
-(define-syntax color
-  (syntax-rules ()
-    [(color r g b) (vector r g b 1.0)]
-    [(color r g b a) (vector r g b a)]))
-
-(define (with-opacity color-vec opacity)
-  (vector (vector-ref color-vec 0)
-          (vector-ref color-vec 1)
-          (vector-ref color-vec 2)
-          opacity))

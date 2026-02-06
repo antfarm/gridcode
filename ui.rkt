@@ -1,7 +1,7 @@
 #lang racket/gui
 
 (require racket/class
-         "events.rkt")
+         gridcode/events)
 
 (provide create-ui)
 

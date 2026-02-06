@@ -1,7 +1,4 @@
-#lang racket
-
-(require "../grid/main.rkt"
-         "../main.rkt")
+#lang gridcode
 
 (define size 32)
 
