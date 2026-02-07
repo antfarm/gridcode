@@ -8,34 +8,29 @@
 (provide create-runtime)
 
 (define (create-runtime prog)
-  (define size (hash-ref prog 'grid-size))
-  (define frame-rate (hash-ref prog 'frame-rate))
-  (define running? (box #f))
-  (define timer #f)
-  (define inspected-cell (box #f))
 
-  (define (grid-size)
-    (hash-ref prog 'grid-size))
+  (define display-name (hash-ref prog 'display-name))
+  (define grid-size (hash-ref prog 'grid-size))
+  (define frame-rate (hash-ref prog 'frame-rate))
 
   (define (setup-grid)
     (when timer
       (send timer stop))
-    (init! size)
+    (init! grid-size)
     ((hash-ref prog 'setup-grid))
     (emit 'grid-updated)
     (when (unbox running?)
       (start-loop)))
 
   (define (update-grid)
-    (define start (current-inexact-milliseconds))
+    #;(define start (current-inexact-milliseconds))
     ((hash-ref prog 'update-grid))
-    (define elapsed (- (current-inexact-milliseconds) start))
+    #;(define elapsed (- (current-inexact-milliseconds) start))
     #;(displayln (format "~a: update=~a (~a fps)"
                          start
                          (~r elapsed #:precision 2)
                          (~r (/ 1000.0 elapsed) #:precision 1)))
     (emit 'grid-updated)
-    ;; Print inspected cell info if one is selected
     (when (unbox inspected-cell)
       (define coords (unbox inspected-cell))
       (displayln ((hash-ref prog 'info-for-cell) (first coords) (second coords))))
@@ -47,7 +42,10 @@
   (define (color-for-cell x y)
      ((hash-ref prog 'color-for-cell) x y))
 
-  ;;
+  ;; Run Loop
+
+  (define timer #f)
+  (define running? (box #f))
 
   (define (start-loop)
     (set-box! running? #t)
@@ -66,6 +64,11 @@
     (when timer
       (send timer stop)))
 
+
+  ;; Cell Inspection
+
+  (define inspected-cell (box #f))
+
   (define (inspect-cell x y)
     (set-box! inspected-cell (list x y))
     (displayln ((hash-ref prog 'info-for-cell) x y)))
@@ -73,14 +76,17 @@
   (define (clear-inspection)
     (set-box! inspected-cell #f))
 
-  ;; Return runtime interface
-  (hash 'size grid-size
-        'setup setup-grid
-        'update update-grid
-        'cell-tapped handle-cell-tapped
-        'color color-for-cell
-        'start start-loop
-        'stop stop-loop
+  ;; Public Interface
+
+  (hash 'display-name display-name
+        'grid-size grid-size
+        'frame-rate frame-rate
+        'setup-grid setup-grid
+        'update-grid update-grid
+        'handle-cell-tapped handle-cell-tapped
+        'color-for-cell color-for-cell
+        'start-loop start-loop
+        'stop-loop stop-loop
         'running? running?
         'inspect-cell inspect-cell
         'clear-inspection clear-inspection))

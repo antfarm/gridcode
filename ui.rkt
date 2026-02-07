@@ -6,22 +6,22 @@
 (provide create-ui)
 
 (define (create-ui runtime)
-  (define size ((hash-ref runtime 'size)))
+  (define size (hash-ref runtime 'grid-size))
   (define window-size 640)
   (define cell-size (quotient window-size size))
   (define padding 1)
   (define inspection-enabled (box #f))
   (define inspected-cell (box #f))
 
-  ((hash-ref runtime 'setup))
+  ((hash-ref runtime 'setup-grid))
 
   ;; Main frame
   (define frame
     (new (class frame%
            (super-new)
            (define/augment (on-close)
-             ((hash-ref runtime 'stop))))
-         [label "GridCode"]
+             ((hash-ref runtime 'stop-loop))))
+         [label (string-append "GridCode" " - " (hash-ref runtime 'display-name))]
          [width window-size]
          [height (+ window-size 50)]))
 
@@ -38,7 +38,7 @@
                      (begin
                        (set-box! inspected-cell (list x y))
                        ((hash-ref runtime 'inspect-cell) x y))
-                     ((hash-ref runtime 'cell-tapped) x y))
+                     ((hash-ref runtime 'handle-cell-tapped) x y))
                  (send this refresh)))))
          [parent frame]
          [min-width window-size]
@@ -55,7 +55,7 @@
             ;; Draw cells
             (for* ([x (in-range size)]
                    [y (in-range size)])
-              (define color-vec ((hash-ref runtime 'color) x y))
+              (define color-vec ((hash-ref runtime 'color-for-cell) x y))
               (define r (vector-ref color-vec 0))
               (define g (vector-ref color-vec 1))
               (define b (vector-ref color-vec 2))
@@ -102,22 +102,22 @@
   (define restart-btn (new button%
                            [parent button-panel]
                            [label "Setup"]
-                           [callback (lambda (b e) ((hash-ref runtime 'setup)))]))
+                           [callback (lambda (b e) ((hash-ref runtime 'setup-grid)))]))
 
   (define run-btn (new button%
                        [parent button-panel]
                        [label "Run"]
-                       [callback (lambda (b e) ((hash-ref runtime 'start)))]))
+                       [callback (lambda (b e) ((hash-ref runtime 'start-loop)))]))
 
   (define step-btn (new button%
                         [parent button-panel]
                         [label "Step"]
-                        [callback (lambda (b e) ((hash-ref runtime 'update)))]))
+                        [callback (lambda (b e) ((hash-ref runtime 'update-grid)))]))
 
   (define pause-btn (new button%
                          [parent button-panel]
                          [label "Stop"]
-                         [callback (lambda (b e) ((hash-ref runtime 'stop)))]))
+                         [callback (lambda (b e) ((hash-ref runtime 'stop-loop)))]))
 
   (define inspect-btn (new check-box%
                            [parent button-panel]
