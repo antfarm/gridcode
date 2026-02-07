@@ -14,6 +14,9 @@
   (define timer #f)
   (define inspected-cell (box #f))
 
+  (define (grid-size)
+    (hash-ref prog 'grid-size))
+
   (define (setup-grid)
     (when timer
       (send timer stop))
@@ -38,6 +41,14 @@
       (displayln ((hash-ref prog 'info-for-cell) (first coords) (second coords))))
     (yield))
 
+  (define (handle-cell-tapped x y)
+    ((hash-ref prog 'handle-cell-tapped) x y))
+
+  (define (color-for-cell x y)
+     ((hash-ref prog 'color-for-cell) x y))
+
+  ;;
+
   (define (start-loop)
     (set-box! running? #t)
     (emit 'runtime-running #t)
@@ -55,21 +66,21 @@
     (when timer
       (send timer stop)))
 
-  ;; Event handlers
-  (on 'restart-requested setup-grid)
-  (on 'run-requested start-loop)
-  (on 'step-requested update-grid)
-  (on 'pause-requested stop-loop)
+  (define (inspect-cell x y)
+    (set-box! inspected-cell (list x y))
+    (displayln ((hash-ref prog 'info-for-cell) x y)))
 
-  (on 'cell-inspected
-      (lambda (coords)
-        (set-box! inspected-cell coords)
-        (when coords
-          (displayln ((hash-ref prog 'info-for-cell) (first coords) (second coords))))))
+  (define (clear-inspection)
+    (set-box! inspected-cell #f))
 
   ;; Return runtime interface
-  (hash 'setup setup-grid
+  (hash 'size grid-size
+        'setup setup-grid
         'update update-grid
+        'cell-tapped handle-cell-tapped
+        'color color-for-cell
         'start start-loop
         'stop stop-loop
-        'running? running?))
+        'running? running?
+        'inspect-cell inspect-cell
+        'clear-inspection clear-inspection))

@@ -7,9 +7,5 @@
 
 (define (run prog)
   (define runtime (create-runtime prog))
-  ((hash-ref runtime 'setup))
-
-  (define ui (create-ui prog))
-
-  (hash 'ui ui
-        'runtime runtime))
+  (define ui (create-ui runtime))
+  (void))

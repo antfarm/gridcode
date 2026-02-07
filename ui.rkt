@@ -5,20 +5,22 @@
 
 (provide create-ui)
 
-(define (create-ui prog)
-  (define size (hash-ref prog 'grid-size))
+(define (create-ui runtime)
+  (define size ((hash-ref runtime 'size)))
   (define window-size 640)
   (define cell-size (quotient window-size size))
   (define padding 1)
   (define inspection-enabled (box #f))
   (define inspected-cell (box #f))
 
+  ((hash-ref runtime 'setup))
+
   ;; Main frame
   (define frame
     (new (class frame%
            (super-new)
            (define/augment (on-close)
-             (emit 'pause-requested)))
+             ((hash-ref runtime 'stop))))
          [label "GridCode"]
          [width window-size]
          [height (+ window-size 50)]))
@@ -35,8 +37,8 @@
                  (if (unbox inspection-enabled)
                      (begin
                        (set-box! inspected-cell (list x y))
-                       (emit 'cell-inspected (list x y)))
-                     ((hash-ref prog 'handle-cell-tapped) x y))
+                       ((hash-ref runtime 'inspect-cell) x y))
+                     ((hash-ref runtime 'cell-tapped) x y))
                  (send this refresh)))))
          [parent frame]
          [min-width window-size]
@@ -53,7 +55,7 @@
             ;; Draw cells
             (for* ([x (in-range size)]
                    [y (in-range size)])
-              (define color-vec ((hash-ref prog 'color-for-cell) x y))
+              (define color-vec ((hash-ref runtime 'color) x y))
               (define r (vector-ref color-vec 0))
               (define g (vector-ref color-vec 1))
               (define b (vector-ref color-vec 2))
@@ -100,22 +102,22 @@
   (define restart-btn (new button%
                            [parent button-panel]
                            [label "Setup"]
-                           [callback (lambda (b e) (emit 'restart-requested))]))
+                           [callback (lambda (b e) ((hash-ref runtime 'setup)))]))
 
   (define run-btn (new button%
                        [parent button-panel]
                        [label "Run"]
-                       [callback (lambda (b e) (emit 'run-requested))]))
+                       [callback (lambda (b e) ((hash-ref runtime 'start)))]))
 
   (define step-btn (new button%
                         [parent button-panel]
                         [label "Step"]
-                        [callback (lambda (b e) (emit 'step-requested))]))
+                        [callback (lambda (b e) ((hash-ref runtime 'update)))]))
 
   (define pause-btn (new button%
                          [parent button-panel]
                          [label "Stop"]
-                         [callback (lambda (b e) (emit 'pause-requested))]))
+                         [callback (lambda (b e) ((hash-ref runtime 'stop)))]))
 
   (define inspect-btn (new check-box%
                            [parent button-panel]
@@ -124,7 +126,7 @@
                                        (set-box! inspection-enabled (send b get-value))
                                        (unless (unbox inspection-enabled)
                                          (set-box! inspected-cell #f)
-                                         (emit 'cell-inspected #f))
+                                         ((hash-ref runtime 'clear-inspection)))
                                        (send canvas refresh))]))
 
   ;; Repaint function
