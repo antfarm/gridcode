@@ -5,12 +5,12 @@
          (define frame-rate 2)
 
          (define (setup-grid)
-           (for ([x (in-range 16)])
+           (for ((x (in-range 16)))
              (set-cell! x x "alive" #t)))
 
          (define (update-grid)
-           (for* ([x (in-range 16)]
-                  [y (in-range 16)])
+           (for* ((x (in-range 16))
+                  (y (in-range 16)))
              (define alive (get-cell x y "alive"))
              (set-cell! x y "alive" (not alive))))
 
@@ -20,7 +20,7 @@
                (color 0.0 0.0 0.0)))
 
          (define (info-for-cell x y)
-           (format "[~a|~a] alive: ~a" x y (get-cell x y "alive")))
+           (format "(~a|~a) alive: ~a" x y (get-cell x y "alive")))
 
          (define (handle-cell-tapped x y)
            (define alive (get-cell x y "alive"))
