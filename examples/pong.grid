@@ -69,7 +69,7 @@
      (else (color 0.0 0.0 0.0))))
 
  (define (info-for-cell x y)
-   (format "(~a|~a) ~a" x y (get-cell x y)))
+   (format "(~a,~a) ~a" x y (get-cell x y)))
 
  (define (move-paddle dir)
    (define paddle-xs (map first (get-all-xy 'paddle)))

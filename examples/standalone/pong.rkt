@@ -2,7 +2,7 @@
 
 (require gridcode/grid/main
          gridcode/gridcode)
-
+(require racket/pretty)
 (define display-name "Pong")
 (define grid-size 32)
 (define frame-rate 30)
@@ -70,7 +70,19 @@
     [else (color 0.0 0.0 0.0)]))
 
 (define (info-for-cell x y)
-  (format "[~a|~a] ~a" x y (get-cell x y)))
+  (format "(~a,~a) ~a" x y (get-cell x y)))
+
+(define (handle-cell-tapped x _y)
+  (if (< x (quotient grid-size 2))
+      (move-paddle 'left)
+      (move-paddle 'right)))
+
+(define (handle-key-pressed key)
+  (cond
+    [(eq? key 'left) (move-paddle 'left)]
+    [(eq? key 'right) (move-paddle 'right)]
+    [(eq? key #\space) (begin (clear!) (setup-grid))]
+    [else (void)]))
 
 (define (move-paddle dir)
   (define paddle-xs (map first (get-all-xy 'paddle)))
@@ -86,18 +98,6 @@
      (when (< paddle-right-x (- grid-size 2))
        (delete-cell! paddle-left-x bottom-y 'paddle)
        (set-cell! (+ paddle-right-x 1) bottom-y 'paddle #t))]))
-
-(define (handle-cell-tapped x _y)
-  (if (< x (quotient grid-size 2))
-      (move-paddle 'left)
-      (move-paddle 'right)))
-
-(define (handle-key-pressed key)
-  (cond
-    [(eq? key 'left) (move-paddle 'left)]
-    [(eq? key 'right) (move-paddle 'right)]
-    [(eq? key #\space) (begin (clear!) (setup-grid))]
-    [else (void)]))
 
 (define program
   (hash 'display-name display-name

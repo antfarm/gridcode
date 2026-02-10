@@ -23,7 +23,7 @@
       (color 0.0 0.0 0.0)))
 
 (define (info-for-cell x y)
-  (format "[~a|~a] ~a" x y (if (get-cell x y 'on) "on" "off")))
+  (format "(~a,~a) ~a" x y (get-cell x y)))
 
 (define (handle-cell-tapped x y)
   (define alive (get-cell x y 'on))
