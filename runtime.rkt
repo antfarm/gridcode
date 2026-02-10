@@ -19,6 +19,7 @@
     (init! grid-size)
     ((hash-ref prog 'setup-grid))
     (emit 'grid-updated)
+    (print-inspected-cell)
     (when (unbox running?)
       (start-loop)))
 
@@ -31,9 +32,7 @@
                          (~r elapsed #:precision 2)
                          (~r (/ 1000.0 elapsed) #:precision 1)))
     (emit 'grid-updated)
-    (when (unbox inspected-cell)
-      (define coords (unbox inspected-cell))
-      (displayln ((hash-ref prog 'info-for-cell) (first coords) (second coords))))
+    (print-inspected-cell)
     (yield))
 
   (define (color-for-cell x y)
@@ -44,7 +43,6 @@
 
   (define (handle-key-pressed key)
     ((hash-ref prog 'handle-key-pressed) key))
-
 
   ;; Run Loop
 
@@ -68,17 +66,22 @@
     (when timer
       (send timer stop)))
 
-
   ;; Cell Inspection
 
   (define inspected-cell (box #f))
 
   (define (inspect-cell x y)
     (set-box! inspected-cell (list x y))
-    (displayln ((hash-ref prog 'info-for-cell) x y)))
+    (print-inspected-cell))
 
   (define (clear-inspection)
     (set-box! inspected-cell #f))
+
+  (define (print-inspected-cell)
+    (when (unbox inspected-cell)
+      (define coords (unbox inspected-cell))
+      (displayln ((hash-ref prog 'info-for-cell) (first coords) (second coords))))
+    )
 
   ;; Public Interface
 
