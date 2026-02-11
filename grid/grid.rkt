@@ -27,7 +27,7 @@
 
 ;; Cell data
 
-(define (set-cell! x y key value)
+(define (set-cell! x y key [value #t])
   (let* ([cells (hash-ref grid 'cells)]
          [cell (hash-ref cells (list x y) (make-hash))])
     (hash-set! cell key value)

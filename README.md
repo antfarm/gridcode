@@ -8,6 +8,10 @@ A simple grid-based simulation framework for computational exploration.
 
 **Racket 8.0+**
 
+All platforms:
+
+Download from [racket-lang.org](https://racket-lang.org/) or
+
 macOS:
 ```bash
 brew install racket
@@ -23,8 +27,6 @@ Linux (Fedora/RHEL):
 sudo dnf install racket
 ```
 
-Windows: Download from [racket-lang.org](https://racket-lang.org/)
-
 ### Get the Project
 ```bash
 git clone https://github.com/antfarm/gridcode.git
@@ -38,7 +40,7 @@ raco pkg install --link ../gridcode
 
 ## Usage
 
-Programs are written using the GridCode DSL in `.grid` files with the `#lang gridcode` language. For reference, have a look at the example programs.
+Programs are written using the GridCode DSL in `.grid` files with the `#lang gridcode` language. For reference, have a look at the [example programs](/examples).
 
 Run the examples:
 ```bash
@@ -48,6 +50,9 @@ Run the examples:
 # Pong
 ./bin/gridcode examples/pong.grid
 
-# Minimal Demo
+# Ant
+./bin/gridcode examples/ant.grid
+
+# Hello
 ./bin/gridcode examples/hello.grid
 ```

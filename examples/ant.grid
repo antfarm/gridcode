@@ -1,0 +1,80 @@
+#lang gridcode
+
+(program
+ "Ant"
+
+ (define grid-size 32)
+ (define frame-rate 10)
+
+ (define (setup-grid)
+   (define x (quotient grid-size 2))
+   (define y x)
+   (set-cell! x y 'ant)
+   (set-grid! 'idle-ticks 0)
+   (set-grid! 'direction 'up))
+
+ (define (update-grid)
+   (decay-trails)
+
+   (define idle-ticks (get-grid 'idle-ticks))
+   (when (and (> idle-ticks 50) (< (random 100) 3))
+     (define direction (list-ref '(left right up down) (random 4)))
+     (set-grid! 'direction direction))
+   (set-grid! 'idle-ticks (+ idle-ticks 1))
+
+   (move-ant (get-grid 'direction)))
+
+ (define (color-for-cell x y)
+   (cond
+     ((get-cell x y 'ant) (color 1.0 0.8 0.2))
+     ((get-cell x y 'trail) (begin
+                              (define concentration (get-cell x y 'trail))
+                              (define opacity (min 1.0 (* concentration 0.5)))
+                              (color 0.2 0.9 0.0 opacity)))
+     (else (color 0.0 0.0 0.0))))
+
+ (define (info-for-cell x y)
+   (format "(~a,~a) ~a" x y (get-cell x y)))
+
+ (define (handle-cell-tapped x y)
+   (void))
+
+ (define (handle-key-pressed key)
+   (cond
+     ((member key '(left right up down))
+      (begin
+        (set-grid! 'idle-ticks 0)
+        (set-grid! 'direction key)))
+     ((eq? key #\space) (begin (clear!) (setup-grid)))
+     (else (void))))
+
+ (define (move-ant direction)
+   (define-values (dx dy)
+     (case direction
+       ((left)  (values -1  0))
+       ((right) (values  1  0))
+       ((up)    (values  0 -1))
+       ((down)  (values  0  1))))
+
+   (define pos (first (get-all-xy 'ant)))
+   (define x (first pos))
+   (define y (second pos))
+   (define new-x (modulo (+ x dx) grid-size))
+   (define new-y (modulo (+ y dy) grid-size))
+
+   (delete-cell! x y 'ant)
+   (set-cell! new-x new-y 'ant)
+
+   (define concentration (get-cell new-x new-y 'trail 0))
+   (set-cell! new-x new-y 'trail (+ concentration 1.0)))
+
+ (define (decay-trails)
+   (define evaporation-rate 0.07)
+   (for ((pos (get-all-xy 'trail)))
+     (define x (first pos))
+     (define y (second pos))
+     (define concentration (get-cell x y 'trail))
+     (define new-concentration (* concentration (- 1.0 evaporation-rate)))
+     (if (< new-concentration 0.07)
+         (delete-cell! x y 'trail)
+         (set-cell! x y 'trail new-concentration)))))
