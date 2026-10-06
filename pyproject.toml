@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gridcode"
+version = "0.1.0"
+description = "A minimal engine for grid-based games and simulations"
+requires-python = ">=3.14"
+
+[project.optional-dependencies]
+docs = ["sphinx", "myst-parser", "pydata-sphinx-theme", "sphinx-autobuild"]
+dev = ["ruff", "pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*" = ["F403", "F405"]
