@@ -16,18 +16,18 @@ class Snake(Program, size=16, frame_rate=8):
                                     "id": 0,
                                     "head": True})
 
-        snake_cells = {m.cell for m in grid.maps.get(data={"type": "snake"})}
+        snake_cells = grid.maps.cells_of(data={"type": "snake"})
         food_cell = random.choice(list(grid.cells.all() - snake_cells))
         grid.maps.add(food_cell, {"type": "food"})
 
         direction = random.choice([LEFT, RIGHT, UP, DOWN])
-        grid.maps.add_global("game", {"direction": direction,
-                                      "key_direction": direction,
-                                      "over": False})
+        grid.globals.add("game", {"direction": direction,
+                                  "key_direction": direction,
+                                  "over": False})
 
     @staticmethod
     def update(grid: Grid) -> None:
-        game = grid.maps.get_global("game")
+        game = grid.globals.get("game")
         game["direction"] = game["key_direction"]
 
         if game["over"]:
@@ -63,7 +63,7 @@ class Snake(Program, size=16, frame_rate=8):
             return Color(0.2, 0.4, 0.6, 0.5)
         if grid.maps.has(at_cells=[cell], data={"type": "food"}):
             return Color(0.7, 0.2, 0.2)
-        if grid.maps.get_global("game")["over"]:
+        if grid.globals.get("game")["over"]:
             return Color(0.7, 0.2, 0.2)
         return Color(0.0, 0.0, 0.0)
 
@@ -72,7 +72,7 @@ class Snake(Program, size=16, frame_rate=8):
         key_direction = {"left": LEFT, "right": RIGHT, "up": UP, "down": DOWN}.get(key)
 
         if key_direction is not None:
-            game = grid.maps.get_global("game")
+            game = grid.globals.get("game")
             if key_direction != -game["direction"]:
                 game["key_direction"] = key_direction
 

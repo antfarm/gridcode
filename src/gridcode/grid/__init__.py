@@ -10,7 +10,7 @@ from .cells import (
     Neighborhood,
     Offset,
 )
-from .maps import ANY, CellMap, Data, GlobalMap, Map, Maps
+from .maps import ANY, CellMap, Data, GlobalMap, GlobalMaps, Map, Maps
 
 __all__ = [
     # cells
@@ -28,6 +28,7 @@ __all__ = [
     "Map",
     "CellMap",
     "GlobalMap",
+    "GlobalMaps",
     "Maps",
     # grid
     "Grid",
@@ -40,3 +41,4 @@ class Grid:
     def __init__(self, size: int):
         self.cells = Cells(size)
         self.maps = Maps()
+        self.globals = GlobalMaps()

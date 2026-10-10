@@ -119,18 +119,10 @@ class Maps:
         """``grid.maps.add(cell, Data(key=value))``"""
         raise NotImplementedError
 
-    def add_global(self, name: str, data: Data) -> GlobalMap:
-        """``grid.maps.add_global(name, Data(key=value))``"""
-        raise NotImplementedError
-
     def get(self,
             data: dict[str, Match] | None = None,
             at_cells: list[Cell] | None = None) -> set[CellMap]:
         """``grid.maps.get(data, at_cells)``"""
-        raise NotImplementedError
-
-    def get_global(self, name: str) -> GlobalMap | None:
-        """``grid.maps.get_global(name)``"""
         raise NotImplementedError
 
     def has(self,
@@ -139,19 +131,25 @@ class Maps:
         """``grid.maps.has(data, at_cells)``"""
         raise NotImplementedError
 
-    def has_global(self, name: str) -> bool:
-        """``grid.maps.has_global(name)``"""
+    def count(self,
+              data: dict[str, Match] | None = None,
+              at_cells: list[Cell] | None = None) -> int:
+        """``grid.maps.count(data, at_cells)``"""
+        # to be discussed
         raise NotImplementedError
 
-    def delete(self, maps: Map | set[Map]) -> None:
+    def cells_of(self,
+                 data: dict[str, Match] | None = None,
+                 at_cells: list[Cell] | None = None) -> set[Cell]:
+        """``grid.maps.cells_of(data, at_cells)``"""
+        # to be discussed
+        raise NotImplementedError
+
+    def delete(self, maps: CellMap | set[CellMap]) -> None:
         """``grid.maps.delete(map)``
 
         ``grid.maps.delete(maps)``
         """
-        raise NotImplementedError
-
-    def delete_global(self, name: str) -> None:
-        """``grid.maps.delete_global(name)``"""
         raise NotImplementedError
 
     def clear(self) -> None:
@@ -165,6 +163,33 @@ class Maps:
         """
         raise NotImplementedError
 
-    def copy(self, map: CellMap, target: Cell) -> CellMap:
-        """``grid.maps.copy(map, cell)``"""
+    def copy(self, map: CellMap, target: Cell | Offset) -> CellMap:
+        """``grid.maps.copy(map, cell)``
+
+        ``grid.maps.copy(map, offset)``
+        """
+        raise NotImplementedError
+
+
+class GlobalMaps:
+    """``GlobalMaps``"""
+
+    def add(self, name: str, data: Data) -> GlobalMap:
+        """``grid.globals.add(name, Data(key=value))``"""
+        raise NotImplementedError
+
+    def get(self, name: str) -> GlobalMap | None:
+        """``grid.globals.get(name)``"""
+        raise NotImplementedError
+
+    def has(self, name: str) -> bool:
+        """``grid.globals.has(name)``"""
+        raise NotImplementedError
+
+    def delete(self, name: str) -> None:
+        """``grid.globals.delete(name)``"""
+        raise NotImplementedError
+
+    def clear(self) -> None:
+        """``grid.globals.clear()``"""
         raise NotImplementedError
