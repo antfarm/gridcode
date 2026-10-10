@@ -51,10 +51,10 @@ def check_value(key: str, value) -> None:
 class Map:
     """``Map``"""
 
-    __slots__ = ("id",)
+    __slots__ = ("_id",)
 
     def __init__(self, id: int):
-        self.id = id
+        self._id = id
 
     def get(self, key: str):
         """``map.get(key)``"""
@@ -81,13 +81,13 @@ class Map:
         raise NotImplementedError
 
     def __eq__(self, other) -> bool:
-        return isinstance(other, Map) and self.id == other.id
+        return isinstance(other, Map) and self._id == other._id
 
     def __hash__(self) -> int:
-        return hash(self.id)
+        return hash(self._id)
 
     def __repr__(self) -> str:
-        return f"<map {self.id}>"
+        return f"<map {self._id}>"
 
 
 class CellMap(Map):
