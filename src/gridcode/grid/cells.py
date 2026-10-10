@@ -68,7 +68,7 @@ class Cells:
         """``grid.cells.wrap(cell)``"""
         raise NotImplementedError
 
-    def nearest(self, candidates: set[Cell], to: Cell, count: int = 1) -> set[Cell]:
+    def nearest(self, candidates: set[Cell], to: Cell, *, count: int = 1) -> set[Cell]:
         """``grid.cells.nearest(cells, to, count)``"""
         raise NotImplementedError
 
@@ -86,6 +86,7 @@ class Cells:
 
     def neighbors(self,
                   cell: Cell,
+                  *,
                   kind: Neighborhood = Neighborhood.MOORE,
                   radius: int = 1) -> set[Cell]:
         """``grid.cells.neighbors(cell, kind, radius)``"""

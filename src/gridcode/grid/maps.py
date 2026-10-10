@@ -119,26 +119,26 @@ class CellMaps:
         """``grid.maps.add(cell, Data(key=value))``"""
         raise NotImplementedError
 
-    def get(self,
+    def get(self, *,
             data: dict[str, Match] | None = None,
             at_cells: list[Cell] | None = None) -> set[CellMap]:
         """``grid.maps.get(data, at_cells)``"""
         raise NotImplementedError
 
-    def has(self,
+    def has(self, *,
             data: dict[str, Match] | None = None,
             at_cells: list[Cell] | None = None) -> bool:
         """``grid.maps.has(data, at_cells)``"""
         raise NotImplementedError
 
-    def count(self,
+    def count(self, *,
               data: dict[str, Match] | None = None,
               at_cells: list[Cell] | None = None) -> int:
         """``grid.maps.count(data, at_cells)``"""
         # to be discussed
         raise NotImplementedError
 
-    def cells_of(self,
+    def cells_of(self, *,
                  data: dict[str, Match] | None = None,
                  at_cells: list[Cell] | None = None) -> set[Cell]:
         """``grid.maps.cells_of(data, at_cells)``"""
