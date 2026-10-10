@@ -54,44 +54,44 @@ class Cells:
     def __init__(self, size: int):
         self.size = size
 
-    def cells(self) -> set[Cell]:
-        """``grid.cells()``"""
+    def all(self) -> set[Cell]:
+        """``grid.cells.all()``"""
         raise NotImplementedError
 
     def wrap(self, cell: Cell) -> Cell:
-        """``grid.wrap(cell)``"""
+        """``grid.cells.wrap(cell)``"""
         raise NotImplementedError
 
     def nearest(self, candidates: set[Cell], to: Cell, count: int = 1) -> set[Cell]:
-        """``grid.nearest(cells, to, count)``"""
+        """``grid.cells.nearest(cells, to, count)``"""
         raise NotImplementedError
 
     def row(self, y: int) -> set[Cell]:
-        """``grid.row(y)``"""
+        """``grid.cells.row(y)``"""
         raise NotImplementedError
 
     def col(self, x: int) -> set[Cell]:
-        """``grid.col(x)``"""
+        """``grid.cells.col(x)``"""
         raise NotImplementedError
 
     def rect(self, x: int, y: int, width: int, height: int) -> set[Cell]:
-        """``grid.rect(x, y, width, height)``"""
+        """``grid.cells.rect(x, y, width, height)``"""
         raise NotImplementedError
 
     def neighbors(self,
                   cell: Cell,
                   kind: Neighborhood = Neighborhood.MOORE,
                   radius: int = 1) -> set[Cell]:
-        """``grid.neighbors(cell, kind, radius)``"""
+        """``grid.cells.neighbors(cell, kind, radius)``"""
         raise NotImplementedError
 
     def neighbors_including(self,
                             cell: Cell,
                             kind: Neighborhood = Neighborhood.MOORE,
                             radius: int = 1) -> set[Cell]:
-        """``grid.neighbors_including(cell, kind, radius)``"""
+        """``grid.cells.neighbors_including(cell, kind, radius)``"""
         raise NotImplementedError
 
     def bounds_of(self, cells: set[Cell]) -> set[Cell]:
-        """``grid.bounds_of(cells)``"""
+        """``grid.cells.bounds_of(cells)``"""
         raise NotImplementedError

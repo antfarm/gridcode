@@ -14,7 +14,7 @@ class Renderer:
     @property
     def size(self) -> int:
         """``renderer.size``"""
-        return self.grid.size
+        return self.grid.cells.size
 
     def render(self) -> list[Color]:
         """``renderer.render()``"""

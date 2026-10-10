@@ -15,7 +15,7 @@ class Runner:
 
     def reset(self) -> None:
         """``runner.reset()``"""
-        self.grid.clear()
+        self.grid.maps.clear()
         self.program.setup(self.grid)
         self.tick = 0
 

@@ -31,9 +31,9 @@ __all__ = [
 ]
 
 
-class Grid(Cells, Maps):
+class Grid:
     """``Grid``"""
 
     def __init__(self, size: int):
-        Cells.__init__(self, size)
-        Maps.__init__(self)
+        self.cells = Cells(size)
+        self.maps = Maps()

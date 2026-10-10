@@ -87,48 +87,48 @@ class Maps:
     """``Maps``"""
 
     def add(self, where: Cell | str, data: Data) -> Map:
-        """``grid.add(cell, Data(key=value))``
+        """``grid.maps.add(cell, Data(key=value))``
 
-        ``grid.add(name, Data(key=value))``
+        ``grid.maps.add(name, Data(key=value))``
         """
         raise NotImplementedError
 
     def get(self, name: str) -> Map | None:
-        """``grid.get(name)``"""
+        """``grid.maps.get(name)``"""
         raise NotImplementedError
 
     def select(self,
                data: dict[str, Value] | None = None,
                keys: list[str] | None = None,
                cells: list[Cell] | None = None) -> set[Map]:
-        """``grid.select(data, keys, cells)``"""
+        """``grid.maps.select(data, keys, cells)``"""
         raise NotImplementedError
 
     def exists(self,
                data: dict[str, Value] | None = None,
                keys: list[str] | None = None,
                cells: list[Cell] | None = None) -> bool:
-        """``grid.exists(data, keys, cells)``"""
+        """``grid.maps.exists(data, keys, cells)``"""
         raise NotImplementedError
 
     def delete(self, maps: Map | set[Map]) -> None:
-        """``grid.delete(map)``
+        """``grid.maps.delete(map)``
 
-        ``grid.delete(maps)``
+        ``grid.maps.delete(maps)``
         """
         raise NotImplementedError
 
     def clear(self) -> None:
-        """``grid.clear()``"""
+        """``grid.maps.clear()``"""
         self.delete(self.select())
 
     def move(self, map: Map, target: Cell | Offset) -> None:
-        """``grid.move(map, cell)``
+        """``grid.maps.move(map, cell)``
 
-        ``grid.move(map, offset)``
+        ``grid.maps.move(map, offset)``
         """
         raise NotImplementedError
 
     def copy(self, map: Map, target: Cell) -> Map:
-        """``grid.copy(map, cell)``"""
+        """``grid.maps.copy(map, cell)``"""
         raise NotImplementedError
