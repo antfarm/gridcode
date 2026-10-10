@@ -46,6 +46,12 @@ class Neighborhood(StrEnum):
     """``Neighborhood.VERTICAL``"""
 
 
+MOORE = Neighborhood.MOORE
+VON_NEUMANN = Neighborhood.VON_NEUMANN
+HORIZONTAL = Neighborhood.HORIZONTAL
+VERTICAL = Neighborhood.VERTICAL
+
+
 class Cells:
     """``Cells``"""
 
@@ -83,13 +89,6 @@ class Cells:
                   kind: Neighborhood = Neighborhood.MOORE,
                   radius: int = 1) -> set[Cell]:
         """``grid.cells.neighbors(cell, kind, radius)``"""
-        raise NotImplementedError
-
-    def neighbors_including(self,
-                            cell: Cell,
-                            kind: Neighborhood = Neighborhood.MOORE,
-                            radius: int = 1) -> set[Cell]:
-        """``grid.cells.neighbors_including(cell, kind, radius)``"""
         raise NotImplementedError
 
     def bounds_of(self, cells: set[Cell]) -> set[Cell]:

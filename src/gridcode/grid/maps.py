@@ -112,8 +112,8 @@ class GlobalMap(Map):
         raise NotImplementedError
 
 
-class Maps:
-    """``Maps``"""
+class CellMaps:
+    """``CellMaps``"""
 
     def add(self, cell: Cell, data: Data) -> CellMap:
         """``grid.maps.add(cell, Data(key=value))``"""

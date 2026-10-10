@@ -1,7 +1,21 @@
 """``gridcode``"""
 
 from .display import Color
-from .grid import ANY, DOWN, LEFT, RIGHT, UP, Cell, Grid, Neighborhood, Offset
+from .grid import (
+    ANY,
+    DOWN,
+    HORIZONTAL,
+    LEFT,
+    MOORE,
+    RIGHT,
+    UP,
+    VERTICAL,
+    VON_NEUMANN,
+    Cell,
+    Grid,
+    Neighborhood,
+    Offset,
+)
 from .gridcode import run
 from .program import Program
 
@@ -15,6 +29,10 @@ __all__ = [
     "UP",
     "Cell",
     "Neighborhood",
+    "MOORE",
+    "VON_NEUMANN",
+    "HORIZONTAL",
+    "VERTICAL",
     "Offset",
     # grid
     "Grid",

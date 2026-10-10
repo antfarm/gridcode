@@ -2,15 +2,19 @@
 
 from .cells import (
     DOWN,
+    HORIZONTAL,
     LEFT,
+    MOORE,
     RIGHT,
     UP,
+    VERTICAL,
+    VON_NEUMANN,
     Cell,
     Cells,
     Neighborhood,
     Offset,
 )
-from .maps import ANY, CellMap, Data, GlobalMap, GlobalMaps, Map, Maps
+from .maps import ANY, CellMap, CellMaps, Data, GlobalMap, GlobalMaps, Map
 
 __all__ = [
     # cells
@@ -21,15 +25,19 @@ __all__ = [
     "Cell",
     "Cells",
     "Neighborhood",
+    "MOORE",
+    "VON_NEUMANN",
+    "HORIZONTAL",
+    "VERTICAL",
     "Offset",
     # maps
     "ANY",
     "Data",
     "Map",
     "CellMap",
+    "CellMaps",
     "GlobalMap",
     "GlobalMaps",
-    "Maps",
     # grid
     "Grid",
 ]
@@ -40,5 +48,5 @@ class Grid:
 
     def __init__(self, size: int):
         self.cells = Cells(size)
-        self.maps = Maps()
+        self.maps = CellMaps()
         self.globals = GlobalMaps()
