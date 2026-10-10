@@ -37,7 +37,7 @@ class Snake(Program, size=16, frame_rate=8):
         head = max(snake, key=lambda m: m["id"])
 
         target_cell = grid.cells.wrap(head.cell + game["direction"])
-        food = grid.maps.select(data={"type": "food"}, cells=[target_cell])
+        food = grid.maps.select(data={"type": "food"}, at_cells=[target_cell])
 
         if food:
             grid.maps.delete(food)
@@ -47,7 +47,7 @@ class Snake(Program, size=16, frame_rate=8):
         else:
             grid.maps.delete(min(snake, key=lambda m: m["id"]))
 
-        if grid.maps.exists(data={"type": "snake"}, cells=[target_cell]):
+        if grid.maps.exists(data={"type": "snake"}, at_cells=[target_cell]):
             game["over"] = True
 
         head.delete("head")
@@ -57,11 +57,11 @@ class Snake(Program, size=16, frame_rate=8):
 
     @staticmethod
     def color_for_cell(cell: Cell, grid: Grid) -> Color:
-        if grid.maps.exists(cells=[cell], data={"head": True}):
+        if grid.maps.exists(at_cells=[cell], data={"head": True}):
             return Color(0.2, 0.4, 0.6)
-        if grid.maps.exists(cells=[cell], data={"type": "snake"}):
+        if grid.maps.exists(at_cells=[cell], data={"type": "snake"}):
             return Color(0.2, 0.4, 0.6, 0.5)
-        if grid.maps.exists(cells=[cell], data={"type": "food"}):
+        if grid.maps.exists(at_cells=[cell], data={"type": "food"}):
             return Color(0.7, 0.2, 0.2)
         if grid.maps.get("game")["over"]:
             return Color(0.7, 0.2, 0.2)

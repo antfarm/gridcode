@@ -10,7 +10,7 @@ from .cells import (
     Neighborhood,
     Offset,
 )
-from .maps import Data, Map, Maps
+from .maps import ANY, Data, Map, Maps
 
 __all__ = [
     # cells
@@ -23,6 +23,7 @@ __all__ = [
     "Neighborhood",
     "Offset",
     # maps
+    "ANY",
     "Data",
     "Map",
     "Maps",

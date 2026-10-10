@@ -1,7 +1,7 @@
 """``gridcode``"""
 
 from .display import Color
-from .grid import DOWN, LEFT, RIGHT, UP, Cell, Grid, Neighborhood, Offset
+from .grid import ANY, DOWN, LEFT, RIGHT, UP, Cell, Grid, Neighborhood, Offset
 from .gridcode import run
 from .program import Program
 
@@ -18,6 +18,8 @@ __all__ = [
     "Offset",
     # grid
     "Grid",
+    # maps
+    "ANY",
     # color
     "Color",
     # program

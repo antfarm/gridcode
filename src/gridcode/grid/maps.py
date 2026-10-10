@@ -6,6 +6,20 @@ type Value = bool | int | float | str | Cell | Offset
 """``Value``"""
 
 
+class AnyValue:
+    """``AnyValue``"""
+
+    def __repr__(self) -> str:
+        return "ANY"
+
+
+ANY = AnyValue()
+"""``ANY``"""
+
+type Match = Value | AnyValue
+"""``Match``"""
+
+
 class Data:
     """``Data(key=value)``"""
 
@@ -62,10 +76,8 @@ class Map:
         """``map[key] = value``"""
         self.set({key: value})
 
-    def has(self,
-            data: dict[str, Value] | None = None,
-            keys: list[str] | None = None) -> bool:
-        """``map.has(data, keys)``"""
+    def has(self, data: dict[str, Match]) -> bool:
+        """``map.has(data)``"""
         raise NotImplementedError
 
     @property
@@ -98,17 +110,15 @@ class Maps:
         raise NotImplementedError
 
     def select(self,
-               data: dict[str, Value] | None = None,
-               keys: list[str] | None = None,
-               cells: list[Cell] | None = None) -> set[Map]:
-        """``grid.maps.select(data, keys, cells)``"""
+               data: dict[str, Match] | None = None,
+               at_cells: list[Cell] | None = None) -> set[Map]:
+        """``grid.maps.select(data, at_cells)``"""
         raise NotImplementedError
 
     def exists(self,
-               data: dict[str, Value] | None = None,
-               keys: list[str] | None = None,
-               cells: list[Cell] | None = None) -> bool:
-        """``grid.maps.exists(data, keys, cells)``"""
+               data: dict[str, Match] | None = None,
+               at_cells: list[Cell] | None = None) -> bool:
+        """``grid.maps.exists(data, at_cells)``"""
         raise NotImplementedError
 
     def delete(self, maps: Map | set[Map]) -> None:
