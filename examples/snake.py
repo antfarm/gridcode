@@ -76,10 +76,6 @@ class Snake(Program, size=16, frame_rate=8):
             if key_direction != -game["direction"]:
                 game["key_direction"] = key_direction
 
-        if key == "space":
-            grid.maps.clear()
-            Snake.setup(grid)
-
     @staticmethod
     def on_cell_click(cell: Cell, grid: Grid) -> None:
         pass
