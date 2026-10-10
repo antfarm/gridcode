@@ -1,7 +1,5 @@
 """``gridcode.grid.maps``"""
 
-from dataclasses import dataclass
-
 from .cells import Cell, Offset
 
 type Value = bool | int | float | str | Cell | Offset
@@ -64,11 +62,10 @@ class Map:
         """``map[key] = value``"""
         self.set({key: value})
 
-    def has(self, what: dict[str, Value] | str) -> bool:
-        """``map.has({key: value})``
-
-        ``map.has(key)``
-        """
+    def has(self,
+            data: dict[str, Value] | None = None,
+            keys: list[str] | None = None) -> bool:
+        """``map.has(data, keys)``"""
         raise NotImplementedError
 
     @property
@@ -86,50 +83,6 @@ class Map:
         return f"<map {self.id}>"
 
 
-@dataclass(frozen=True)
-class HasData:
-    """``HasData``"""
-
-    data: Data
-
-
-@dataclass(frozen=True)
-class HasKey:
-    """``HasKey``"""
-
-    key: str
-
-
-@dataclass(frozen=True)
-class At:
-    """``At``"""
-
-    cells: tuple
-
-
-type Criterion = HasData | HasKey | At
-
-
-def has(what: dict[str, Value] | str) -> HasData | HasKey:
-    """``has({key: value})``
-
-    ``has(key)``
-    """
-    if isinstance(what, str):
-        return HasKey(what)
-    return HasData(Data(**what))
-
-
-def at(where) -> At:
-    """``at(cell)``
-
-    ``at(cells)``
-    """
-    if isinstance(where, Cell):
-        return At((where,))
-    return At(tuple(where))
-
-
 class Maps:
     """``Maps``"""
 
@@ -144,12 +97,18 @@ class Maps:
         """``grid.get(name)``"""
         raise NotImplementedError
 
-    def select(self, *criteria: Criterion) -> set[Map]:
-        """``grid.select(criteria)``"""
+    def select(self,
+               data: dict[str, Value] | None = None,
+               keys: list[str] | None = None,
+               cells: list[Cell] | None = None) -> set[Map]:
+        """``grid.select(data, keys, cells)``"""
         raise NotImplementedError
 
-    def exists(self, *criteria: Criterion) -> bool:
-        """``grid.exists(criteria)``"""
+    def exists(self,
+               data: dict[str, Value] | None = None,
+               keys: list[str] | None = None,
+               cells: list[Cell] | None = None) -> bool:
+        """``grid.exists(data, keys, cells)``"""
         raise NotImplementedError
 
     def delete(self, maps: Map | set[Map]) -> None:

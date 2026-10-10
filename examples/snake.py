@@ -16,7 +16,7 @@ class Snake(Program, size=16, frame_rate=8):
                                "id": 0,
                                "head": True})
 
-        snake_cells = {m.cell for m in grid.select(has({"type": "snake"}))}
+        snake_cells = {m.cell for m in grid.select(data={"type": "snake"})}
         food_cell = random.choice(list(grid.cells() - snake_cells))
         grid.add(food_cell, {"type": "food"})
 
@@ -33,11 +33,11 @@ class Snake(Program, size=16, frame_rate=8):
         if game["over"]:
             return
 
-        snake = grid.select(has({"type": "snake"}))
+        snake = grid.select(data={"type": "snake"})
         head = max(snake, key=lambda m: m["id"])
 
         target_cell = grid.wrap(head.cell + game["direction"])
-        food = grid.select(has({"type": "food"}), at(target_cell))
+        food = grid.select(data={"type": "food"}, cells=[target_cell])
 
         if food:
             grid.delete(food)
@@ -47,7 +47,7 @@ class Snake(Program, size=16, frame_rate=8):
         else:
             grid.delete(min(snake, key=lambda m: m["id"]))
 
-        if grid.exists(has({"type": "snake"}), at(target_cell)):
+        if grid.exists(data={"type": "snake"}, cells=[target_cell]):
             game["over"] = True
 
         head.delete("head")
@@ -57,11 +57,11 @@ class Snake(Program, size=16, frame_rate=8):
 
     @staticmethod
     def color_for_cell(cell: Cell, grid: Grid) -> Color:
-        if grid.exists(at(cell), has({"head": True})):
+        if grid.exists(cells=[cell], data={"head": True}):
             return Color(0.2, 0.4, 0.6)
-        if grid.exists(at(cell), has({"type": "snake"})):
+        if grid.exists(cells=[cell], data={"type": "snake"}):
             return Color(0.2, 0.4, 0.6, 0.5)
-        if grid.exists(at(cell), has({"type": "food"})):
+        if grid.exists(cells=[cell], data={"type": "food"}):
             return Color(0.7, 0.2, 0.2)
         if grid.get("game")["over"]:
             return Color(0.7, 0.2, 0.2)

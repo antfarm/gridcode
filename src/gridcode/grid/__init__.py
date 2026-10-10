@@ -10,17 +10,7 @@ from .cells import (
     Neighborhood,
     Offset,
 )
-from .maps import (
-    At,
-    Criterion,
-    Data,
-    HasData,
-    HasKey,
-    Map,
-    Maps,
-    at,
-    has,
-)
+from .maps import Data, Map, Maps
 
 __all__ = [
     # cells
@@ -33,15 +23,9 @@ __all__ = [
     "Neighborhood",
     "Offset",
     # maps
-    "At",
-    "Criterion",
     "Data",
-    "HasData",
-    "HasKey",
     "Map",
     "Maps",
-    "at",
-    "has",
     # grid
     "Grid",
 ]
