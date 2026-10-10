@@ -64,8 +64,11 @@ class Map:
         """``map.set({key: value})``"""
         raise NotImplementedError
 
-    def delete(self, key: str) -> None:
-        """``map.delete(key)``"""
+    def delete(self, keys: str | set[str]) -> None:
+        """``map.delete(key)``
+
+        ``map.delete(keys)``
+        """
         raise NotImplementedError
 
     def __getitem__(self, key: str):
@@ -115,32 +118,32 @@ class GlobalMap(Map):
 class CellMaps:
     """``CellMaps``"""
 
-    def add(self, cell: Cell, data: Data) -> CellMap:
-        """``grid.maps.add(cell, Data(key=value))``"""
+    def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
+        """``grid.maps.add(cell, data)``"""
         raise NotImplementedError
 
     def get(self, *,
             data: dict[str, Match] | None = None,
-            at_cells: list[Cell] | None = None) -> set[CellMap]:
+            at_cells: set[Cell] | None = None) -> set[CellMap]:
         """``grid.maps.get(data, at_cells)``"""
         raise NotImplementedError
 
     def has(self, *,
             data: dict[str, Match] | None = None,
-            at_cells: list[Cell] | None = None) -> bool:
+            at_cells: set[Cell] | None = None) -> bool:
         """``grid.maps.has(data, at_cells)``"""
         raise NotImplementedError
 
     def count(self, *,
               data: dict[str, Match] | None = None,
-              at_cells: list[Cell] | None = None) -> int:
+              at_cells: set[Cell] | None = None) -> int:
         """``grid.maps.count(data, at_cells)``"""
         # to be discussed
         raise NotImplementedError
 
     def cells_of(self, *,
                  data: dict[str, Match] | None = None,
-                 at_cells: list[Cell] | None = None) -> set[Cell]:
+                 at_cells: set[Cell] | None = None) -> set[Cell]:
         """``grid.maps.cells_of(data, at_cells)``"""
         # to be discussed
         raise NotImplementedError
@@ -174,8 +177,8 @@ class CellMaps:
 class GlobalMaps:
     """``GlobalMaps``"""
 
-    def add(self, name: str, data: Data) -> GlobalMap:
-        """``grid.globals.add(name, Data(key=value))``"""
+    def add(self, name: str, data: dict[str, Value]) -> GlobalMap:
+        """``grid.globals.add(name, data)``"""
         raise NotImplementedError
 
     def get(self, name: str) -> GlobalMap | None:

@@ -64,8 +64,11 @@ class Cells:
         """``grid.cells.all()``"""
         raise NotImplementedError
 
-    def wrap(self, cell: Cell) -> Cell:
-        """``grid.cells.wrap(cell)``"""
+    def wrap(self, cells: Cell | set[Cell]) -> Cell | set[Cell]:
+        """``grid.cells.wrap(cell)``
+
+        ``grid.cells.wrap(cells)``
+        """
         raise NotImplementedError
 
     def nearest(self, candidates: set[Cell], to: Cell, *, count: int = 1) -> set[Cell]:

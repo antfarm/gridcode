@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+"""Game of Life"""
+
+import random
+
+from gridcode import *
+
+
+class Life(Program, size=64, frame_rate=60):
+
+    @staticmethod
+    def neighbors_alive_count(cell: Cell, grid: Grid) -> int:
+        neighbor_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE))
+        return grid.maps.count(data={"alive": ANY}, at_cells=neighbor_cells)
+
+    @staticmethod
+    def setup(grid: Grid) -> None:
+        for cell in grid.cells.all():
+            grid.maps.add(cell, {"neighbors": 0})
+
+        cells = grid.cells.all()
+        alive_cells = set(random.sample(list(cells), k=len(cells) * 20 // 100))
+        for map in grid.maps.get(at_cells=alive_cells):
+            map.set({"alive": True, "age": 1})
+
+    @staticmethod
+    def update(grid: Grid) -> None:
+        for cell in grid.cells.all():
+            for map in grid.maps.get(at_cells={cell}):
+                map["neighbors"] = Life.neighbors_alive_count(cell, grid)
+
+        for cell in grid.cells.all():
+            for map in grid.maps.get(at_cells={cell}):
+                neighbor_count = map["neighbors"]
+                if map.has({"alive": ANY}):
+                    if neighbor_count == 2 or neighbor_count == 3:
+                        map["age"] = map["age"] + 1
+                    else:
+                        map.delete({"alive", "age"})
+                else:
+                    if neighbor_count == 3:
+                        map.set({"alive": True, "age": 1})
+
+    @staticmethod
+    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+        for map in grid.maps.get(at_cells={cell}):
+            if map.has({"alive": ANY}):
+                opacity = (10 - min(map["age"], 6)) / 10.0
+                return Color(1.0, 0.8, 0.2).with_opacity(opacity)
+
+        return Color(0.0, 0.0, 0.0)
+
+    @staticmethod
+    def on_cell_click(cell: Cell, grid: Grid) -> None:
+        for map in grid.maps.get(at_cells={cell}):
+            if map.has({"alive": ANY}):
+                map.delete({"alive", "age"})
+            else:
+                map.set({"alive": True, "age": 1})
+
+    @staticmethod
+    def on_key_press(key: str, grid: Grid) -> None:
+        pass
+
+
+if __name__ == "__main__":
+    run(Life)
