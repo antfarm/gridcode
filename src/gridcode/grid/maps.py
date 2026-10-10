@@ -80,11 +80,6 @@ class Map:
         """``map.has(data)``"""
         raise NotImplementedError
 
-    @property
-    def cell(self) -> Cell | None:
-        """``map.cell``"""
-        raise NotImplementedError
-
     def __eq__(self, other) -> bool:
         return isinstance(other, Map) and self.id == other.id
 
@@ -95,30 +90,57 @@ class Map:
         return f"<map {self.id}>"
 
 
+class CellMap(Map):
+    """``CellMap``"""
+
+    __slots__ = ()
+
+    @property
+    def cell(self) -> Cell:
+        """``map.cell``"""
+        raise NotImplementedError
+
+
+class GlobalMap(Map):
+    """``GlobalMap``"""
+
+    __slots__ = ()
+
+    @property
+    def name(self) -> str:
+        """``map.name``"""
+        raise NotImplementedError
+
+
 class Maps:
     """``Maps``"""
 
-    def add(self, where: Cell | str, data: Data) -> Map:
-        """``grid.maps.add(cell, Data(key=value))``
-
-        ``grid.maps.add(name, Data(key=value))``
-        """
+    def add(self, cell: Cell, data: Data) -> CellMap:
+        """``grid.maps.add(cell, Data(key=value))``"""
         raise NotImplementedError
 
-    def get(self, name: str) -> Map | None:
-        """``grid.maps.get(name)``"""
+    def add_global(self, name: str, data: Data) -> GlobalMap:
+        """``grid.maps.add_global(name, Data(key=value))``"""
         raise NotImplementedError
 
-    def select(self,
-               data: dict[str, Match] | None = None,
-               at_cells: list[Cell] | None = None) -> set[Map]:
-        """``grid.maps.select(data, at_cells)``"""
+    def get(self,
+            data: dict[str, Match] | None = None,
+            at_cells: list[Cell] | None = None) -> set[CellMap]:
+        """``grid.maps.get(data, at_cells)``"""
         raise NotImplementedError
 
-    def exists(self,
-               data: dict[str, Match] | None = None,
-               at_cells: list[Cell] | None = None) -> bool:
-        """``grid.maps.exists(data, at_cells)``"""
+    def get_global(self, name: str) -> GlobalMap | None:
+        """``grid.maps.get_global(name)``"""
+        raise NotImplementedError
+
+    def has(self,
+            data: dict[str, Match] | None = None,
+            at_cells: list[Cell] | None = None) -> bool:
+        """``grid.maps.has(data, at_cells)``"""
+        raise NotImplementedError
+
+    def has_global(self, name: str) -> bool:
+        """``grid.maps.has_global(name)``"""
         raise NotImplementedError
 
     def delete(self, maps: Map | set[Map]) -> None:
@@ -128,17 +150,21 @@ class Maps:
         """
         raise NotImplementedError
 
+    def delete_global(self, name: str) -> None:
+        """``grid.maps.delete_global(name)``"""
+        raise NotImplementedError
+
     def clear(self) -> None:
         """``grid.maps.clear()``"""
-        self.delete(self.select())
+        raise NotImplementedError
 
-    def move(self, map: Map, target: Cell | Offset) -> None:
+    def move(self, map: CellMap, target: Cell | Offset) -> None:
         """``grid.maps.move(map, cell)``
 
         ``grid.maps.move(map, offset)``
         """
         raise NotImplementedError
 
-    def copy(self, map: Map, target: Cell) -> Map:
+    def copy(self, map: CellMap, target: Cell) -> CellMap:
         """``grid.maps.copy(map, cell)``"""
         raise NotImplementedError
