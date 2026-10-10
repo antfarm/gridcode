@@ -56,7 +56,7 @@ class Snake(Program, size=16, frame_rate=8):
                       {"type": "snake", "head": True, "id": head["id"] + 1})
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         if grid.maps.has(at_cells={cell}, data={"head": True}):
             return Color(0.2, 0.4, 0.6)
         if grid.maps.has(at_cells={cell}, data={"type": "snake"}):
@@ -68,11 +68,11 @@ class Snake(Program, size=16, frame_rate=8):
         return Color(0.0, 0.0, 0.0)
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         pass
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         key_direction = {"left": LEFT, "right": RIGHT, "up": UP, "down": DOWN}.get(key)
 
         if key_direction is not None:

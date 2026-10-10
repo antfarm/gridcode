@@ -10,7 +10,7 @@ from gridcode import *
 class Life(Program, size=64, frame_rate=60):
 
     @staticmethod
-    def neighbors_alive_count(cell: Cell, grid: Grid) -> int:
+    def neighbors_alive_count(grid: Grid, cell: Cell) -> int:
         neighbor_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE))
         return grid.maps.count(data={"alive": ANY}, at_cells=neighbor_cells)
 
@@ -28,7 +28,7 @@ class Life(Program, size=64, frame_rate=60):
     def update(grid: Grid) -> None:
         for cell in grid.cells.all():
             for map in grid.maps.get(at_cells={cell}):
-                map["neighbors"] = Life.neighbors_alive_count(cell, grid)
+                map["neighbors"] = Life.neighbors_alive_count(grid, cell)
 
         for cell in grid.cells.all():
             for map in grid.maps.get(at_cells={cell}):
@@ -43,7 +43,7 @@ class Life(Program, size=64, frame_rate=60):
                         map.set({"alive": True, "age": 1})
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         for map in grid.maps.get(at_cells={cell}):
             if map.has({"alive": ANY}):
                 opacity = (10 - min(map["age"], 6)) / 10.0
@@ -52,7 +52,7 @@ class Life(Program, size=64, frame_rate=60):
         return Color(0.0, 0.0, 0.0)
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         for map in grid.maps.get(at_cells={cell}):
             if map.has({"alive": ANY}):
                 map.delete({"alive", "age"})
@@ -60,7 +60,7 @@ class Life(Program, size=64, frame_rate=60):
                 map.set({"alive": True, "age": 1})
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         pass
 
 

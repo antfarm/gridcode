@@ -18,6 +18,6 @@ class Renderer:
 
     def render(self) -> list[Color]:
         """``renderer.render()``"""
-        return [self.color_for_cell(Cell(x, y), self.grid)
+        return [self.color_for_cell(self.grid, Cell(x, y))
                 for y in range(self.size)
                 for x in range(self.size)]

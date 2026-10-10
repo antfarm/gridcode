@@ -45,7 +45,7 @@ class Ants(Program, size=64, frame_rate=10):
             grid.maps.move(ant, new_cell)
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         if grid.maps.has(data={"type": "ant"}, at_cells={cell}):
             return Color(1.0, 0.8, 0.2)
         for trail in grid.maps.get(data={"type": "trail"}, at_cells={cell}):
@@ -54,11 +54,11 @@ class Ants(Program, size=64, frame_rate=10):
         return Color(0.0, 0.0, 0.0)
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         pass
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         pass
 
 

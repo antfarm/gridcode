@@ -62,7 +62,7 @@ class Pong(Program, size=32, frame_rate=30):
                 grid.maps.move(ball, next_ball_cell)
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         if grid.maps.has(data={"type": "wall"}, at_cells={cell}):
             return Color(1.0, 1.0, 1.0)
         if grid.maps.has(data={"type": "ball-out"}, at_cells={cell}):
@@ -74,23 +74,23 @@ class Pong(Program, size=32, frame_rate=30):
         return Color(0.0, 0.0, 0.0)
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         direction = "left" if cell.x < grid.cells.size // 2 else "right"
-        Pong.move_paddle(direction, grid)
+        Pong.move_paddle(grid, direction)
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         if key == "left":
-            Pong.move_paddle("left", grid)
+            Pong.move_paddle(grid, "left")
         if key == "right":
-            Pong.move_paddle("right", grid)
+            Pong.move_paddle(grid, "right")
         if key == "space":
             grid.maps.clear()
             grid.globals.clear()
             Pong.setup(grid)
 
     @staticmethod
-    def move_paddle(direction: str, grid: Grid) -> None:
+    def move_paddle(grid: Grid, direction: str) -> None:
         dx = -1 if direction == "left" else 1
 
         paddle_cells = grid.maps.cells_of(data={"type": "paddle"})

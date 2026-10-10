@@ -27,8 +27,8 @@ class Runner:
 
     def key_press(self, key: str) -> None:
         """``runner.key_press(key)``"""
-        self.program.on_key_press(key, self.grid)
+        self.program.on_key_press(self.grid, key)
 
     def cell_click(self, cell: Cell) -> None:
         """``runner.cell_click(cell)``"""
-        self.program.on_cell_click(cell, self.grid)
+        self.program.on_cell_click(self.grid, cell)

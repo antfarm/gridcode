@@ -47,15 +47,15 @@ class Program(ABC):
 
     @staticmethod
     @abstractmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
-        """``color_for_cell(cell, grid)``"""
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
+        """``color_for_cell(grid, cell)``"""
 
     @staticmethod
     @abstractmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
-        """``on_cell_click(cell, grid)``"""
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
+        """``on_cell_click(grid, cell)``"""
 
     @staticmethod
     @abstractmethod
-    def on_key_press(key: str, grid: Grid) -> None:
-        """``on_key_press(key, grid)``"""
+    def on_key_press(grid: Grid, key: str) -> None:
+        """``on_key_press(grid, key)``"""

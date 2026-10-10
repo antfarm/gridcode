@@ -16,15 +16,15 @@ class Empty(Program, size=16, frame_rate=8):
         pass
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         return Color(1.0, 1.0, 1.0)
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         pass
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         pass
 
 

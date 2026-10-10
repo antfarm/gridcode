@@ -40,18 +40,18 @@ class RGB(Program, size=16, frame_rate=100):
                           "blue": b / brightest})
 
     @staticmethod
-    def color_for_cell(cell: Cell, grid: Grid) -> Color:
+    def color_for_cell(grid: Grid, cell: Cell) -> Color:
         for channels in grid.maps.get(at_cells={cell}, data={"type": "channels"}):
             return Color(channels["red"], channels["green"], channels["blue"])
 
         return Color(0, 0, 0)
 
     @staticmethod
-    def on_cell_click(cell: Cell, grid: Grid) -> None:
+    def on_cell_click(grid: Grid, cell: Cell) -> None:
         pass
 
     @staticmethod
-    def on_key_press(key: str, grid: Grid) -> None:
+    def on_key_press(grid: Grid, key: str) -> None:
         pass
 
 
