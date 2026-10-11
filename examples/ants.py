@@ -16,8 +16,7 @@ class Ants(Program, size=64, frame_rate=10):
     @staticmethod
     def setup(grid: Grid) -> None:
         for _ in range(100):
-            grid.maps.add(Cell(random.randrange(grid.cells.size),
-                               random.randrange(grid.cells.size)),
+            grid.maps.add(grid.cells.random(),
                           {"type": "ant",
                            "direction": Ants.random_direction()})
 

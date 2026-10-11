@@ -64,6 +64,13 @@ class Cells:
         """``grid.cells.all()``"""
         raise NotImplementedError
 
+    def random(self, *, count: int | None = None) -> Cell | set[Cell]:
+        """``grid.cells.random()``
+
+        ``grid.cells.random(count)``
+        """
+        raise NotImplementedError
+
     def wrap(self, cells: Cell | set[Cell]) -> Cell | set[Cell]:
         """``grid.cells.wrap(cell)``
 

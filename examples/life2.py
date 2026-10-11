@@ -2,8 +2,6 @@
 
 """Game of Life"""
 
-import random
-
 from gridcode import *
 
 
@@ -27,7 +25,7 @@ class Life2(Program, size=64, frame_rate=60):
         for cell in cells:
             grid.maps.add(cell, {})
 
-        alive_cells = set(random.sample(list(cells), k=len(cells) * 20 // 100))
+        alive_cells = grid.cells.random(count=len(cells) * 20 // 100)
         for map in grid.maps.get(at_cells=alive_cells):
             map.set({"alive": True, "age": 1})
 
