@@ -122,6 +122,10 @@ class CellMaps:
         """``grid.maps.add(cell, data)``"""
         raise NotImplementedError
 
+    def copy(self, map: CellMap, target: Cell) -> CellMap:
+        """``grid.maps.copy(map, cell)``"""
+        raise NotImplementedError
+
     def get(self, *,
             data: dict[str, Match] | None = None,
             at_cells: set[Cell] | None = None) -> set[CellMap]:
@@ -163,13 +167,6 @@ class CellMaps:
         """``grid.maps.move(map, cell)``
 
         ``grid.maps.move(map, offset)``
-        """
-        raise NotImplementedError
-
-    def copy(self, map: CellMap, target: Cell | Offset) -> CellMap:
-        """``grid.maps.copy(map, cell)``
-
-        ``grid.maps.copy(map, offset)``
         """
         raise NotImplementedError
 
