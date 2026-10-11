@@ -167,7 +167,7 @@ class GlobalMaps:
         """``grid.globals.add(name, data)``"""
         raise NotImplementedError
 
-    def get(self, name: str) -> GlobalMap | None:
+    def get(self, name: str) -> GlobalMap:
         """``grid.globals.get(name)``"""
         raise NotImplementedError
 

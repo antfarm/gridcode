@@ -33,7 +33,7 @@ A minimal engine for grid-based games and simulations.
 | lifecycle       | `grid.globals.add(name, data)`                        | `grid.globals.add("name", {"key": value})`                                       | `GlobalMap`         |
 |                 | `grid.globals.delete(name)`                           | `grid.globals.delete("name")`                                                    | `None`              |
 |                 | `grid.globals.clear()`                                |                                                                                  | `None`              |
-| queries         | `grid.globals.get(name)`                              | `grid.globals.get("name")`                                                       | `GlobalMap \| None` |
+| queries         | `grid.globals.get(name)`                              | `grid.globals.get("name")`                                                       | `GlobalMap`         |
 |                 | `grid.globals.exists(name)`                           | `grid.globals.exists("name")`                                                    | `bool`              |
 |                 |                                                       |                                                                                  |                     |
 | **CellMaps**    |                                                       |                                                                                  |                     |
