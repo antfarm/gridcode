@@ -132,7 +132,6 @@ class CellMaps:
               has: set[str] | None = None,
               at_cells: set[Cell] | None = None) -> int:
         """``grid.maps.count(matches, has, at_cells)``"""
-        # to be discussed
         raise NotImplementedError
 
     def select_cells(self, *,
@@ -140,7 +139,6 @@ class CellMaps:
                      has: set[str] | None = None,
                      at_cells: set[Cell] | None = None) -> set[Cell]:
         """``grid.maps.select_cells(matches, has, at_cells)``"""
-        # to be discussed
         raise NotImplementedError
 
     def delete(self, map: CellMap) -> None:
