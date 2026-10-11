@@ -71,7 +71,7 @@ class Cells:
         """
         raise NotImplementedError
 
-    def wrap(self, cells: Cell | set[Cell]) -> Cell | set[Cell]:
+    def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
         """``grid.cells.wrap(cell)``
 
         ``grid.cells.wrap(cells)``

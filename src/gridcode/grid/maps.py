@@ -109,8 +109,11 @@ class CellMaps:
         """``grid.maps.add(cell, data)``"""
         raise NotImplementedError
 
-    def copy(self, map: CellMap, target: Cell) -> CellMap:
-        """``grid.maps.copy(map, cell)``"""
+    def copy(self, map: CellMap, cell_or_offset: Cell | Offset) -> CellMap:
+        """``grid.maps.copy(map, cell)``
+
+        ``grid.maps.copy(map, offset)``
+        """
         raise NotImplementedError
 
     def select(self, *,
@@ -149,7 +152,7 @@ class CellMaps:
         """``grid.maps.clear()``"""
         raise NotImplementedError
 
-    def move(self, map: CellMap, target: Cell | Offset) -> None:
+    def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
         """``grid.maps.move(map, cell)``
 
         ``grid.maps.move(map, offset)``

@@ -39,6 +39,7 @@ A minimal engine for grid-based games and simulations.
 | **CellMaps**    |                                                       |                                                                                  |                     |
 | lifecycle       | `grid.maps.add(cell, data)`                           | `grid.maps.add(cell, {"key": value})`                                            | `CellMap`           |
 |                 | `grid.maps.copy(map, cell)`                           | `grid.maps.copy(map, cell)`                                                      | `CellMap`           |
+|                 | `grid.maps.copy(map, offset)`                         | `grid.maps.copy(map, UP)`                                                        | `CellMap`           |
 |                 | `grid.maps.delete(map)`                               | `grid.maps.delete(map)`                                                          | `None`              |
 |                 | `grid.maps.clear()`                                   |                                                                                  | `None`              |
 | movement        | `grid.maps.move(map, cell)`                           | `grid.maps.move(map, cell)`                                                      | `None`              |
