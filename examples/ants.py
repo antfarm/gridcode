@@ -10,10 +10,6 @@ from gridcode import *
 class Ants(Program, size=64, frame_rate=10):
 
     @staticmethod
-    def random_direction() -> Offset:
-        return Offset(random.choice([-1, 0, 1]), 1)
-
-    @staticmethod
     def setup(grid: Grid) -> None:
         for _ in range(100):
             grid.maps.add(grid.cells.random(),
@@ -59,6 +55,10 @@ class Ants(Program, size=64, frame_rate=10):
     @staticmethod
     def on_key_press(grid: Grid, key: str) -> None:
         pass
+
+    @staticmethod
+    def random_direction() -> Offset:
+        return Offset(random.choice([-1, 0, 1]), 1)
 
 
 if __name__ == "__main__":

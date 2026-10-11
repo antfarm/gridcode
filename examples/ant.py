@@ -57,22 +57,8 @@ class Ant(Program, size=32, frame_rate=10):
             Ant.setup(grid)
 
     @staticmethod
-    def move_ant(grid: Grid) -> None:
-        keyboard = grid.globals.get("keyboard")
-        direction = keyboard["direction"]
-
-        for ant in grid.maps.get(data={"type": "ant"}):
-            cell = grid.cells.wrap(ant.cell + direction)
-
-            grid.maps.move(ant, cell)
-
-            trails = grid.maps.get(data={"type": "trail"}, at_cells={cell})
-            if trails:
-                for trail in trails:
-                    trail["concentration"] = trail["concentration"] + 1.0
-            else:
-                grid.maps.add(cell, {"type": "trail",
-                                     "concentration": 1.0})
+    def random_direction() -> Offset:
+        return random.choice([LEFT, RIGHT, UP, DOWN])
 
     @staticmethod
     def decay_trails(grid: Grid) -> None:
@@ -98,8 +84,22 @@ class Ant(Program, size=32, frame_rate=10):
             keyboard["idle_ticks"] = idle_ticks + 1
 
     @staticmethod
-    def random_direction() -> Offset:
-        return random.choice([LEFT, RIGHT, UP, DOWN])
+    def move_ant(grid: Grid) -> None:
+        keyboard = grid.globals.get("keyboard")
+        direction = keyboard["direction"]
+
+        for ant in grid.maps.get(data={"type": "ant"}):
+            cell = grid.cells.wrap(ant.cell + direction)
+
+            grid.maps.move(ant, cell)
+
+            trails = grid.maps.get(data={"type": "trail"}, at_cells={cell})
+            if trails:
+                for trail in trails:
+                    trail["concentration"] = trail["concentration"] + 1.0
+            else:
+                grid.maps.add(cell, {"type": "trail",
+                                     "concentration": 1.0})
 
 
 if __name__ == "__main__":

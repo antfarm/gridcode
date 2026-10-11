@@ -8,17 +8,6 @@ from gridcode import *
 class Life2(Program, size=64, frame_rate=60):
 
     @staticmethod
-    def neighbors_alive_count(grid: Grid, cell: Cell) -> int:
-        neighbor_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE))
-        return grid.maps.count(data={"alive": ANY}, at_cells=neighbor_cells)
-
-    @staticmethod
-    def count_neighbors(grid: Grid, cells: set[Cell]) -> None:
-        for cell in cells:
-            for map in grid.maps.get(at_cells={cell}):
-                map["neighbors"] = Life2.neighbors_alive_count(grid, cell)
-
-    @staticmethod
     def setup(grid: Grid) -> None:
         cells = grid.cells.all()
 
@@ -70,6 +59,17 @@ class Life2(Program, size=64, frame_rate=60):
     @staticmethod
     def on_key_press(grid: Grid, key: str) -> None:
         pass
+
+    @staticmethod
+    def count_neighbors(grid: Grid, cells: set[Cell]) -> None:
+        for cell in cells:
+            for map in grid.maps.get(at_cells={cell}):
+                map["neighbors"] = Life2.neighbors_alive_count(grid, cell)
+
+    @staticmethod
+    def neighbors_alive_count(grid: Grid, cell: Cell) -> int:
+        neighbor_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE))
+        return grid.maps.count(data={"alive": ANY}, at_cells=neighbor_cells)
 
 
 if __name__ == "__main__":
