@@ -29,9 +29,7 @@ class RGB(Program, size=16, frame_rate=100):
         channel = random.choice(["r", "g", "b"])
         counts[channel] = counts[channel] + 1
 
-        r = counts["r"]
-        g = counts["g"]
-        b = counts["b"]
+        r, g, b = counts.get("r", "g", "b")
         brightest = max(r, g, b) * 1.0
 
         for channels in grid.maps.get(at_cells={counts.cell}, data={"type": "channels"}):

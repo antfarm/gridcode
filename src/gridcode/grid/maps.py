@@ -56,12 +56,20 @@ class Map:
     def __init__(self, id: int):
         self._id = id
 
-    def get(self, key: str):
-        """``map.get(key)``"""
+    def __getitem__(self, key: str) -> Value:
+        """``map[key]``"""
         raise NotImplementedError
 
+    def __setitem__(self, key: str, value: Value) -> None:
+        """``map[key] = value``"""
+        self.set({key: value})
+
+    def get(self, key: str, *more_keys: str) -> tuple[Value, ...]:
+        """``map.get(key, key, ...)``"""
+        return tuple(self[each_key] for each_key in (key, *more_keys))
+
     def set(self, data: dict[str, Value]) -> None:
-        """``map.set({key: value})``"""
+        """``map.set(data)``"""
         raise NotImplementedError
 
     def delete(self, keys: str | set[str]) -> None:
@@ -71,16 +79,12 @@ class Map:
         """
         raise NotImplementedError
 
-    def __getitem__(self, key: str):
-        """``map[key]``"""
-        return self.get(key)
+    def has(self, key: str) -> bool:
+        """``map.has(key)``"""
+        raise NotImplementedError
 
-    def __setitem__(self, key: str, value) -> None:
-        """``map[key] = value``"""
-        self.set({key: value})
-
-    def has(self, data: dict[str, Match]) -> bool:
-        """``map.has(data)``"""
+    def matches(self, data: dict[str, Match]) -> bool:
+        """``map.matches(data)``"""
         raise NotImplementedError
 
     def __eq__(self, other) -> bool:

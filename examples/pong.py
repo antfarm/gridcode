@@ -37,15 +37,14 @@ class Pong(Program, size=32, frame_rate=30):
     @staticmethod
     def update(grid: Grid) -> None:
         for ball in grid.maps.get(data={"type": "ball"}):
-            dx = ball["dx"]
-            dy = ball["dy"]
+            dx, dy = ball.get("dx", "dy")
             ball_cell = ball.cell
             next_ball_cell = Cell(ball_cell.x + dx, ball_cell.y + dy)
 
             if grid.maps.has(data={"type": "wall"}, at_cells={next_ball_cell}):
                 for wall in grid.maps.get(data={"type": "wall"}, at_cells={next_ball_cell}):
-                    new_dx = wall.get("dx") or dx
-                    new_dy = wall.get("dy") or dy
+                    new_dx = wall["dx"] if wall.has("dx") else dx
+                    new_dy = wall["dy"] if wall.has("dy") else dy
                     dest = Cell(ball_cell.x + new_dx, ball_cell.y + new_dy)
                     grid.maps.move(ball, dest)
                     ball.set({"dx": new_dx, "dy": new_dy})
