@@ -58,15 +58,12 @@ class Map:
         """``map.set(data)``"""
         raise NotImplementedError
 
-    def delete(self, keys: str | set[str]) -> None:
-        """``map.delete(key)``
-
-        ``map.delete(keys)``
-        """
+    def delete(self, key: str, *more_keys: str) -> None:
+        """``map.delete(key, key, ...)``"""
         raise NotImplementedError
 
-    def has(self, key: str) -> bool:
-        """``map.has(key)``"""
+    def has(self, key: str, *more_keys: str) -> bool:
+        """``map.has(key, key, ...)``"""
         raise NotImplementedError
 
     def matches(self, data: dict[str, Value]) -> bool:
@@ -146,11 +143,8 @@ class CellMaps:
         # to be discussed
         raise NotImplementedError
 
-    def delete(self, maps: CellMap | set[CellMap]) -> None:
-        """``grid.maps.delete(map)``
-
-        ``grid.maps.delete(maps)``
-        """
+    def delete(self, map: CellMap) -> None:
+        """``grid.maps.delete(map)``"""
         raise NotImplementedError
 
     def clear(self) -> None:

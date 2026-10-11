@@ -6,7 +6,7 @@ A minimal engine for grid-based games and simulations.
 
 | Category        | Function                                              | Usage                                                                            | Returns             |
 | --------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------- |
-| **Geometry**      |                                                       |                                                                                  |                     |
+| **Geometry**    |                                                       |                                                                                  |                     |
 |                 | `Cell(x, y)`                                          | `Cell(3, 4)`                                                                     | `Cell`              |
 |                 | `Offset(dx, dy)`                                      | `Offset(-1, 0)`                                                                  | `Offset`            |
 |                 | `cell + offset`                                       | `cell + UP`                                                                      | `Cell`              |
@@ -40,7 +40,6 @@ A minimal engine for grid-based games and simulations.
 | lifecycle       | `grid.maps.add(cell, data)`                           | `grid.maps.add(cell, {"key": value})`                                            | `CellMap`           |
 |                 | `grid.maps.copy(map, cell)`                           | `grid.maps.copy(map, cell)`                                                      | `CellMap`           |
 |                 | `grid.maps.delete(map)`                               | `grid.maps.delete(map)`                                                          | `None`              |
-|                 | `grid.maps.delete(maps)`                              | `grid.maps.delete(maps)`                                                         | `None`              |
 |                 | `grid.maps.clear()`                                   |                                                                                  | `None`              |
 | movement        | `grid.maps.move(map, cell)`                           | `grid.maps.move(map, cell)`                                                      | `None`              |
 |                 | `grid.maps.move(map, offset)`                         | `grid.maps.move(map, UP)`                                                        | `None`              |
@@ -54,9 +53,8 @@ A minimal engine for grid-based games and simulations.
 |                 | `map[key] = value`                                    | `map["key"] = value`                                                             | `None`              |
 |                 | `map.get(key, key, ...)`                              | `map.get("key1", "key2")`                                                        | `tuple[Value, ...]` |
 |                 | `map.set(data)`                                       | `map.set({"key1": value1, "key2": value2})`                                      | `None`              |
-|                 | `map.delete(key)`                                     | `map.delete("key")`                                                              | `None`              |
-|                 | `map.delete(keys)`                                    | `map.delete({"key1", "key2"})`                                                   | `None`              |
-| queries         | `map.has(key)`                                        | `map.has("key")`                                                                 | `bool`              |
+|                 | `map.delete(key, key, ...)`                           | `map.delete("key1", "key2")`                                                     | `None`              |
+| queries         | `map.has(key, key, ...)`                              | `map.has("key1", "key2")`                                                        | `bool`              |
 |                 | `map.matches(data)`                                   | `map.matches({"key": value})`                                                    | `bool`              |
 |                 |                                                       |                                                                                  |                     |
 | **CellMap**     |                                                       |                                                                                  |                     |

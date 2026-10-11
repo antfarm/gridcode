@@ -40,7 +40,8 @@ class Snake(Program, size=16, frame_rate=8):
         food = grid.maps.select(matches={"type": "food"}, at_cells={target_cell})
 
         if food:
-            grid.maps.delete(food)
+            for food_map in food:
+                grid.maps.delete(food_map)
             snake_cells = {m.cell for m in snake}
             food_cell = random.choice(list(grid.cells.all() - snake_cells - {target_cell}))
             grid.maps.add(food_cell, {"type": "food"})

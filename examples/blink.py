@@ -36,7 +36,8 @@ class Blink(Program, size=16, frame_rate=2):
     def toggle_cell(grid: Grid, cell: Cell) -> None:
         maps = grid.maps.select(at_cells={cell})
         if maps:
-            grid.maps.delete(maps)
+            for map in maps:
+                grid.maps.delete(map)
         else:
             grid.maps.add(cell, {})
 

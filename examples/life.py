@@ -30,7 +30,7 @@ class Life(Program, size=64, frame_rate=60):
                     if neighbor_count == 2 or neighbor_count == 3:
                         map["age"] = map["age"] + 1
                     else:
-                        map.delete({"alive", "age"})
+                        map.delete("alive", "age")
                 else:
                     if neighbor_count == 3:
                         map.set({"alive": True, "age": 1})
@@ -48,7 +48,7 @@ class Life(Program, size=64, frame_rate=60):
     def on_cell_click(grid: Grid, cell: Cell) -> None:
         for map in grid.maps.select(at_cells={cell}):
             if map.has("alive"):
-                map.delete({"alive", "age"})
+                map.delete("alive", "age")
             else:
                 map.set({"alive": True, "age": 1})
 
