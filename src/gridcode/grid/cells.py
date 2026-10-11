@@ -78,8 +78,12 @@ class Cells:
         """
         raise NotImplementedError
 
-    def nearest(self, candidates: set[Cell], to: Cell, *, count: int = 1) -> set[Cell]:
-        """``grid.cells.nearest(cells, to, count)``"""
+    def nearest(self, candidates: set[Cell], to: Cell, *,
+                count: int | None = None) -> Cell | set[Cell]:
+        """``grid.cells.nearest(candidates, to)``
+
+        ``grid.cells.nearest(candidates, to, count)``
+        """
         raise NotImplementedError
 
     def row(self, y: int) -> set[Cell]:
