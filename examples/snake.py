@@ -16,7 +16,7 @@ class Snake(Program, size=16, frame_rate=8):
                                     "id": 0,
                                     "head": True})
 
-        snake_cells = grid.maps.cells_of(data={"type": "snake"})
+        snake_cells = grid.maps.select_cells(matches={"type": "snake"})
         food_cell = random.choice(list(grid.cells.all() - snake_cells))
         grid.maps.add(food_cell, {"type": "food"})
 
@@ -33,11 +33,11 @@ class Snake(Program, size=16, frame_rate=8):
         if game["over"]:
             return
 
-        snake = grid.maps.get(data={"type": "snake"})
+        snake = grid.maps.select(matches={"type": "snake"})
         head = max(snake, key=lambda m: m["id"])
 
         target_cell = grid.cells.wrap(head.cell + game["direction"])
-        food = grid.maps.get(data={"type": "food"}, at_cells={target_cell})
+        food = grid.maps.select(matches={"type": "food"}, at_cells={target_cell})
 
         if food:
             grid.maps.delete(food)
@@ -47,7 +47,7 @@ class Snake(Program, size=16, frame_rate=8):
         else:
             grid.maps.delete(min(snake, key=lambda m: m["id"]))
 
-        if grid.maps.has(data={"type": "snake"}, at_cells={target_cell}):
+        if grid.maps.exists(matches={"type": "snake"}, at_cells={target_cell}):
             game["over"] = True
 
         head.delete("head")
@@ -57,11 +57,11 @@ class Snake(Program, size=16, frame_rate=8):
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        if grid.maps.has(at_cells={cell}, data={"head": True}):
+        if grid.maps.exists(at_cells={cell}, matches={"head": True}):
             return Color(0.2, 0.4, 0.6)
-        if grid.maps.has(at_cells={cell}, data={"type": "snake"}):
+        if grid.maps.exists(at_cells={cell}, matches={"type": "snake"}):
             return Color(0.2, 0.4, 0.6, 0.5)
-        if grid.maps.has(at_cells={cell}, data={"type": "food"}):
+        if grid.maps.exists(at_cells={cell}, matches={"type": "food"}):
             return Color(0.7, 0.2, 0.2)
         if grid.globals.get("game")["over"]:
             return Color(0.7, 0.2, 0.2)

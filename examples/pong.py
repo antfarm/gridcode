@@ -36,25 +36,25 @@ class Pong(Program, size=32, frame_rate=30):
 
     @staticmethod
     def update(grid: Grid) -> None:
-        for ball in grid.maps.get(data={"type": "ball"}):
+        for ball in grid.maps.select(matches={"type": "ball"}):
             dx, dy = ball.get("dx", "dy")
             ball_cell = ball.cell
             next_ball_cell = Cell(ball_cell.x + dx, ball_cell.y + dy)
 
-            if grid.maps.has(data={"type": "wall"}, at_cells={next_ball_cell}):
-                for wall in grid.maps.get(data={"type": "wall"}, at_cells={next_ball_cell}):
+            if grid.maps.exists(matches={"type": "wall"}, at_cells={next_ball_cell}):
+                for wall in grid.maps.select(matches={"type": "wall"}, at_cells={next_ball_cell}):
                     new_dx = wall["dx"] if wall.has("dx") else dx
                     new_dy = wall["dy"] if wall.has("dy") else dy
                     dest = Cell(ball_cell.x + new_dx, ball_cell.y + new_dy)
                     grid.maps.move(ball, dest)
                     ball.set({"dx": new_dx, "dy": new_dy})
-            elif grid.maps.has(data={"type": "paddle"},
+            elif grid.maps.exists(matches={"type": "paddle"},
                                at_cells={Cell(ball_cell.x, next_ball_cell.y)}):
                 new_dx = random.choice([-1, 1])
                 dest = Cell(ball_cell.x + new_dx, ball_cell.y - 1)
                 grid.maps.move(ball, dest)
                 ball.set({"dx": new_dx, "dy": -1})
-            elif grid.maps.has(data={"type": "out"}, at_cells={next_ball_cell}):
+            elif grid.maps.exists(matches={"type": "out"}, at_cells={next_ball_cell}):
                 grid.maps.delete(ball)
                 grid.maps.add(next_ball_cell, {"type": "ball-out"})
             else:
@@ -62,13 +62,13 @@ class Pong(Program, size=32, frame_rate=30):
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        if grid.maps.has(data={"type": "wall"}, at_cells={cell}):
+        if grid.maps.exists(matches={"type": "wall"}, at_cells={cell}):
             return Color(1.0, 1.0, 1.0)
-        if grid.maps.has(data={"type": "ball-out"}, at_cells={cell}):
+        if grid.maps.exists(matches={"type": "ball-out"}, at_cells={cell}):
             return Color(1.0, 0.0, 0.0)
-        if grid.maps.has(data={"type": "ball"}, at_cells={cell}):
+        if grid.maps.exists(matches={"type": "ball"}, at_cells={cell}):
             return Color(0.2, 0.9, 0.0)
-        if grid.maps.has(data={"type": "paddle"}, at_cells={cell}):
+        if grid.maps.exists(matches={"type": "paddle"}, at_cells={cell}):
             return Color(1.0, 0.8, 0.2)
         return Color(0.0, 0.0, 0.0)
 
@@ -92,11 +92,11 @@ class Pong(Program, size=32, frame_rate=30):
     def move_paddle(grid: Grid, direction: str) -> None:
         dx = -1 if direction == "left" else 1
 
-        paddle_cells = grid.maps.cells_of(data={"type": "paddle"})
-        wall_cells = grid.maps.cells_of(data={"type": "wall"})
+        paddle_cells = grid.maps.select_cells(matches={"type": "paddle"})
+        wall_cells = grid.maps.select_cells(matches={"type": "wall"})
 
         if not ({cell + Offset(dx, 0) for cell in paddle_cells} & wall_cells):
-            for paddle in grid.maps.get(data={"type": "paddle"}):
+            for paddle in grid.maps.select(matches={"type": "paddle"}):
                 grid.maps.move(paddle, Offset(dx, 0))
 
 

@@ -2,7 +2,6 @@
 
 from .display import Color
 from .grid import (
-    ANY,
     DOWN,
     HORIZONTAL,
     LEFT,
@@ -36,8 +35,6 @@ __all__ = [
     "Offset",
     # grid
     "Grid",
-    # maps
-    "ANY",
     # color
     "Color",
     # program

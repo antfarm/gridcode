@@ -20,7 +20,7 @@ class Blink(Program, size=16, frame_rate=2):
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        if grid.maps.has(at_cells={cell}):
+        if grid.maps.exists(at_cells={cell}):
             return Color(1.0, 0.8, 0.2)
         return Color(0.0, 0.0, 0.0)
 
@@ -34,7 +34,7 @@ class Blink(Program, size=16, frame_rate=2):
 
     @staticmethod
     def toggle_cell(grid: Grid, cell: Cell) -> None:
-        maps = grid.maps.get(at_cells={cell})
+        maps = grid.maps.select(at_cells={cell})
         if maps:
             grid.maps.delete(maps)
         else:

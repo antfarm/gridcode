@@ -6,20 +6,6 @@ type Value = bool | int | float | str | Cell | Offset
 """``Value``"""
 
 
-class AnyValue:
-    """``AnyValue``"""
-
-    def __repr__(self) -> str:
-        return "ANY"
-
-
-ANY = AnyValue()
-"""``ANY``"""
-
-type Match = Value | AnyValue
-"""``Match``"""
-
-
 class Data:
     """``Data(key=value)``"""
 
@@ -83,7 +69,7 @@ class Map:
         """``map.has(key)``"""
         raise NotImplementedError
 
-    def matches(self, data: dict[str, Match]) -> bool:
+    def matches(self, data: dict[str, Value]) -> bool:
         """``map.matches(data)``"""
         raise NotImplementedError
 
@@ -130,29 +116,33 @@ class CellMaps:
         """``grid.maps.copy(map, cell)``"""
         raise NotImplementedError
 
-    def get(self, *,
-            data: dict[str, Match] | None = None,
-            at_cells: set[Cell] | None = None) -> set[CellMap]:
-        """``grid.maps.get(data, at_cells)``"""
+    def select(self, *,
+               matches: dict[str, Value] | None = None,
+               has: set[str] | None = None,
+               at_cells: set[Cell] | None = None) -> set[CellMap]:
+        """``grid.maps.select(matches, has, at_cells)``"""
         raise NotImplementedError
 
-    def has(self, *,
-            data: dict[str, Match] | None = None,
-            at_cells: set[Cell] | None = None) -> bool:
-        """``grid.maps.has(data, at_cells)``"""
+    def exists(self, *,
+               matches: dict[str, Value] | None = None,
+               has: set[str] | None = None,
+               at_cells: set[Cell] | None = None) -> bool:
+        """``grid.maps.exists(matches, has, at_cells)``"""
         raise NotImplementedError
 
     def count(self, *,
-              data: dict[str, Match] | None = None,
+              matches: dict[str, Value] | None = None,
+              has: set[str] | None = None,
               at_cells: set[Cell] | None = None) -> int:
-        """``grid.maps.count(data, at_cells)``"""
+        """``grid.maps.count(matches, has, at_cells)``"""
         # to be discussed
         raise NotImplementedError
 
-    def cells_of(self, *,
-                 data: dict[str, Match] | None = None,
-                 at_cells: set[Cell] | None = None) -> set[Cell]:
-        """``grid.maps.cells_of(data, at_cells)``"""
+    def select_cells(self, *,
+                     matches: dict[str, Value] | None = None,
+                     has: set[str] | None = None,
+                     at_cells: set[Cell] | None = None) -> set[Cell]:
+        """``grid.maps.select_cells(matches, has, at_cells)``"""
         # to be discussed
         raise NotImplementedError
 
@@ -186,8 +176,8 @@ class GlobalMaps:
         """``grid.globals.get(name)``"""
         raise NotImplementedError
 
-    def has(self, name: str) -> bool:
-        """``grid.globals.has(name)``"""
+    def exists(self, name: str) -> bool:
+        """``grid.globals.exists(name)``"""
         raise NotImplementedError
 
     def delete(self, name: str) -> None:

@@ -14,7 +14,7 @@ from .cells import (
     Neighborhood,
     Offset,
 )
-from .maps import ANY, CellMap, CellMaps, Data, GlobalMap, GlobalMaps, Map
+from .maps import CellMap, CellMaps, Data, GlobalMap, GlobalMaps, Map
 
 __all__ = [
     # cells
@@ -31,7 +31,6 @@ __all__ = [
     "VERTICAL",
     "Offset",
     # maps
-    "ANY",
     "Data",
     "Map",
     "CellMap",

@@ -24,7 +24,7 @@ class RGB(Program, size=16, frame_rate=100):
 
     @staticmethod
     def update(grid: Grid) -> None:
-        counts = random.choice(list(grid.maps.get(data={"type": "counts"})))
+        counts = random.choice(list(grid.maps.select(matches={"type": "counts"})))
 
         channel = random.choice(["r", "g", "b"])
         counts[channel] = counts[channel] + 1
@@ -32,14 +32,14 @@ class RGB(Program, size=16, frame_rate=100):
         r, g, b = counts.get("r", "g", "b")
         brightest = max(r, g, b) * 1.0
 
-        for channels in grid.maps.get(at_cells={counts.cell}, data={"type": "channels"}):
+        for channels in grid.maps.select(at_cells={counts.cell}, matches={"type": "channels"}):
             channels.set({"red": r / brightest,
                           "green": g / brightest,
                           "blue": b / brightest})
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        for channels in grid.maps.get(at_cells={cell}, data={"type": "channels"}):
+        for channels in grid.maps.select(at_cells={cell}, matches={"type": "channels"}):
             return Color(channels["red"], channels["green"], channels["blue"])
 
         return Color(0, 0, 0)

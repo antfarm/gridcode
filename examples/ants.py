@@ -20,7 +20,7 @@ class Ants(Program, size=64, frame_rate=10):
     def update(grid: Grid) -> None:
         evaporation_rate = 0.07
 
-        for trail in grid.maps.get(data={"type": "trail"}):
+        for trail in grid.maps.select(matches={"type": "trail"}):
             concentration = trail["concentration"]
             new_concentration = concentration * (1.0 - evaporation_rate)
             if new_concentration < evaporation_rate:
@@ -28,9 +28,9 @@ class Ants(Program, size=64, frame_rate=10):
             else:
                 trail["concentration"] = new_concentration
 
-        for ant in grid.maps.get(data={"type": "ant"}):
+        for ant in grid.maps.select(matches={"type": "ant"}):
             cell = ant.cell
-            trails = grid.maps.get(data={"type": "trail"}, at_cells={cell})
+            trails = grid.maps.select(matches={"type": "trail"}, at_cells={cell})
             if trails:
                 for trail in trails:
                     trail["concentration"] = trail["concentration"] + 1.0
@@ -41,9 +41,9 @@ class Ants(Program, size=64, frame_rate=10):
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        if grid.maps.has(data={"type": "ant"}, at_cells={cell}):
+        if grid.maps.exists(matches={"type": "ant"}, at_cells={cell}):
             return Color(1.0, 0.8, 0.2)
-        for trail in grid.maps.get(data={"type": "trail"}, at_cells={cell}):
+        for trail in grid.maps.select(matches={"type": "trail"}, at_cells={cell}):
             opacity = min(1.0, trail["concentration"] * 0.5)
             return Color(0.2, 0.9, 0.0, opacity)
         return Color(0.0, 0.0, 0.0)
