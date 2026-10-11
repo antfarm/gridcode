@@ -4,53 +4,72 @@ A minimal engine for grid-based games and simulations.
 
 ## API
 
-| Domain         | Category        | Function                                                        | Usage                                                                |
-| -------------- | --------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
-| **Cells**      | constructors    | `grid.cells.all()`                                              |                                                                      |
-|                |                 | `grid.cells.random()`                                           | `random()`                                                           |
-|                |                 | `grid.cells.random(count)`                                      | `random(count=5)`                                                    |
-|                |                 | `grid.cells.row(y)`                                             | `row(3)`                                                             |
-|                |                 | `grid.cells.col(x)`                                             | `col(5)`                                                             |
-|                |                 | `grid.cells.rect(x, y, width, height)`                          | `rect(2, 2, 4, 4)`                                                   |
-|                |                 | `grid.cells.neighbors(cell, kind=MOORE, radius=1)`              | `neighbors(c)`, `neighbors(c, kind=VON_NEUMANN, radius=2)`           |
-|                | filters         | `grid.cells.nearest(candidates, to, count=1)`                   | `nearest({c1, c2}, to=c3, count=2)`                                  |
-|                | transformations | `grid.cells.wrap(cell_or_cells)`                                | `wrap(c)`, `wrap({c1, c2})`                                          |
-|                |                 | `grid.cells.bounds_of(cells)`                                   | `bounds_of({c1, c2})`                                                |
-|                | property        | `grid.cells.size`                                               |                                                                      |
-|                | geometry        | `Cell(x, y)`                                                    | `Cell(3, 4)`                                                         |
-|                |                 | `Offset(dx, dy)`                                                | `Offset(-1, 0)`                                                      |
-|                |                 | `cell + offset`, `-offset`                                      | `c + UP`, `-direction`                                               |
-|                |                 | `UP`, `DOWN`, `LEFT`, `RIGHT`                                   |                                                                      |
-|                |                 | `MOORE, VON_NEUMANN, HORIZONTAL, VERTICAL`                      |                                                                      |
-|                |                 |                                                                 |                                                                      |
-| **GlobalMaps** | lifecycle       | `grid.globals.add(name, data)`                                  | `add("game", {"over": False})`                                       |
-|                |                 | `grid.globals.delete(name)`                                     | `delete("game")`                                                     |
-|                |                 | `grid.globals.clear()`                                          |                                                                      |
-|                | queries         | `grid.globals.get(name)`                                        | `get("game")`                                                        |
-|                |                 | `grid.globals.exists(name)`                                     | `exists("game")`                                                     |
-|                |                 |                                                                 |                                                                      |
-| **CellMaps**   | lifecycle       | `grid.maps.add(cell, data)`                                     | `add(c, {"type": "ant", "dx": 1})`                                   |
-|                |                 | `grid.maps.copy(map, cell)`                                     | `copy(ant, c)`                                                       |
-|                |                 | `grid.maps.delete(map_or_maps)`                                 | `delete(ant)`, `delete(ants)`                                        |
-|                |                 | `grid.maps.clear()`                                             |                                                                      |
-|                | movement        | `grid.maps.move(map, cell_or_offset)`                           | `move(ant, c)`, `move(ant, UP)`                                      |
-|                | queries         | `grid.maps.select(matches=None, has=None, at_cells=None)`       | `select(matches={"type": "ant"}, has={"hungry"}, at_cells={c1, c2})` |
-|                |                 | `grid.maps.exists(matches=None, has=None, at_cells=None)`       | `exists(matches={"type": "wall"}, at_cells={c})`                     |
-|                |                 | `grid.maps.count(matches=None, has=None, at_cells=None)`        | `count(has={"alive"}, at_cells=cells)`                               |
-|                |                 | `grid.maps.select_cells(matches=None, has=None, at_cells=None)` | `select_cells(matches={"type": "snake"})`                            |
-|                |                 |                                                                 |                                                                      |
-| **Map**        | fields          | `map[key]`                                                      | `ant["dx"]`                                                          |
-|                |                 | `map[key] = value`                                              | `ant["dx"] = 1`                                                      |
-|                |                 | `map.get(key, key, ...)`                                        | `get("dx", "dy")`                                                    |
-|                |                 | `map.set(data)`                                                 | `set({"dx": 1, "dy": -1})`                                           |
-|                |                 | `map.delete(key_or_keys)`                                       | `delete("dx")`, `delete({"dx", "dy"})`                               |
-|                | queries         | `map.has(key)`                                                  | `has("dx")`                                                          |
-|                |                 | `map.matches(data)`                                             | `matches({"type": "ant"})`                                           |
-| **CellMap**    | location        | `map.cell`                                                      |                                                                      |
-| **GlobalMap**  | location        | `map.name`                                                      |                                                                      |
-|                |                 |                                                                 |                                                                      |
-| **Color**      |                 | `Color(r, g, b, a=1.0)`                                         | `Color(0.2, 0.9, 0.0)`, `Color(0.2, 0.9, 0.0, 0.5)`                  |
-|                |                 | `color.with_opacity(a)`                                         | `with_opacity(0.5)`                                                  |
+| Category        | Function                                              | Usage                                                                            | Returns             |
+| --------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------- |
+| **Geometry**      |                                                       |                                                                                  |                     |
+|                 | `Cell(x, y)`                                          | `Cell(3, 4)`                                                                     | `Cell`              |
+|                 | `Offset(dx, dy)`                                      | `Offset(-1, 0)`                                                                  | `Offset`            |
+|                 | `cell + offset`                                       | `cell + UP`                                                                      | `Cell`              |
+|                 | `-offset`                                             | `-offset`                                                                        | `Offset`            |
+|                 | `UP`, `DOWN`, `LEFT`, `RIGHT`                         |                                                                                  | `Offset`            |
+|                 | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL`      |                                                                                  | `Neighborhood`      |
+|                 |                                                       |                                                                                  |                     |
+| **Cells**       |                                                       |                                                                                  |                     |
+| constructors    | `grid.cells.all()`                                    |                                                                                  | `set[Cell]`         |
+|                 | `grid.cells.random()`                                 | `grid.cells.random()`                                                            | `Cell`              |
+|                 | `grid.cells.random(*, count)`                         | `grid.cells.random(count=5)`                                                     | `set[Cell]`         |
+|                 | `grid.cells.row(y)`                                   | `grid.cells.row(3)`                                                              | `set[Cell]`         |
+|                 | `grid.cells.col(x)`                                   | `grid.cells.col(5)`                                                              | `set[Cell]`         |
+|                 | `grid.cells.rect(x, y, width, height)`                | `grid.cells.rect(0, 0, 8, 8)`                                                    | `set[Cell]`         |
+|                 | `grid.cells.neighbors(cell, *, kind=MOORE, radius=1)` | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2)`                         | `set[Cell]`         |
+| filters         | `grid.cells.nearest(candidates, to)`                  | `grid.cells.nearest({cell1, cell2}, to=cell3)`                                   | `Cell`              |
+|                 | `grid.cells.nearest(candidates, to, *, count)`        | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`                          | `set[Cell]`         |
+| transformations | `grid.cells.wrap(cell)`                               | `grid.cells.wrap(cell)`                                                          | `Cell`              |
+|                 | `grid.cells.wrap(cells)`                              | `grid.cells.wrap({cell1, cell2})`                                                | `set[Cell]`         |
+|                 | `grid.cells.bounds_of(cells)`                         | `grid.cells.bounds_of({cell1, cell2})`                                           | `set[Cell]`         |
+| property        | `grid.cells.size`                                     |                                                                                  | `int`               |
+|                 |                                                       |                                                                                  |                     |
+| **GlobalMaps**  |                                                       |                                                                                  |                     |
+| lifecycle       | `grid.globals.add(name, data)`                        | `grid.globals.add("name", {"key": value})`                                       | `GlobalMap`         |
+|                 | `grid.globals.delete(name)`                           | `grid.globals.delete("name")`                                                    | `None`              |
+|                 | `grid.globals.clear()`                                |                                                                                  | `None`              |
+| queries         | `grid.globals.get(name)`                              | `grid.globals.get("name")`                                                       | `GlobalMap \| None` |
+|                 | `grid.globals.exists(name)`                           | `grid.globals.exists("name")`                                                    | `bool`              |
+|                 |                                                       |                                                                                  |                     |
+| **CellMaps**    |                                                       |                                                                                  |                     |
+| lifecycle       | `grid.maps.add(cell, data)`                           | `grid.maps.add(cell, {"key": value})`                                            | `CellMap`           |
+|                 | `grid.maps.copy(map, cell)`                           | `grid.maps.copy(map, cell)`                                                      | `CellMap`           |
+|                 | `grid.maps.delete(map)`                               | `grid.maps.delete(map)`                                                          | `None`              |
+|                 | `grid.maps.delete(maps)`                              | `grid.maps.delete(maps)`                                                         | `None`              |
+|                 | `grid.maps.clear()`                                   |                                                                                  | `None`              |
+| movement        | `grid.maps.move(map, cell)`                           | `grid.maps.move(map, cell)`                                                      | `None`              |
+|                 | `grid.maps.move(map, offset)`                         | `grid.maps.move(map, UP)`                                                        | `None`              |
+| queries         | `grid.maps.select(*, matches, has, at_cells)`         | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` | `set[CellMap]`      |
+|                 | `grid.maps.exists(*, matches, has, at_cells)`         | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      | `bool`              |
+|                 | `grid.maps.count(*, matches, has, at_cells)`          | `grid.maps.count(has={"key"}, at_cells=cells)`                                   | `int`               |
+|                 | `grid.maps.select_cells(*, matches, has, at_cells)`   | `grid.maps.select_cells(matches={"key": value})`                                 | `set[Cell]`         |
+|                 |                                                       |                                                                                  |                     |
+| **Map**         |                                                       |                                                                                  |                     |
+| fields          | `map[key]`                                            | `map["key"]`                                                                     | `Value`             |
+|                 | `map[key] = value`                                    | `map["key"] = value`                                                             | `None`              |
+|                 | `map.get(key, key, ...)`                              | `map.get("key1", "key2")`                                                        | `tuple[Value, ...]` |
+|                 | `map.set(data)`                                       | `map.set({"key1": value1, "key2": value2})`                                      | `None`              |
+|                 | `map.delete(key)`                                     | `map.delete("key")`                                                              | `None`              |
+|                 | `map.delete(keys)`                                    | `map.delete({"key1", "key2"})`                                                   | `None`              |
+| queries         | `map.has(key)`                                        | `map.has("key")`                                                                 | `bool`              |
+|                 | `map.matches(data)`                                   | `map.matches({"key": value})`                                                    | `bool`              |
+|                 |                                                       |                                                                                  |                     |
+| **CellMap**     |                                                       |                                                                                  |                     |
+| location        | `map.cell`                                            | `map.cell`                                                                       | `Cell`              |
+|                 |                                                       |                                                                                  |                     |
+| **GlobalMap**   |                                                       |                                                                                  |                     |
+| location        | `map.name`                                            | `map.name`                                                                       | `str`               |
+|                 |                                                       |                                                                                  |                     |
+| **Color**       |                                                       |                                                                                  |                     |
+|                 | `Color(r, g, b, a=1.0)`                               | `Color(1.0, 1.0, 1.0, 0.5)`                                                      | `Color`             |
+|                 | `color.with_opacity(a)`                               | `color.with_opacity(0.5)`                                                        | `Color`             |
+
+`Value` is `bool | int | float | str | Cell | Offset`.
 
 ## Program Structure
 
