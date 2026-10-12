@@ -102,8 +102,8 @@ class GlobalMap(Map):
         raise NotImplementedError
 
 
-class CellMaps:
-    """``CellMaps``"""
+class CellMapStore:
+    """``CellMapStore``"""
 
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.maps.add(cell, data)``"""
@@ -160,8 +160,8 @@ class CellMaps:
         raise NotImplementedError
 
 
-class GlobalMaps:
-    """``GlobalMaps``"""
+class GlobalMapStore:
+    """``GlobalMapStore``"""
 
     def add(self, name: str, data: dict[str, Value]) -> GlobalMap:
         """``grid.globals.add(name, data)``"""

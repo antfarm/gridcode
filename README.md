@@ -10,8 +10,8 @@ A minimal engine for grid-based games and simulations.
 | ---------------------- | --------- | ---------------- | ------ | ------------------------------------------ |
 | **grid.Grid**          |           |                  |        |                                            |
 | <sub>Topology</sub>    | `cells`   | `Cells`          |        | `grid.cells.all()`                         |
-| <sub>Cell data</sub>   | `maps`    | `CellMaps`   |        | `grid.maps.select(matches={"key": value})` |
-| <sub>Global data</sub> | `globals` | `GlobalMaps` |        | `grid.globals.get("name")`                 |
+| <sub>Cell data</sub>   | `maps`    | `CellMapStore`   |        | `grid.maps.select(matches={"key": value})` |
+| <sub>Global data</sub> | `globals` | `GlobalMapStore` |        | `grid.globals.get("name")`                 |
 
 ### Topology
 
@@ -44,7 +44,7 @@ A minimal engine for grid-based games and simulations.
 |                             | `cells.bounds_of(cells)`                         | `set[Cell]`    |        | `grid.cells.bounds_of({cell1, cell2})`                   |
 | <sub>Property</sub>         | `cells.size`                                     | `int`          |        |                                                          |
 
-### Data in maps
+### Map Data
 
 | Class                   | Member                      | Type                | Raises      | Usage                                       |
 | ----------------------- | --------------------------- | ------------------- | ----------- | ------------------------------------------- |
@@ -67,7 +67,7 @@ A minimal engine for grid-based games and simulations.
 
 | Class                        | Member                                         | Type           | Raises      | Usage                                                                            |
 | ---------------------------- | ---------------------------------------------- | -------------- | ----------- | -------------------------------------------------------------------------------- |
-| **grid.maps.CellMaps**   |                                                |                |             |                                                                                  |
+| **grid.maps.CellMapStore**   |                                                |                |             |                                                                                  |
 | <sub>Lifecycle</sub>         | `maps.add(cell, data)`                         | `CellMap`      | `TypeError` | `grid.maps.add(cell, {"key": value})`                                            |
 |                              | `maps.copy(map, cell)`                         | `CellMap`      |             | `grid.maps.copy(map, cell)`                                                      |
 |                              | `maps.copy(map, offset)`                       | `CellMap`      |             | `grid.maps.copy(map, UP)`                                                        |
@@ -80,7 +80,7 @@ A minimal engine for grid-based games and simulations.
 |                              | `maps.count(*, matches, has, at_cells)`        | `int`          |             | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
 |                              | `maps.select_cells(*, matches, has, at_cells)` | `set[Cell]`    |             | `grid.maps.select_cells(matches={"key": value})`                                 |
 |                              |                                                |                |             |                                                                                  |
-| **grid.maps.GlobalMaps** |                                                |                |             |                                                                                  |
+| **grid.maps.GlobalMapStore** |                                                |                |             |                                                                                  |
 | <sub>Lifecycle</sub>         | `globals.add(name, data)`                      | `GlobalMap`    | `TypeError` | `grid.globals.add("name", {"key": value})`                                       |
 |                              | `globals.delete(name)`                         | `None`         |             | `grid.globals.delete("name")`                                                    |
 |                              | `globals.clear()`                              | `None`         |             |                                                                                  |
