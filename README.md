@@ -91,22 +91,22 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.cells.Cells
 
-|                  | Member                                           | Type        | Raises | Usage                                                    |
-| ---------------- | ------------------------------------------------ | ----------- | ------ | -------------------------------------------------------- |
-| *Construction*   | `cells.all()`                                    | `set[Cell]` |        | `grid.cells.all()`                                       |
-|                  | `cells.random()`                                 | `Cell`      |        | `grid.cells.random()`                                    |
-|                  | `cells.random(*, count)`                         | `set[Cell]` |        | `grid.cells.random(count=5)`                             |
-|                  | `cells.row(y)`                                   | `set[Cell]` |        | `grid.cells.row(3)`                                      |
-|                  | `cells.col(x)`                                   | `set[Cell]` |        | `grid.cells.col(5)`                                      |
-|                  | `cells.rect(x, y, width, height)`                | `set[Cell]` |        | `grid.cells.rect(0, 0, 8, 8)`                            |
-|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1)` | `set[Cell]` |        | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2)` |
-| *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      |        | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
-|                  | `cells.nearest(candidates, to, *, count)`        | `set[Cell]` |        | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`  |
-|                  | `cells.clip(cells)`                              | `set[Cell]` |                | `grid.cells.clip({cell1, cell2})`                        |
-| *Transformation* | `cells.wrap(cell)`                               | `Cell`      |        | `grid.cells.wrap(cell)`                                  |
-|                  | `cells.wrap(cells)`                              | `set[Cell]` |        | `grid.cells.wrap({cell1, cell2})`                        |
-|                  | `cells.bounds_of(cells)`                         | `set[Cell]` |        | `grid.cells.bounds_of({cell1, cell2})`                   |
-| *Property*       | `cells.size`                                     | `int`       |        | `grid.cells.size`                                        |
+|                  | Member                                           | Type        | Raises       | Usage                                                    |
+| ---------------- | ------------------------------------------------ | ----------- | ------------ | -------------------------------------------------------- |
+| *Construction*   | `cells.all()`                                    | `set[Cell]` |              | `grid.cells.all()`                                       |
+|                  | `cells.random()`                                 | `Cell`      |              | `grid.cells.random()`                                    |
+|                  | `cells.random(*, count)`                         | `set[Cell]` | `ValueError` | `grid.cells.random(count=5)`                             |
+|                  | `cells.row(y)`                                   | `set[Cell]` | `IndexError` | `grid.cells.row(3)`                                      |
+|                  | `cells.col(x)`                                   | `set[Cell]` | `IndexError` | `grid.cells.col(5)`                                      |
+|                  | `cells.rect(x, y, width, height)`                | `set[Cell]` | `IndexError` | `grid.cells.rect(0, 0, 8, 8)`                            |
+|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1)` | `set[Cell]` |              | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2)` |
+| *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      |              | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
+|                  | `cells.nearest(candidates, to, *, count)`        | `set[Cell]` | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`  |
+|                  | `cells.clip(cells)`                              | `set[Cell]` |              | `grid.cells.clip({cell1, cell2})`                        |
+| *Transformation* | `cells.wrap(cell)`                               | `Cell`      |              | `grid.cells.wrap(cell)`                                  |
+|                  | `cells.wrap(cells)`                              | `set[Cell]` |              | `grid.cells.wrap({cell1, cell2})`                        |
+|                  | `cells.bounds_of(cells)`                         | `set[Cell]` |              | `grid.cells.bounds_of({cell1, cell2})`                   |
+| *Property*       | `cells.size`                                     | `int`       |              | `grid.cells.size`                                        |
 
 ### Maps & Data
 
@@ -118,9 +118,9 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |            | `__setitem__(key, value)`   | `None`              | `TypeError` | `map["key"] = value`                        |
 |            | `map.get(key, key, ...)`    | `tuple[Value, ...]` | `KeyError`  | `map.get("key1", "key2")`                   |
 |            | `map.set(data)`             | `None`              | `TypeError` | `map.set({"key1": value1, "key2": value2})` |
-|            | `map.delete(key, key, ...)` | `None`              |             | `map.delete("key1", "key2")`                |
+|            | `map.delete(key, key, ...)` | `None`              | `KeyError`  | `map.delete("key1", "key2")`                |
 | *Querying* | `map.has(key, key, ...)`    | `bool`              |             | `map.has("key1", "key2")`                   |
-|            | `map.matches(data)`         | `bool`              |             | `map.matches({"key": value})`               |
+|            | `map.matches(data)`         | `bool`              | `TypeError` | `map.matches({"key": value})`               |
 
 #### grid.maps.CellMap
 
@@ -138,29 +138,29 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.maps.CellMapStore
 
-|             | Member                                         | Type           | Raises      | Usage                                                                            |
-| ----------- | ---------------------------------------------- | -------------- | ----------- | -------------------------------------------------------------------------------- |
-| *Lifecycle* | `maps.add(cell, data)`                         | `CellMap`      | `TypeError` | `grid.maps.add(cell, {"key": value})`                                            |
-|             | `maps.copy(map, cell)`                         | `CellMap`      |             | `grid.maps.copy(map, cell)`                                                      |
-|             | `maps.copy(map, offset)`                       | `CellMap`      |             | `grid.maps.copy(map, UP)`                                                        |
-|             | `maps.delete(map)`                             | `None`         |             | `grid.maps.delete(map)`                                                          |
-|             | `maps.clear()`                                 | `None`         |             | `grid.maps.clear()`                                                              |
-| *Movement*  | `maps.move(map, cell)`                         | `None`         |             | `grid.maps.move(map, cell)`                                                      |
-|             | `maps.move(map, offset)`                       | `None`         |             | `grid.maps.move(map, UP)`                                                        |
-| *Querying*  | `maps.select(*, matches, has, at_cells)`       | `set[CellMap]` |             | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
-|             | `maps.exists(*, matches, has, at_cells)`       | `bool`         |             | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
-|             | `maps.count(*, matches, has, at_cells)`        | `int`          |             | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
-|             | `maps.select_cells(*, matches, has, at_cells)` | `set[Cell]`    |             | `grid.maps.select_cells(matches={"key": value})`                                 |
+|             | Member                                         | Type           | Raises       | Usage                                                                            |
+| ----------- | ---------------------------------------------- | -------------- | ------------ | -------------------------------------------------------------------------------- |
+| *Lifecycle* | `maps.add(cell, data)`                         | `CellMap`      | `TypeError`  | `grid.maps.add(cell, {"key": value})`                                            |
+|             | `maps.copy(map, cell)`                         | `CellMap`      | `IndexError` | `grid.maps.copy(map, cell)`                                                      |
+|             | `maps.copy(map, offset)`                       | `CellMap`      | `IndexError` | `grid.maps.copy(map, UP)`                                                        |
+|             | `maps.delete(map)`                             | `None`         |              | `grid.maps.delete(map)`                                                          |
+|             | `maps.clear()`                                 | `None`         |              | `grid.maps.clear()`                                                              |
+| *Movement*  | `maps.move(map, cell)`                         | `None`         | `IndexError` | `grid.maps.move(map, cell)`                                                      |
+|             | `maps.move(map, offset)`                       | `None`         | `IndexError` | `grid.maps.move(map, UP)`                                                        |
+| *Querying*  | `maps.select(*, matches, has, at_cells)`       | `set[CellMap]` | `TypeError`  | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
+|             | `maps.exists(*, matches, has, at_cells)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
+|             | `maps.count(*, matches, has, at_cells)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
+|             | `maps.select_cells(*, matches, has, at_cells)` | `set[Cell]`    | `TypeError`  | `grid.maps.select_cells(matches={"key": value})`                                 |
 
 #### grid.maps.GlobalMapStore
 
-|             | Member                    | Type        | Raises      | Usage                                      |
-| ----------- | ------------------------- | ----------- | ----------- | ------------------------------------------ |
-| *Lifecycle* | `globals.add(name, data)` | `GlobalMap` | `TypeError` | `grid.globals.add("name", {"key": value})` |
-|             | `globals.delete(name)`    | `None`      |             | `grid.globals.delete("name")`              |
-|             | `globals.clear()`         | `None`      |             | `grid.globals.clear()`                     |
-| *Querying*  | `globals.get(name)`       | `GlobalMap` | `KeyError`  | `grid.globals.get("name")`                 |
-|             | `globals.exists(name)`    | `bool`      |             | `grid.globals.exists("name")`              |
+|             | Member                    | Type        | Raises                   | Usage                                      |
+| ----------- | ------------------------- | ----------- | ------------------------ | ------------------------------------------ |
+| *Lifecycle* | `globals.add(name, data)` | `GlobalMap` | `TypeError` `ValueError` | `grid.globals.add("name", {"key": value})` |
+|             | `globals.delete(name)`    | `None`      | `KeyError`               | `grid.globals.delete("name")`              |
+|             | `globals.clear()`         | `None`      |                          | `grid.globals.clear()`                     |
+| *Querying*  | `globals.get(name)`       | `GlobalMap` | `KeyError`               | `grid.globals.get("name")`                 |
+|             | `globals.exists(name)`    | `bool`      |                          | `grid.globals.exists("name")`              |
 
 ### Display
 
