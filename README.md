@@ -102,6 +102,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |                  | `cells.neighbors(cell, *, kind=MOORE, radius=1)` | `set[Cell]` |        | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2)` |
 | *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      |        | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
 |                  | `cells.nearest(candidates, to, *, count)`        | `set[Cell]` |        | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`  |
+|                  | `cells.clip(cells)`                              | `set[Cell]` |                | `grid.cells.clip({cell1, cell2})`                        |
 | *Transformation* | `cells.wrap(cell)`                               | `Cell`      |        | `grid.cells.wrap(cell)`                                  |
 |                  | `cells.wrap(cells)`                              | `set[Cell]` |        | `grid.cells.wrap({cell1, cell2})`                        |
 |                  | `cells.bounds_of(cells)`                         | `set[Cell]` |        | `grid.cells.bounds_of({cell1, cell2})`                   |

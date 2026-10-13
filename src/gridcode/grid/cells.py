@@ -86,6 +86,10 @@ class Cells:
         """
         raise NotImplementedError
 
+    def clip(self, cells: set[Cell]) -> set[Cell]:
+        """``grid.cells.clip(cells)``"""
+        raise NotImplementedError
+
     def row(self, y: int) -> set[Cell]:
         """``grid.cells.row(y)``"""
         raise NotImplementedError
