@@ -50,9 +50,9 @@ class Map:
         """``map[key] = value``"""
         self.set({key: value})
 
-    def get(self, key: str, *more_keys: str) -> tuple[Value, ...]:
+    def get(self, key1: str, key2: str, *more_keys: str) -> tuple[Value, ...]:
         """``map.get(key, key, ...)``"""
-        return tuple(self[each_key] for each_key in (key, *more_keys))
+        return tuple(self[key] for key in (key1, key2, *more_keys))
 
     def set(self, data: dict[str, Value]) -> None:
         """``map.set(data)``"""
