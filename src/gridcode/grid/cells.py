@@ -1,33 +1,54 @@
 """``gridcode.grid.cells``"""
 
+from dataclasses import dataclass
 from enum import StrEnum
-from typing import NamedTuple
 
 
-class Cell(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class Cell:
     """``Cell``"""
 
     x: int
     y: int
 
-    def __add__(self, other: Offset) -> Cell:
-        return Cell(self.x + other.dx, self.y + other.dy)
+    def __add__(self, offset: Offset) -> Cell:
+        if not isinstance(offset, Offset):
+            return NotImplemented
+        return Cell(self.x + offset.dx, self.y + offset.dy)
+
+    def __sub__(self, other: Cell | Offset) -> Cell | Offset:
+        if isinstance(other, Offset):
+            return Cell(self.x - other.dx, self.y - other.dy)
+        if isinstance(other, Cell):
+            return Offset(self.x - other.x, self.y - other.y)
+        return NotImplemented
 
 
-class Offset(NamedTuple):
+@dataclass(frozen=True, slots=True)
+class Offset:
     """``Offset``"""
 
     dx: int
     dy: int
 
+    def __add__(self, other: Offset) -> Offset:
+        if not isinstance(other, Offset):
+            return NotImplemented
+        return Offset(self.dx + other.dx, self.dy + other.dy)
+
+    def __sub__(self, other: Offset) -> Offset:
+        if not isinstance(other, Offset):
+            return NotImplemented
+        return Offset(self.dx - other.dx, self.dy - other.dy)
+
     def __neg__(self) -> Offset:
         return Offset(-self.dx, -self.dy)
 
 
-UP    = Offset( 0, -1)
-DOWN  = Offset( 0,  1)
-LEFT  = Offset(-1,  0)
-RIGHT = Offset( 1,  0)
+Offset.UP    = Offset( 0, -1)
+Offset.DOWN  = Offset( 0,  1)
+Offset.LEFT  = Offset(-1,  0)
+Offset.RIGHT = Offset( 1,  0)
 
 
 class Neighborhood(StrEnum):
@@ -44,12 +65,6 @@ class Neighborhood(StrEnum):
 
     VERTICAL = "vertical"
     """``Neighborhood.VERTICAL``"""
-
-
-MOORE = Neighborhood.MOORE
-VON_NEUMANN = Neighborhood.VON_NEUMANN
-HORIZONTAL = Neighborhood.HORIZONTAL
-VERTICAL = Neighborhood.VERTICAL
 
 
 class Cells:

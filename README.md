@@ -70,18 +70,22 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.cells.Cell
 
-|                  | Member            | Type   | Raises | Usage        |
-| ---------------- | ----------------- | ------ | ------ | ------------ |
-| *Construction*   | `Cell(x, y)`      | `Cell` |        | `Cell(3, 4)` |
-| *Transformation* | `__add__(offset)` | `Cell` |        | `cell + UP`  |
+|                  | Member            | Type     | Raises | Usage               |
+| ---------------- | ----------------- | -------- | ------ | ------------------- |
+| *Construction*   | `Cell(x, y)`      | `Cell`   |        | `Cell(3, 4)`        |
+| *Math*           | `__add__(offset)` | `Cell`   |        | `cell + UP`         |
+|                  | `__sub__(offset)` | `Cell`   |        | `cell - UP`         |
+|                  | `__sub__(cell)`   | `Offset` |        | `cell - other_cell` |
 
 #### grid.cells.Offset
 
-|                  | Member                        | Type     | Raises | Usage           |
-| ---------------- | ----------------------------- | -------- | ------ | --------------- |
-| *Construction*   | `Offset(dx, dy)`              | `Offset` |        | `Offset(-1, 0)` |
-| *Transformation* | `__neg__()`                   | `Offset` |        | `-offset`       |
-| *Constants*      | `UP`, `DOWN`, `LEFT`, `RIGHT` | `Offset` |        | `cell + UP`     |
+|                  | Member                        | Type     | Raises | Usage                |
+| ---------------- | ----------------------------- | -------- | ------ | -------------------- |
+| *Construction*   | `Offset(dx, dy)`              | `Offset` |        | `Offset(-1, 0)`      |
+| *Math*           | `__add__(offset)`             | `Offset` |        | `UP + LEFT`          |
+|                  | `__sub__(offset)`             | `Offset` |        | `UP - LEFT`          |
+|                  | `__neg__()`                   | `Offset` |        | `-offset`            |
+| *Constants*      | `UP`, `DOWN`, `LEFT`, `RIGHT` | `Offset` |        | `cell + UP`          |
 
 #### grid.cells.Neighborhood
 
