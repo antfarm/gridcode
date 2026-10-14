@@ -66,7 +66,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 | *Cell data*   | `maps`    | `CellMapStore`   |        | `grid.maps.select(matches={"key": value})` |
 | *Global data* | `globals` | `GlobalMapStore` |        | `grid.globals.get("name")`                 |
 
-### Cells & Offsets
+### Cells and Grid Geometry
 
 #### grid.cells.Cell
 
@@ -108,7 +108,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |                  | `cells.bounds_of(cells)`                         | `set[Cell]` |              | `grid.cells.bounds_of({cell1, cell2})`                   |
 | *Property*       | `cells.size`                                     | `int`       |              | `grid.cells.size`                                        |
 
-### Maps & Data
+### Key/Value Maps
 
 #### grid.maps.Map
 
@@ -122,19 +122,13 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 | *Querying* | `map.has(key, key, ...)`    | `bool`              |             | `map.has("key1", "key2")`                   |
 |            | `map.matches(data)`         | `bool`              | `TypeError` | `map.matches({"key": value})`               |
 
+### Maps on the Grid
+
 #### grid.maps.CellMap
 
 |            | Member     | Type   | Raises | Usage      |
 | ---------- | ---------- | ------ | ------ | ---------- |
 | *Location* | `map.cell` | `Cell` |        | `map.cell` |
-
-#### grid.maps.GlobalMap
-
-|            | Member     | Type  | Raises | Usage      |
-| ---------- | ---------- | ----- | ------ | ---------- |
-| *Location* | `map.name` | `str` |        | `map.name` |
-
-### Map Stores
 
 #### grid.maps.CellMapStore
 
@@ -151,6 +145,14 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |             | `maps.exists(*, matches, has, at_cells)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
 |             | `maps.count(*, matches, has, at_cells)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
 |             | `maps.select_cells(*, matches, has, at_cells)` | `set[Cell]`    | `TypeError`  | `grid.maps.select_cells(matches={"key": value})`                                 |
+
+### Global Maps
+
+#### grid.maps.GlobalMap
+
+|            | Member     | Type  | Raises | Usage      |
+| ---------- | ---------- | ----- | ------ | ---------- |
+| *Location* | `map.name` | `str` |        | `map.name` |
 
 #### grid.maps.GlobalMapStore
 
