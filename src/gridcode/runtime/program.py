@@ -1,11 +1,11 @@
-"""``gridcode.program.program``"""
+"""``gridcode.runtime.program``"""
 
 import inspect
 from abc import ABC, abstractmethod
 from annotationlib import Format
 
-from ..display import Color
 from ..grid import Cell, Grid
+from .color import Color
 
 
 class Program(ABC):

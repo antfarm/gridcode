@@ -1,11 +1,18 @@
-"""``gridcode.program.runner``"""
+"""``gridcode.runtime``"""
 
 from ..grid import Cell, Grid
+from .color import Color
 from .program import Program
 
+__all__ = [
+    "Runtime",
+    "Program",
+    "Color",
+]
 
-class Runner:
-    """``Runner``"""
+
+class Runtime:
+    """``Runtime``"""
 
     def __init__(self, grid: Grid, program: type[Program]):
         self.grid = grid
@@ -14,21 +21,28 @@ class Runner:
         self.tick = 0
 
     def reset(self) -> None:
-        """``runner.reset()``"""
+        """``runtime.reset()``"""
         self.grid.maps.clear()
         self.grid.globals.clear()
         self.program.setup(self.grid)
         self.tick = 0
 
     def step(self) -> None:
-        """``runner.step()``"""
+        """``runtime.step()``"""
         self.program.update(self.grid)
         self.tick += 1
 
     def key_press(self, key: str) -> None:
-        """``runner.key_press(key)``"""
+        """``runtime.key_press(key)``"""
         self.program.on_key_press(self.grid, key)
 
     def cell_click(self, cell: Cell) -> None:
-        """``runner.cell_click(cell)``"""
+        """``runtime.cell_click(cell)``"""
         self.program.on_cell_click(self.grid, cell)
+
+    def colors(self) -> list[Color]:
+        """``runtime.colors()``"""
+        size = self.grid.cells.size
+        return [self.program.color_for_cell(self.grid, Cell(x, y))
+                for y in range(size)
+                for x in range(size)]

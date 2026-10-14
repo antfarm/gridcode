@@ -1,6 +1,6 @@
 """``gridcode.gridcode``"""
 
-from .program import Program
+from .runtime import Program
 
 
 def run(program: type[Program]) -> None:

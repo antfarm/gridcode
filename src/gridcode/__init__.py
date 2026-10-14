@@ -1,9 +1,8 @@
 """``gridcode``"""
 
-from .display import Color
 from .grid import Cell, Grid, Neighborhood, Offset
 from .gridcode import run
-from .program import Program
+from .runtime import Color, Program
 
 UP = Offset.UP
 DOWN = Offset.DOWN

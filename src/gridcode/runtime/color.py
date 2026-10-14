@@ -1,4 +1,4 @@
-"""``gridcode.display.color``"""
+"""``gridcode.runtime.color``"""
 
 from typing import NamedTuple
 
