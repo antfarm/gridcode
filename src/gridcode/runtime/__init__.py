@@ -16,6 +16,8 @@ class Runtime:
 
     def __init__(self, grid: Grid, program: type[Program]):
         self.grid = grid
+        self.size = program.size
+        self.frame_rate = program.frame_rate
         self.program = program()
         self.program.setup(self.grid)
         self.tick = 0
@@ -36,13 +38,12 @@ class Runtime:
         """``runtime.key_press(key)``"""
         self.program.on_key_press(self.grid, key)
 
-    def cell_click(self, cell: Cell) -> None:
-        """``runtime.cell_click(cell)``"""
-        self.program.on_cell_click(self.grid, cell)
+    def cell_click(self, x: int, y: int) -> None:
+        """``runtime.cell_click(x, y)``"""
+        self.program.on_cell_click(self.grid, Cell(x, y))
 
     def colors(self) -> list[Color]:
         """``runtime.colors()``"""
-        size = self.grid.cells.size
         return [self.program.color_for_cell(self.grid, Cell(x, y))
-                for y in range(size)
-                for x in range(size)]
+                for y in range(self.size)
+                for x in range(self.size)]
