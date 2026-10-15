@@ -59,3 +59,8 @@ class Program(ABC):
     @abstractmethod
     def on_key_press(grid: Grid, key: str) -> None:
         """``on_key_press(grid, key)``"""
+
+
+def validate_program(program_class: type[Program]) -> None:
+    """``validate_program(program_class)``"""
+    program_class()
