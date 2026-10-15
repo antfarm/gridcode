@@ -30,15 +30,14 @@ class UI:
         """``ui.start()``"""
         self.running = True
         self.window.update_controls(self.running, self.inspecting)
-        self.tick()
+        self._tick()
 
     def pause(self) -> None:
         """``ui.pause()``"""
         self.running = False
         self.window.update_controls(self.running, self.inspecting)
 
-    def tick(self) -> None:
-        """``ui.tick()``"""
+    def _tick(self) -> None:
         if not self.running:
             return
 
@@ -47,7 +46,7 @@ class UI:
         elapsed_ms = (time.monotonic() - time_start) * 1000
 
         delay_ms = max(0, round(1000 / self.runtime.frame_rate - elapsed_ms))
-        self.window.root.after(delay_ms, self.tick)
+        self.window.root.after(delay_ms, self._tick)
 
     def step(self) -> None:
         """``ui.step()``"""

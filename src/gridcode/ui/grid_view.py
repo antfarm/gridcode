@@ -45,14 +45,14 @@ class GridView:
 
     def add_cell_highlight(self, x: int, y: int) -> None:
         """``grid_view.add_cell_highlight(x, y)``"""
-        cell_item = self.cell_item(x, y)
+        cell_item = self._cell_item(x, y)
         self.canvas.itemconfig(cell_item, outline="red", width=5)
         self.canvas.tag_raise(cell_item)
 
     def remove_cell_highlight(self, x: int, y: int) -> None:
         """``grid_view.remove_cell_highlight(x, y)``"""
-        cell_item = self.cell_item(x, y)
+        cell_item = self._cell_item(x, y)
         self.canvas.itemconfig(cell_item, outline="black", width=3)
 
-    def cell_item(self, x: int, y: int) -> int:
+    def _cell_item(self, x: int, y: int) -> int:
         return self.cell_items[y * self.size + x]
