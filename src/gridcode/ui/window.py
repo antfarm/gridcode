@@ -6,12 +6,21 @@ from ..runtime import Color
 from .grid_view import GridView
 
 
+def key_name(event) -> str:
+    """``key_name(event)``"""
+    if event.char and not event.char.isspace():
+        return event.char
+    return event.keysym.lower()
+
+
 class Window:
     """``Window``"""
 
     def __init__(self, ui, title: str, grid_size: int):
         self.root = tkinter.Tk()
         self.root.title(title)
+
+        self.root.bind("<Key>", lambda event: ui.key_pressed(key_name(event)))
 
         self.content = tkinter.Frame(self.root)
         self.content.pack()

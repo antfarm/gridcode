@@ -66,6 +66,11 @@ class UI:
             self._reset_inspected_cell()
         self.window.update_controls(self.running, self.inspecting)
 
+    def key_pressed(self, key: str) -> None:
+        """``ui.key_pressed(key)``"""
+        self.runtime.key_press(key)
+        self.window.update_grid(self.runtime.colors())
+
     def cell_clicked(self, x: int, y: int) -> None:
         """``ui.cell_clicked(x, y)``"""
         if self.inspecting:
