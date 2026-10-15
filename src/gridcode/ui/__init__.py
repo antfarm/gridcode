@@ -1,5 +1,7 @@
 """``gridcode.ui``"""
 
+import time
+
 from ..runtime import Runtime
 from .window import Window
 
@@ -28,11 +30,24 @@ class UI:
         """``ui.start()``"""
         self.running = True
         self.window.update_controls(self.running, self.inspecting)
+        self.tick()
 
     def pause(self) -> None:
         """``ui.pause()``"""
         self.running = False
         self.window.update_controls(self.running, self.inspecting)
+
+    def tick(self) -> None:
+        """``ui.tick()``"""
+        if not self.running:
+            return
+
+        time_start = time.monotonic()
+        self.step()
+        elapsed_ms = (time.monotonic() - time_start) * 1000
+
+        delay_ms = max(0, round(1000 / self.runtime.frame_rate - elapsed_ms))
+        self.window.root.after(delay_ms, self.tick)
 
     def step(self) -> None:
         """``ui.step()``"""

@@ -7,23 +7,25 @@ import random
 from gridcode import *
 
 
-class UIDummy(Program, size=32, frame_rate=8):
+def random_color() -> Color:
+    return Color(random.random(), random.random(), random.random())
+
+
+class UIDummy(Program, size=8, frame_rate=10):
 
     @staticmethod
     def setup(grid: Grid) -> None:
-        pass
+        grid.color1 = random_color()
+        grid.color2 = random_color()
 
     @staticmethod
     def update(grid: Grid) -> None:
-        pass
+        grid.color1 = random_color()
+        grid.color2 = random_color()
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        n = 2
-        r = random.randint(0, n) / n
-        g = random.randint(0, n) / n
-        b = random.randint(0, n) / n
-        return Color(r, g, b)
+        return grid.color1 if (cell.x + cell.y) % 2 == 0 else grid.color2
 
     @staticmethod
     def on_key_press(grid: Grid, key: str) -> None:
