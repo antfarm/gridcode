@@ -16,6 +16,7 @@ class Runtime:
 
     def __init__(self, grid: Grid, program: type[Program]):
         self.grid = grid
+        self.name = program.__name__
         self.size = program.size
         self.frame_rate = program.frame_rate
         self.program = program()
