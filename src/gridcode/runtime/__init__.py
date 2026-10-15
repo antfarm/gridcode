@@ -22,6 +22,7 @@ class Runtime:
         self.program = program()
         self.program.setup(self.grid)
         self.tick = 0
+        self.inspected_cell = None
 
     def reset(self) -> None:
         """``runtime.reset()``"""
@@ -35,6 +36,10 @@ class Runtime:
         self.program.update(self.grid)
         self.tick += 1
 
+        if self.inspected_cell is not None:
+            x, y = self.inspected_cell
+            print(f"tick {self.tick}: cell ({x}, {y})")
+
     def key_press(self, key: str) -> None:
         """``runtime.key_press(key)``"""
         self.program.on_key_press(self.grid, key)
@@ -42,6 +47,14 @@ class Runtime:
     def cell_click(self, x: int, y: int) -> None:
         """``runtime.cell_click(x, y)``"""
         self.program.on_cell_click(self.grid, Cell(x, y))
+
+    def start_inspection(self, x: int, y: int) -> None:
+        """``runtime.start_inspection(x, y)``"""
+        self.inspected_cell = (x, y)
+
+    def stop_inspection(self, x: int, y: int) -> None:
+        """``runtime.stop_inspection(x, y)``"""
+        self.inspected_cell = None
 
     def colors(self) -> list[Color]:
         """``runtime.colors()``"""

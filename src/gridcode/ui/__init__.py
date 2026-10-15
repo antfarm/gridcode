@@ -63,9 +63,11 @@ class UI:
     def _reset_inspected_cell(self) -> None:
         if self.inspected_cell is not None:
             x, y = self.inspected_cell
+            self.runtime.stop_inspection(x, y)
             self.window.update_cell_highlight(x, y, False)
         self.inspected_cell = None
 
     def _set_inspected_cell(self, x: int, y: int) -> None:
         self.inspected_cell = (x, y)
+        self.runtime.start_inspection(x, y)
         self.window.update_cell_highlight(x, y, True)
