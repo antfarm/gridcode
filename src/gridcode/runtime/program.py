@@ -4,7 +4,8 @@ import inspect
 from abc import ABC, abstractmethod
 from annotationlib import Format
 
-from ..grid import Cell, Grid
+from ..cells import Cell
+from ..grid import Grid
 from .color import Color
 
 

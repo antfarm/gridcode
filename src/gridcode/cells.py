@@ -1,4 +1,4 @@
-"""``gridcode.grid.cells``"""
+"""``gridcode.cells``"""
 
 from dataclasses import dataclass
 from enum import StrEnum

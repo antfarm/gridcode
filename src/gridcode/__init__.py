@@ -1,6 +1,7 @@
 """``gridcode``"""
 
-from .grid import Cell, Grid, Neighborhood, Offset
+from .cells import Cell, Neighborhood, Offset
+from .grid import Grid
 from .gridcode import run
 from .runtime import Color, Program
 

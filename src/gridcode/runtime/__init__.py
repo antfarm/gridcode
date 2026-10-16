@@ -1,6 +1,7 @@
 """``gridcode.runtime``"""
 
-from ..grid import Cell, Grid
+from ..cells import Cell
+from ..grid import Grid
 from .color import Color
 from .program import Program, validate_program
 
