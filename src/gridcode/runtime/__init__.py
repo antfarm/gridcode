@@ -34,18 +34,17 @@ class Runtime:
         """``runtime.step()``"""
         self.program_class.update(self.grid)
         self.tick += 1
-
-        if self.inspected_cell is not None:
-            x, y = self.inspected_cell
-            print(f"tick {self.tick}: cell ({x}, {y})")
+        self._print_inspection("update")
 
     def key_press(self, key: str) -> None:
         """``runtime.key_press(key)``"""
         self.program_class.on_key_press(self.grid, key)
+        self._print_inspection(f"on_key_press {key}")
 
     def cell_click(self, x: int, y: int) -> None:
         """``runtime.cell_click(x, y)``"""
         self.program_class.on_cell_click(self.grid, Cell(x, y))
+        self._print_inspection(f"on_cell_click ({x}, {y})")
 
     def start_inspection(self, x: int, y: int) -> None:
         """``runtime.start_inspection(x, y)``"""
@@ -60,3 +59,10 @@ class Runtime:
         return [self.program_class.color_for_cell(self.grid, Cell(x, y))
                 for y in range(self.size)
                 for x in range(self.size)]
+
+    def _print_inspection(self, event: str) -> None:
+        if self.inspected_cell is None:
+            return
+
+        x, y = self.inspected_cell
+        print(f"tick {self.tick}, {event}: cell ({x}, {y})")
