@@ -8,7 +8,7 @@ from .grid_view import GridView
 
 def key_name(event) -> str:
     """``key_name(event)``"""
-    if event.char and not event.char.isspace():
+    if event.char and event.char.isprintable() and event.char != " ":
         return event.char
     return event.keysym.lower()
 
