@@ -168,9 +168,9 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 | *Querying*  | `globals.get(name)`       | `GlobalMap` | `KeyError`               | `grid.globals.get("name")`                 |
 |             | `globals.exists(name)`    | `bool`      |                          | `grid.globals.exists("name")`              |
 
-### Display
+### Runtime
 
-#### display.color.Color
+#### runtime.color.Color
 
 |                  | Member                  | Type    | Raises | Usage                       |
 | ---------------- | ----------------------- | ------- | ------ | --------------------------- |
