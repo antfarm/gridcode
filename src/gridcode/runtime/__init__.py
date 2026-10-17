@@ -30,6 +30,7 @@ class Runtime:
         self.grid = Grid(self.size)
         self.program_class.setup(self.grid)
         self.tick = 0
+        self._print_inspection("setup")
 
     def step(self) -> None:
         """``runtime.step()``"""
