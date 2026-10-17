@@ -50,6 +50,7 @@ class Runtime:
     def start_inspection(self, x: int, y: int) -> None:
         """``runtime.start_inspection(x, y)``"""
         self.inspected_cell = (x, y)
+        self._print_inspection("inspect")
 
     def stop_inspection(self, x: int, y: int) -> None:
         """``runtime.stop_inspection(x, y)``"""
