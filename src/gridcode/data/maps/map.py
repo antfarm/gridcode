@@ -1,6 +1,6 @@
-"""``gridcode.maps.map``"""
+"""``gridcode.data.maps.map``"""
 
-from ..cells import Cell, Offset
+from ...cells import Cell, Offset
 
 type Value = bool | int | float | str | Cell | Offset
 """``Value``"""

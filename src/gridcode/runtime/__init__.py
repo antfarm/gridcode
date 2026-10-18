@@ -27,7 +27,7 @@ class Runtime:
 
     def reset(self) -> None:
         """``runtime.reset()``"""
-        self.grid = Grid(self.size)
+        self.grid = Grid(self.size, self.program_class.data_class)
         self.program_class.setup(self.grid)
         self.tick = 0
         self._print_inspection("setup")

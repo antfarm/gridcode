@@ -1,4 +1,4 @@
-"""``gridcode.maps.global_maps``"""
+"""``gridcode.data.maps.global_maps``"""
 
 from .map import Map, Value
 

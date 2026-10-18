@@ -1,6 +1,6 @@
-"""``gridcode.maps.cell_maps``"""
+"""``gridcode.data.maps.cell_maps``"""
 
-from ..cells import Cell, Offset
+from ...cells import Cell, Offset
 from .map import Data, Map, Value
 
 
