@@ -25,7 +25,8 @@ class Pong(Program, size=32, frame_rate=30):
         paddle_origin = Cell(center, grid.cells.size - 1)
         paddle_cells = grid.cells.neighbors(paddle_origin,
                                             kind=HORIZONTAL,
-                                            radius=2) | {paddle_origin}
+                                            radius=2,
+                                            wrap=False) | {paddle_origin}
         for paddle_cell in paddle_cells:
             grid.maps.add(paddle_cell, {"type": "paddle"})
 

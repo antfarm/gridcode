@@ -1,5 +1,6 @@
 """``gridcode.cells``"""
 
+import random
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -77,21 +78,26 @@ class CellGrid:
 
     def all(self) -> set[Cell]:
         """``grid.cells.all()``"""
-        raise NotImplementedError
+        return set(self._every_cell())
 
     def random(self, *, count: int | None = None) -> Cell | set[Cell]:
         """``grid.cells.random()``
 
         ``grid.cells.random(count)``
         """
-        raise NotImplementedError
+        cells = self._every_cell()
+        if count is None:
+            return random.choice(cells)
+        return set(random.sample(cells, count))
 
     def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
         """``grid.cells.wrap(cell)``
 
         ``grid.cells.wrap(cells)``
         """
-        raise NotImplementedError
+        if isinstance(cell_or_cells, Cell):
+            return self._wrapped(cell_or_cells)
+        return {self._wrapped(cell) for cell in cell_or_cells}
 
     def nearest(self, candidates: set[Cell], to: Cell, *,
                 count: int | None = None) -> Cell | set[Cell]:
@@ -99,35 +105,86 @@ class CellGrid:
 
         ``grid.cells.nearest(candidates, to, count)``
         """
-        raise NotImplementedError
+        ordered = sorted(candidates, key=lambda candidate: self._distance(candidate, to))
+        if count is None:
+            if not ordered:
+                raise ValueError("nearest needs at least one candidate")
+            return ordered[0]
+        return set(ordered[:count])
 
     def clip(self, cells: set[Cell]) -> set[Cell]:
         """``grid.cells.clip(cells)``"""
-        raise NotImplementedError
+        return {cell for cell in cells if self._contains(cell)}
 
     def row(self, y: int) -> set[Cell]:
         """``grid.cells.row(y)``"""
-        raise NotImplementedError
+        self._check_index(y)
+        return {Cell(x, y) for x in range(self.size)}
 
     def col(self, x: int) -> set[Cell]:
         """``grid.cells.col(x)``"""
-        raise NotImplementedError
+        self._check_index(x)
+        return {Cell(x, y) for y in range(self.size)}
 
-    def rect(self, x: int, y: int, width: int, height: int) -> set[Cell]:
-        """``grid.cells.rect(x, y, width, height)``"""
-        raise NotImplementedError
+    def rect(self, x: int, y: int, width: int, height: int, *,
+             wrap: bool) -> set[Cell]:
+        """``grid.cells.rect(x, y, width, height, wrap)``"""
+        cells = {Cell(x + dx, y + dy)
+                 for dy in range(height)
+                 for dx in range(width)}
+        return self._bounded(cells, wrap)
 
     def neighbors(self,
                   cell: Cell,
                   *,
                   kind: Neighborhood = Neighborhood.MOORE,
-                  radius: int = 1) -> set[Cell]:
-        """``grid.cells.neighbors(cell, kind, radius)``"""
-        raise NotImplementedError
+                  radius: int = 1,
+                  wrap: bool) -> set[Cell]:
+        """``grid.cells.neighbors(cell, kind, radius, wrap)``"""
+        cells = {cell + offset for offset in self._offsets(kind, radius)}
+        return self._bounded(cells, wrap)
 
     def bounds_of(self, cells: set[Cell]) -> set[Cell]:
         """``grid.cells.bounds_of(cells)``"""
-        raise NotImplementedError
+        if not cells:
+            return set()
+        xs = [cell.x for cell in cells]
+        ys = [cell.y for cell in cells]
+        return {Cell(x, y)
+                for y in range(min(ys), max(ys) + 1)
+                for x in range(min(xs), max(xs) + 1)}
+
+    def _every_cell(self) -> list[Cell]:
+        return [Cell(x, y) for y in range(self.size) for x in range(self.size)]
+
+    def _wrapped(self, cell: Cell) -> Cell:
+        return Cell(cell.x % self.size, cell.y % self.size)
+
+    def _contains(self, cell: Cell) -> bool:
+        return 0 <= cell.x < self.size and 0 <= cell.y < self.size
+
+    def _bounded(self, cells: set[Cell], wrap: bool) -> set[Cell]:
+        if wrap:
+            return {self._wrapped(cell) for cell in cells}
+        return self.clip(cells)
+
+    def _check_index(self, index: int) -> None:
+        if not 0 <= index < self.size:
+            raise IndexError(f"{index} is outside the grid")
+
+    def _distance(self, cell: Cell, other: Cell) -> int:
+        return (cell.x - other.x) ** 2 + (cell.y - other.y) ** 2
+
+    def _offsets(self, kind: Neighborhood, radius: int) -> set[Offset]:
+        span = range(-radius, radius + 1)
+        if kind is Neighborhood.HORIZONTAL:
+            return {Offset(dx, 0) for dx in span if dx != 0}
+        if kind is Neighborhood.VERTICAL:
+            return {Offset(0, dy) for dy in span if dy != 0}
+        if kind is Neighborhood.VON_NEUMANN:
+            return {Offset(dx, dy) for dx in span for dy in span
+                    if (dx, dy) != (0, 0) and abs(dx) + abs(dy) <= radius}
+        return {Offset(dx, dy) for dx in span for dy in span if (dx, dy) != (0, 0)}
 
 
 class CellStore[Item]:
@@ -178,6 +235,5 @@ class CellStore[Item]:
         self.cells_by_item.clear()
 
     def _check_bounds(self, cell: Cell) -> None:
-        size = self.grid.size
-        if not (0 <= cell.x < size and 0 <= cell.y < size):
+        if not self.grid._contains(cell):
             raise IndexError(f"{cell} is outside the grid")

@@ -53,7 +53,7 @@ class Life2(Program, size=64, frame_rate=60):
             else:
                 map.set({"alive": True, "age": 1})
 
-        affected_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE)) | {cell}
+        affected_cells = grid.cells.neighbors(cell, kind=MOORE, wrap=True) | {cell}
         Life2.count_neighbors(grid, affected_cells)
 
     @staticmethod
@@ -68,7 +68,7 @@ class Life2(Program, size=64, frame_rate=60):
 
     @staticmethod
     def neighbors_alive_count(grid: Grid, cell: Cell) -> int:
-        neighbor_cells = grid.cells.wrap(grid.cells.neighbors(cell, kind=MOORE))
+        neighbor_cells = grid.cells.neighbors(cell, kind=MOORE, wrap=True)
         return grid.maps.count(has={"alive"}, at_cells=neighbor_cells)
 
 
