@@ -45,7 +45,7 @@ class UI:
         self.step()
         elapsed_ms = (time.monotonic() - time_start) * 1000
 
-        delay_ms = max(0, round(1000 / self.runtime.frame_rate - elapsed_ms))
+        delay_ms = max(1, round(1000 / self.runtime.frame_rate - elapsed_ms))
         self.window.root.after(delay_ms, self._tick)
 
     def step(self) -> None:
