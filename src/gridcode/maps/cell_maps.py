@@ -1,6 +1,6 @@
 """``gridcode.maps.cell_maps``"""
 
-from ..cells import Cell, Offset
+from ..cells import Cell, CellGrid, CellStore, Offset
 from .map import Data, Map, Value
 
 
@@ -17,6 +17,9 @@ class CellMap(Map):
 
 class CellMapStore:
     """``CellMapStore``"""
+
+    def __init__(self, grid: CellGrid):
+        self._cell_store = CellStore[int](grid)
 
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.maps.add(cell, data)``"""

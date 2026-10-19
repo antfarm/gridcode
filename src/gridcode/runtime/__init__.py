@@ -1,14 +1,15 @@
 """``gridcode.runtime``"""
 
 from ..cells import Cell
-from ..grid import Grid
 from .color import Color
+from .grid import Grid
 from .program import Program, validate_program
 
 __all__ = [
     "Runtime",
     "Program",
     "Color",
+    "Grid",
 ]
 
 

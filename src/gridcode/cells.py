@@ -67,8 +67,8 @@ class Neighborhood(StrEnum):
     """``Neighborhood.VERTICAL``"""
 
 
-class Cells:
-    """``Cells``"""
+class CellGrid:
+    """``CellGrid``"""
 
     __slots__ = ("size",)
 
@@ -128,3 +128,56 @@ class Cells:
     def bounds_of(self, cells: set[Cell]) -> set[Cell]:
         """``grid.cells.bounds_of(cells)``"""
         raise NotImplementedError
+
+
+class CellStore[Item]:
+    """``CellStore``"""
+
+    __slots__ = ("grid", "items", "cells_by_item")
+
+    def __init__(self, grid: CellGrid):
+        self.grid = grid
+        self.items: dict[Cell, set[Item]] = {}
+        self.cells_by_item: dict[Item, Cell] = {}
+
+    def add(self, cell: Cell, item: Item) -> None:
+        """``store.add(cell, item)``"""
+        self._check_bounds(cell)
+        self.items.setdefault(cell, set()).add(item)
+        self.cells_by_item[item] = cell
+
+    def delete(self, item: Item) -> None:
+        """``store.delete(item)``"""
+        cell = self.cell_of(item)
+        items = self.items[cell]
+        items.discard(item)
+        if not items:
+            del self.items[cell]
+        del self.cells_by_item[item]
+
+    def move(self, item: Item, cell: Cell) -> None:
+        """``store.move(item, cell)``"""
+        self._check_bounds(cell)
+        self.delete(item)
+        self.add(cell, item)
+
+    def items_at(self, cell: Cell) -> set[Item]:
+        """``store.items_at(cell)``"""
+        return set(self.items.get(cell, ()))
+
+    def cell_of(self, item: Item) -> Cell:
+        """``store.cell_of(item)``"""
+        cell = self.cells_by_item.get(item)
+        if cell is None:
+            raise KeyError(f"{item!r} is not in the grid")
+        return cell
+
+    def clear(self) -> None:
+        """``store.clear()``"""
+        self.items.clear()
+        self.cells_by_item.clear()
+
+    def _check_bounds(self, cell: Cell) -> None:
+        size = self.grid.size
+        if not (0 <= cell.x < size and 0 <= cell.y < size):
+            raise IndexError(f"{cell} is outside the grid")
