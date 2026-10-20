@@ -1,5 +1,7 @@
 """``gridcode.ui.grid_view``"""
 
+import functools
+import sys
 import tkinter
 
 from ..runtime import Color
@@ -41,7 +43,7 @@ class GridView:
     def draw(self, colors: list[Color]) -> None:
         """``grid_view.draw(colors)``"""
         for cell_item, color in zip(self.cell_items, colors):
-            self.canvas.itemconfig(cell_item, fill=color.to_rgb_hex())
+            self.canvas.itemconfig(cell_item, fill=color_to_hex(*color))
 
     def add_cell_highlight(self, x: int, y: int) -> None:
         """``grid_view.add_cell_highlight(x, y)``"""
@@ -56,3 +58,36 @@ class GridView:
 
     def _cell_item(self, x: int, y: int) -> int:
         return self.cell_items[y * self.size + x]
+
+
+@functools.lru_cache(maxsize=4096)
+def color_to_hex(r: float, g: float, b: float, a: float) -> str:
+    """``color_to_hex(r, g, b, a)``"""
+    r, g, b = r * a, g * a, b * a
+    if sys.platform == "darwin":
+        r, g, b = _p3_to_srgb(r, g, b)
+    return "#%02x%02x%02x" % (round(r * 255), round(g * 255), round(b * 255))
+
+
+_P3_TO_SRGB = ((1.2249, -0.2247, 0.0000),
+              (-0.0420, 1.0419, 0.0000),
+              (-0.0197, -0.0786, 1.0979))
+
+
+def _p3_to_srgb(r: float, g: float, b: float) -> tuple[float, float, float]:
+    linear = [_to_linear(value) for value in (r, g, b)]
+    converted = [sum(factor * value for factor, value in zip(row, linear))
+                 for row in _P3_TO_SRGB]
+    return tuple(_to_gamma(min(max(value, 0.0), 1.0)) for value in converted)
+
+
+def _to_linear(value: float) -> float:
+    if value <= 0.04045:
+        return value / 12.92
+    return ((value + 0.055) / 1.055) ** 2.4
+
+
+def _to_gamma(value: float) -> float:
+    if value <= 0.0031308:
+        return value * 12.92
+    return 1.055 * value ** (1 / 2.4) - 0.055
