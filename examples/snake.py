@@ -39,6 +39,9 @@ class Snake(Program, size=16, frame_rate=8):
         target_cell = grid.cells.wrap(head.cell + game["direction"])
         food = grid.maps.select(matches={"type": "food"}, at_cells={target_cell})
 
+        head_id = head["id"]
+        head.delete("head")
+
         if food:
             for food_map in food:
                 grid.maps.delete(food_map)
@@ -51,10 +54,8 @@ class Snake(Program, size=16, frame_rate=8):
         if grid.maps.exists(matches={"type": "snake"}, at_cells={target_cell}):
             game["over"] = True
 
-        head.delete("head")
-
         grid.maps.add(target_cell,
-                      {"type": "snake", "head": True, "id": head["id"] + 1})
+                      {"type": "snake", "head": True, "id": head_id + 1})
 
     @staticmethod
     def color_for_cell(grid: Grid, cell: Cell) -> Color:
