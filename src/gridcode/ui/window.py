@@ -28,7 +28,7 @@ class Window:
         self.grid = GridView(ui, self.content, grid_size)
 
         self.controls = tkinter.Frame(self.root)
-        self.controls.pack(pady=8)
+        self.controls.pack(pady=4)
 
         self.reset_button = tkinter.Button(self.controls, text="Setup",
                                            command=ui.reset)
