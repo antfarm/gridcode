@@ -45,6 +45,9 @@ class UI:
         self.step()
         elapsed_ms = (time.monotonic() - time_start) * 1000
 
+        if self.inspecting:
+            print(f"frame {elapsed_ms:.1f} ms, max {1000 / elapsed_ms:.0f} fps")
+
         delay_ms = max(1, round(1000 / self.runtime.frame_rate - elapsed_ms))
         self.window.root.after(delay_ms, self._tick)
 
