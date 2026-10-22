@@ -23,12 +23,13 @@ class Runtime:
         self.name = program_class.__name__
         self.size = program_class.size
         self.frame_rate = program_class.frame_rate
+        self.indexed_fields = program_class.indexed_fields
         self.inspected_cell = None
         self.reset()
 
     def reset(self) -> None:
         """``runtime.reset()``"""
-        self.grid = Grid(self.size)
+        self.grid = Grid(self.size, self.indexed_fields)
         self.program_class.setup(self.grid)
         self.tick = 0
         self._print_inspection("setup")

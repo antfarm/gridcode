@@ -2,7 +2,10 @@
 
 from .cells import Cell, Neighborhood, Offset
 from .gridcode import run
+from .maps import Fields
 from .runtime import Color, Grid, Program
+
+ALL = Fields.ALL
 
 UP = Offset.UP
 DOWN = Offset.DOWN
@@ -21,6 +24,7 @@ __all__ = [
     "Grid",
     "Cell",
     "Offset",
+    "ALL",
     "UP",
     "DOWN",
     "LEFT",

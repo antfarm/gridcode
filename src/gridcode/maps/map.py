@@ -1,5 +1,7 @@
 """``gridcode.maps.map``"""
 
+import functools
+
 from ..cells import Cell, Offset
 
 type Value = bool | int | float | str | Cell | Offset
@@ -34,6 +36,16 @@ def check_value(key: str, value) -> None:
         raise TypeError(f"{key}: {type(value).__name__} is not a GridCode value")
 
 
+def check_deleted(method):
+    """``@check_deleted``"""
+    @functools.wraps(method)
+    def guarded(self, *args, **kwargs):
+        if self._deleted:
+            raise ValueError(f"{self!r} was deleted")
+        return method(self, *args, **kwargs)
+    return guarded
+
+
 class Map:
     """``Map``"""
 
@@ -45,52 +57,43 @@ class Map:
         self._data = dict(data)
         self._deleted = False
 
+    @check_deleted
     def __getitem__(self, key: str) -> Value:
         """``map[key]``"""
-        self._check_deleted()
         return self._data[key]
 
+    @check_deleted
     def __setitem__(self, key: str, value: Value) -> None:
         """``map[key] = value``"""
-        self._check_deleted()
         self.set({key: value})
 
+    @check_deleted
     def get(self, key1: str, key2: str, *more_keys: str) -> tuple[Value, ...]:
         """``map.get(key, key, ...)``"""
-        self._check_deleted()
         return tuple(self[key] for key in (key1, key2, *more_keys))
 
+    @check_deleted
     def set(self, data: dict[str, Value]) -> None:
         """``map.set(data)``"""
-        self._check_deleted()
         for key, value in data.items():
             check_value(key, value)
         self._data.update(data)
 
+    @check_deleted
     def delete(self, key: str, *more_keys: str) -> None:
         """``map.delete(key, key, ...)``"""
-        self._check_deleted()
         for deleted_key in (key, *more_keys):
             del self._data[deleted_key]
 
+    @check_deleted
     def has(self, key: str, *more_keys: str) -> bool:
         """``map.has(key, key, ...)``"""
-        self._check_deleted()
         return all(key in self._data for key in (key, *more_keys))
 
+    @check_deleted
     def matches(self, data: dict[str, Value]) -> bool:
         """``map.matches(data)``"""
-        self._check_deleted()
         return all(self._data.get(key) == value for key, value in data.items())
-
-    def _mark_deleted(self) -> None:
-        """``map._mark_deleted()``"""
-        self._deleted = True
-
-    def _check_deleted(self) -> None:
-        """``map._check_deleted()``"""
-        if self._deleted:
-            raise ValueError(f"{self!r} was deleted")
 
     def __repr__(self) -> str:
         inside = ", ".join(f"{key}={value!r}" for key, value in self._data.items())

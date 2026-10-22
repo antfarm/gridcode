@@ -52,6 +52,14 @@ The color of each cell is determined in every tick by calling `color_for_cell` f
 
 ## API Overview
 
+### Program Parameters
+
+|              | Member       | Type                | Raises | Usage                                    |
+| ------------ | ------------ | ------------------- | ------ | ---------------------------------------- |
+| *Parameters* | `size=16`    | `int`               |        | `class Example(Program, size=16)`        |
+|              | `frame_rate=8` | `float`           |        | `class Example(Program, frame_rate=2)`   |
+|              | `index=[]`   | `list[str]` / `ALL` |        | `class Example(Program, index=["kind"])` |
+
 ### Grid Components
 
 The `grid` instance that is passed to the program callback functions gives acces to cell data and global data stored in maps via its `maps`and `globals` members.
@@ -62,7 +70,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 |               | Member    | Type             | Raises | Usage                                      |
 | ------------- | --------- | ---------------- | ------ | ------------------------------------------ |
-| *Topology*    | `cells`   | `Cells`          |        | `grid.cells.all()`                         |
+| *Topology*    | `cells`   | `CellGrid`       |        | `grid.cells.all()`                         |
 | *Cell data*   | `maps`    | `CellMapStore`   |        | `grid.maps.select(matches={"key": value})` |
 | *Global data* | `globals` | `GlobalMapStore` |        | `grid.globals.get("name")`                 |
 
@@ -91,9 +99,9 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 |             | Member                                           | Type           | Raises | Usage                                    |
 | ----------- | ------------------------------------------------ | -------------- | ------ | ---------------------------------------- |
-| *Constants* | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL` | `Neighborhood` |        | `grid.cells.neighbors(cell, kind=MOORE)` |
+| *Constants* | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL` | `Neighborhood` |        | `grid.cells.neighbors(cell, kind=MOORE, wrap=True)` |
 
-#### grid.cells.Cells
+#### grid.cells.CellGrid
 
 |                  | Member                                           | Type        | Raises       | Usage                                                    |
 | ---------------- | ------------------------------------------------ | ----------- | ------------ | -------------------------------------------------------- |
@@ -102,9 +110,9 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |                  | `cells.random(*, count)`                         | `set[Cell]` | `ValueError` | `grid.cells.random(count=5)`                             |
 |                  | `cells.row(y)`                                   | `set[Cell]` | `IndexError` | `grid.cells.row(3)`                                      |
 |                  | `cells.col(x)`                                   | `set[Cell]` | `IndexError` | `grid.cells.col(5)`                                      |
-|                  | `cells.rect(x, y, width, height)`                | `set[Cell]` | `IndexError` | `grid.cells.rect(0, 0, 8, 8)`                            |
-|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1)` | `set[Cell]` |              | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2)` |
-| *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      |              | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
+|                  | `cells.rect(x, y, width, height, *, wrap)`       | `set[Cell]` |              | `grid.cells.rect(0, 0, 8, 8, wrap=False)`                |
+|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1, wrap)` | `set[Cell]` |        | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2, wrap=True)` |
+| *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
 |                  | `cells.nearest(candidates, to, *, count)`        | `set[Cell]` | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`  |
 |                  | `cells.clip(cells)`                              | `set[Cell]` |              | `grid.cells.clip({cell1, cell2})`                        |
 | *Transformation* | `cells.wrap(cell)`                               | `Cell`      |              | `grid.cells.wrap(cell)`                                  |
@@ -145,10 +153,11 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |             | `maps.clear()`                                 | `None`         |              | `grid.maps.clear()`                                                              |
 | *Movement*  | `maps.move(map, cell)`                         | `None`         | `IndexError` | `grid.maps.move(map, cell)`                                                      |
 |             | `maps.move(map, offset)`                       | `None`         | `IndexError` | `grid.maps.move(map, UP)`                                                        |
-| *Querying*  | `maps.select(*, matches, has, at_cells)`       | `set[CellMap]` | `TypeError`  | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
-|             | `maps.exists(*, matches, has, at_cells)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
-|             | `maps.count(*, matches, has, at_cells)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
-|             | `maps.select_cells(*, matches, has, at_cells)` | `set[Cell]`    | `TypeError`  | `grid.maps.select_cells(matches={"key": value})`                                 |
+| *Location*  | `maps.cell_of(map)`                            | `Cell`         | `KeyError`   | `grid.maps.cell_of(map)`                                                         |
+| *Querying*  | `maps.select(*, matches=None, has=None, at_cells=None)`       | `set[CellMap]` | `TypeError`  | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
+|             | `maps.exists(*, matches=None, has=None, at_cells=None)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
+|             | `maps.count(*, matches=None, has=None, at_cells=None)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
+|             | `maps.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.maps.select_cells(matches={"key": value})`                                 |
 
 ### Global Maps
 

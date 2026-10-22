@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from annotationlib import Format
 
 from ..cells import Cell
+from ..maps import Fields
 from .grid import Grid
 from .color import Color
 
@@ -14,11 +15,14 @@ class Program(ABC):
 
     size: int
     frame_rate: float
+    indexed_fields: list[str] | Fields
 
-    def __init_subclass__(cls, size: int = 16, frame_rate: float = 8, **kwargs):
+    def __init_subclass__(cls, size: int = 16, frame_rate: float = 8,
+                          index: list[str] | Fields | None = None, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.size = size
         cls.frame_rate = frame_rate
+        cls.indexed_fields = index if index is not None else []
 
         for name in ("setup", "update", "color_for_cell", "on_cell_click", "on_key_press"):
             function = cls.__dict__.get(name)

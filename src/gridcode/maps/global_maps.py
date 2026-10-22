@@ -1,6 +1,6 @@
 """``gridcode.maps.global_maps``"""
 
-from .map import Map, Value
+from .map import Map, Value, check_deleted
 
 
 class GlobalMap(Map):
@@ -13,6 +13,7 @@ class GlobalMap(Map):
         self._name = name
 
     @property
+    @check_deleted
     def name(self) -> str:
         """``map.name``"""
         return self._name
@@ -41,10 +42,10 @@ class GlobalMapStore:
 
     def delete(self, name: str) -> None:
         """``grid.globals.delete(name)``"""
-        self._maps.pop(name)._mark_deleted()
+        self._maps.pop(name)._deleted = True
 
     def clear(self) -> None:
         """``grid.globals.clear()``"""
         for map in self._maps.values():
-            map._mark_deleted()
+            map._deleted = True
         self._maps.clear()
