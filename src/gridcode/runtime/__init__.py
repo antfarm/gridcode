@@ -3,7 +3,7 @@
 from ..cells import Cell
 from .color import Color
 from .grid import Grid
-from .program import Program, validate_program
+from .program import Program
 
 __all__ = [
     "Runtime",
@@ -16,39 +16,50 @@ __all__ = [
 class Runtime:
     """``Runtime``"""
 
-    def __init__(self, program_class: type[Program]):
-        validate_program(program_class)
+    def __init__(self, program: Program):
+        program.check_complete()
 
-        self.program_class = program_class
-        self.name = program_class.__name__
-        self.size = program_class.size
-        self.frame_rate = program_class.frame_rate
-        self.indexed_fields = program_class.indexed_fields
+        self.program = program
         self.inspected_cell = None
         self.reset()
 
+    @property
+    def name(self) -> str:
+        """``runtime.name``"""
+        return self.program.title
+
+    @property
+    def size(self) -> int:
+        """``runtime.size``"""
+        return self.program.size
+
+    @property
+    def frame_rate(self) -> float:
+        """``runtime.frame_rate``"""
+        return self.program.frame_rate
+
     def reset(self) -> None:
         """``runtime.reset()``"""
-        self.grid = Grid(self.size, self.indexed_fields)
-        self.program_class.setup(self.grid)
+        self.grid = Grid(self.size, self.program.index)
+        self.program._setup(self.grid)
         self.tick = 0
         self._print_inspection("setup")
 
     def step(self) -> None:
         """``runtime.step()``"""
-        self.program_class.update(self.grid)
+        self.program._update(self.grid)
         self.tick += 1
         self._print_inspection("update")
 
     def key_press(self, key: str) -> None:
         """``runtime.key_press(key)``"""
-        self.program_class.on_key_press(self.grid, key)
-        self._print_inspection(f"on_key_press {key}")
+        self.program._on_key(self.grid, key)
+        self._print_inspection(f"on_key {key}")
 
     def cell_click(self, x: int, y: int) -> None:
         """``runtime.cell_click(x, y)``"""
-        self.program_class.on_cell_click(self.grid, Cell(x, y))
-        self._print_inspection(f"on_cell_click ({x}, {y})")
+        self.program._on_click(self.grid, Cell(x, y))
+        self._print_inspection(f"on_click ({x}, {y})")
 
     def start_inspection(self, x: int, y: int) -> None:
         """``runtime.start_inspection(x, y)``"""
@@ -61,7 +72,7 @@ class Runtime:
 
     def colors(self) -> list[Color]:
         """``runtime.colors()``"""
-        return [self.program_class.color_for_cell(self.grid, Cell(x, y))
+        return [self.program._color(self.grid, Cell(x, y))
                 for y in range(self.size)
                 for x in range(self.size)]
 

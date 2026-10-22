@@ -4,9 +4,9 @@ A minimal engine for grid-based games and simulations.
 
 ## Program Structure
 
-A Gridcode program is a subclass of `Program` that implements five static callback methods: `setup`, `update`, `color_for_cell`, `on_key_press` and `on_cell_click`. Each of these methods gets called by the engine with the `grid` instance passed as an argument.
+A Gridcode program is an instance of the `Program` class that is assigned five callback functions via its decorators: `setup`, `update`, `color`, `on_key` and `on_click`. These callbacks then get called by the engine with the `grid` instance passed as an argument.
 
-A program is executed by calling the `run` function with its class.
+A program is executed by calling the `run` function with the instance.
 
 ```python
 #!/usr/bin/env python3
@@ -15,50 +15,62 @@ A program is executed by calling the `run` function with its class.
 
 from gridcode import *
 
-class Example(Program, size=16, frame_rate=2):
 
-    @staticmethod
-    def setup(grid: Grid) -> None:
-        ...
+program = Program("Example", size=16, frame_rate=2)
 
-    @staticmethod
-    def update(grid: Grid) -> None:
-        ...
 
-    @staticmethod
-    def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        ...
+@program.setup
+def setup(grid: Grid) -> None:
+    ...
 
-    @staticmethod
-    def on_key_press(grid: Grid, key: str) -> None:
-        ...
 
-    @staticmethod
-    def on_cell_click(grid: Grid, cell: Cell) -> None:
-        ...
+@program.update
+def update(grid: Grid) -> None:
+    ...
+
+
+@program.color
+def color(grid: Grid, cell: Cell) -> Color:
+    ...
+
+
+@program.on_click
+def on_click(grid: Grid, cell: Cell) -> None:
+    ...
+
+
+@program.on_key
+def on_key(grid: Grid, key: str) -> None:
+    ...
 
 
 if __name__ == "__main__":
-    run(Example)
+    run(program)
 ```
 
-Gridcode programs store data in simple key/value maps that live inside cells on a grid or, in the case of globals, are accessible by name. The use of other data structures is discouraged. This deliberately chosen constraint forces the user to store data directly on the grid, a pattern that is similiar to the concept of _stygmergy_ in nature.
+Gridcode programs store data in simple key/value maps that live inside cells on a grid or, in the case of globals, are accessible by name. The use of other data structures is discouraged. This deliberately chosen constraint forces the user to store data directly on the grid, a pattern that is similar to the concept of _stigmergy_ in nature.
 
 Time in Gridcode is discrete and for every tick of the simulated clock, the behavior specified in one of the program's callback functions (`setup`, `update`) is executed. To persist data between ticks, it has to be stored in maps on the grid.
 
-User events like mouse clicks on a displayed cell or key presses are handled asynchronously by the corresponding callback functions (`on_key_press`, `on_cell_click`).
+User events like mouse clicks on a displayed cell or key presses are handled asynchronously by the corresponding callback functions (`on_key`, `on_click`).
 
-The color of each cell is determined in every tick by calling `color_for_cell` for the given cell.
+The color of each cell is determined in every tick by calling `color` for the given cell.
 
 ## API Overview
 
-### Program Parameters
+### Program
 
-|              | Member       | Type                | Raises | Usage                                    |
-| ------------ | ------------ | ------------------- | ------ | ---------------------------------------- |
-| *Parameters* | `size=16`    | `int`               |        | `class Example(Program, size=16)`        |
-|              | `frame_rate=8` | `float`           |        | `class Example(Program, frame_rate=2)`   |
-|              | `index=[]`   | `list[str]` / `ALL` |        | `class Example(Program, index=["kind"])` |
+|              | Member             | Type                            | Usage               |
+| ------------ | ------------------ | ------------------------------- | ------------------- |
+| *Settings*   | `title`            | `str`                           | `Program("Snake")`  |
+|              | `size=16`          | `int`                           | `size=32`           |
+|              | `frame_rate=8`     | `float`                         | `frame_rate=2`      |
+|              | `index=None`       | `list[str] \                    | ALL`                |
+| *Decorators* | `program.setup`    | `Callable[[Grid], None]`        | `@program.setup`    |
+|              | `program.update`   | `Callable[[Grid], None]`        | `@program.update`   |
+|              | `program.color`    | `Callable[[Grid, Cell], Color]` | `@program.color`    |
+|              | `program.on_click` | `Callable[[Grid, Cell], None]`  | `@program.on_click` |
+|              | `program.on_key`   | `Callable[[Grid, str], None]`   | `@program.on_key`   |
 
 ### Grid Components
 
@@ -68,57 +80,57 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.Grid
 
-|               | Member    | Type             | Raises | Usage                                      |
-| ------------- | --------- | ---------------- | ------ | ------------------------------------------ |
-| *Topology*    | `cells`   | `CellGrid`       |        | `grid.cells.all()`                         |
-| *Cell data*   | `maps`    | `CellMapStore`   |        | `grid.maps.select(matches={"key": value})` |
-| *Global data* | `globals` | `GlobalMapStore` |        | `grid.globals.get("name")`                 |
+|               | Member    | Type             | Usage                                      |
+| ------------- | --------- | ---------------- | ------------------------------------------ |
+| *Topology*    | `cells`   | `CellGrid`       | `grid.cells.all()`                         |
+| *Cell data*   | `maps`    | `CellMapStore`   | `grid.maps.select(matches={"key": value})` |
+| *Global data* | `globals` | `GlobalMapStore` | `grid.globals.get("name")`                 |
 
 ### Cells and Grid Geometry
 
 #### grid.cells.Cell
 
-|                  | Member            | Type     | Raises | Usage               |
-| ---------------- | ----------------- | -------- | ------ | ------------------- |
-| *Construction*   | `Cell(x, y)`      | `Cell`   |        | `Cell(3, 4)`        |
-| *Math*           | `__add__(offset)` | `Cell`   |        | `cell + UP`         |
-|                  | `__sub__(offset)` | `Cell`   |        | `cell - UP`         |
-|                  | `__sub__(cell)`   | `Offset` |        | `cell - other_cell` |
+|                | Member            | Type     | Usage               |
+| -------------- | ----------------- | -------- | ------------------- |
+| *Construction* | `Cell(x, y)`      | `Cell`   | `Cell(3, 4)`        |
+| *Math*         | `__add__(offset)` | `Cell`   | `cell + UP`         |
+|                | `__sub__(offset)` | `Cell`   | `cell - UP`         |
+|                | `__sub__(cell)`   | `Offset` | `cell - other_cell` |
 
 #### grid.cells.Offset
 
-|                  | Member                        | Type     | Raises | Usage                |
-| ---------------- | ----------------------------- | -------- | ------ | -------------------- |
-| *Construction*   | `Offset(dx, dy)`              | `Offset` |        | `Offset(-1, 0)`      |
-| *Math*           | `__add__(offset)`             | `Offset` |        | `UP + LEFT`          |
-|                  | `__sub__(offset)`             | `Offset` |        | `UP - LEFT`          |
-|                  | `__neg__()`                   | `Offset` |        | `-offset`            |
-| *Constants*      | `UP`, `DOWN`, `LEFT`, `RIGHT` | `Offset` |        | `cell + UP`          |
+|                | Member                        | Type     | Usage           |
+| -------------- | ----------------------------- | -------- | --------------- |
+| *Construction* | `Offset(dx, dy)`              | `Offset` | `Offset(-1, 0)` |
+| *Math*         | `__add__(offset)`             | `Offset` | `UP + LEFT`     |
+|                | `__sub__(offset)`             | `Offset` | `UP - LEFT`     |
+|                | `__neg__()`                   | `Offset` | `-offset`       |
+| *Constants*    | `UP`, `DOWN`, `LEFT`, `RIGHT` | `Offset` | `cell + UP`     |
 
 #### grid.cells.Neighborhood
 
-|             | Member                                           | Type           | Raises | Usage                                    |
-| ----------- | ------------------------------------------------ | -------------- | ------ | ---------------------------------------- |
-| *Constants* | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL` | `Neighborhood` |        | `grid.cells.neighbors(cell, kind=MOORE, wrap=True)` |
+|             | Member                                           | Type           | Usage                                               |
+| ----------- | ------------------------------------------------ | -------------- | --------------------------------------------------- |
+| *Constants* | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL` | `Neighborhood` | `grid.cells.neighbors(cell, kind=MOORE, wrap=True)` |
 
 #### grid.cells.CellGrid
 
-|                  | Member                                           | Type        | Raises       | Usage                                                    |
-| ---------------- | ------------------------------------------------ | ----------- | ------------ | -------------------------------------------------------- |
-| *Construction*   | `cells.all()`                                    | `set[Cell]` |              | `grid.cells.all()`                                       |
-|                  | `cells.random()`                                 | `Cell`      |              | `grid.cells.random()`                                    |
-|                  | `cells.random(*, count)`                         | `set[Cell]` | `ValueError` | `grid.cells.random(count=5)`                             |
-|                  | `cells.row(y)`                                   | `set[Cell]` | `IndexError` | `grid.cells.row(3)`                                      |
-|                  | `cells.col(x)`                                   | `set[Cell]` | `IndexError` | `grid.cells.col(5)`                                      |
-|                  | `cells.rect(x, y, width, height, *, wrap)`       | `set[Cell]` |              | `grid.cells.rect(0, 0, 8, 8, wrap=False)`                |
-|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1, wrap)` | `set[Cell]` |        | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2, wrap=True)` |
-| *Filter*         | `cells.nearest(candidates, to)`                  | `Cell`      | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3)`           |
-|                  | `cells.nearest(candidates, to, *, count)`        | `set[Cell]` | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`  |
-|                  | `cells.clip(cells)`                              | `set[Cell]` |              | `grid.cells.clip({cell1, cell2})`                        |
-| *Transformation* | `cells.wrap(cell)`                               | `Cell`      |              | `grid.cells.wrap(cell)`                                  |
-|                  | `cells.wrap(cells)`                              | `set[Cell]` |              | `grid.cells.wrap({cell1, cell2})`                        |
-|                  | `cells.bounds_of(cells)`                         | `set[Cell]` |              | `grid.cells.bounds_of({cell1, cell2})`                   |
-| *Property*       | `cells.size`                                     | `int`       |              | `grid.cells.size`                                        |
+|                  | Member                                                 | Type        | Raises       | Usage                                                               |
+| ---------------- | ------------------------------------------------------ | ----------- | ------------ | ------------------------------------------------------------------- |
+| *Construction*   | `cells.all()`                                          | `set[Cell]` |              | `grid.cells.all()`                                                  |
+|                  | `cells.random()`                                       | `Cell`      |              | `grid.cells.random()`                                               |
+|                  | `cells.random(*, count)`                               | `set[Cell]` | `ValueError` | `grid.cells.random(count=5)`                                        |
+|                  | `cells.row(y)`                                         | `set[Cell]` | `IndexError` | `grid.cells.row(3)`                                                 |
+|                  | `cells.col(x)`                                         | `set[Cell]` | `IndexError` | `grid.cells.col(5)`                                                 |
+|                  | `cells.rect(x, y, width, height, *, wrap)`             | `set[Cell]` |              | `grid.cells.rect(0, 0, 8, 8, wrap=False)`                           |
+|                  | `cells.neighbors(cell, *, kind=MOORE, radius=1, wrap)` | `set[Cell]` |              | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2, wrap=True)` |
+| *Filter*         | `cells.nearest(candidates, to)`                        | `Cell`      | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3)`                      |
+|                  | `cells.nearest(candidates, to, *, count)`              | `set[Cell]` | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`             |
+|                  | `cells.clip(cells)`                                    | `set[Cell]` |              | `grid.cells.clip({cell1, cell2})`                                   |
+| *Transformation* | `cells.wrap(cell)`                                     | `Cell`      |              | `grid.cells.wrap(cell)`                                             |
+|                  | `cells.wrap(cells)`                                    | `set[Cell]` |              | `grid.cells.wrap({cell1, cell2})`                                   |
+|                  | `cells.bounds_of(cells)`                               | `set[Cell]` |              | `grid.cells.bounds_of({cell1, cell2})`                              |
+| *Property*       | `cells.size`                                           | `int`       |              | `grid.cells.size`                                                   |
 
 ### Key/Value Maps
 
@@ -138,22 +150,22 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.maps.CellMap
 
-|            | Member     | Type   | Raises | Usage      |
-| ---------- | ---------- | ------ | ------ | ---------- |
-| *Location* | `map.cell` | `Cell` |        | `map.cell` |
+|            | Member     | Type   | Raises                  | Usage      |
+| ---------- | ---------- | ------ | ----------------------- | ---------- |
+| *Location* | `map.cell` | `Cell` | `ValueError` `KeyError` | `map.cell` |
 
 #### grid.maps.CellMapStore
 
-|             | Member                                         | Type           | Raises       | Usage                                                                            |
-| ----------- | ---------------------------------------------- | -------------- | ------------ | -------------------------------------------------------------------------------- |
-| *Lifecycle* | `maps.add(cell, data)`                         | `CellMap`      | `TypeError`  | `grid.maps.add(cell, {"key": value})`                                            |
-|             | `maps.copy(map, cell)`                         | `CellMap`      | `IndexError` | `grid.maps.copy(map, cell)`                                                      |
-|             | `maps.copy(map, offset)`                       | `CellMap`      | `IndexError` | `grid.maps.copy(map, UP)`                                                        |
-|             | `maps.delete(map)`                             | `None`         |              | `grid.maps.delete(map)`                                                          |
-|             | `maps.clear()`                                 | `None`         |              | `grid.maps.clear()`                                                              |
-| *Movement*  | `maps.move(map, cell)`                         | `None`         | `IndexError` | `grid.maps.move(map, cell)`                                                      |
-|             | `maps.move(map, offset)`                       | `None`         | `IndexError` | `grid.maps.move(map, UP)`                                                        |
-| *Location*  | `maps.cell_of(map)`                            | `Cell`         | `KeyError`   | `grid.maps.cell_of(map)`                                                         |
+|             | Member                                                        | Type           | Raises       | Usage                                                                            |
+| ----------- | ------------------------------------------------------------- | -------------- | ------------ | -------------------------------------------------------------------------------- |
+| *Lifecycle* | `maps.add(cell, data)`                                        | `CellMap`      | `TypeError`  | `grid.maps.add(cell, {"key": value})`                                            |
+|             | `maps.copy(map, cell)`                                        | `CellMap`      | `IndexError` | `grid.maps.copy(map, cell)`                                                      |
+|             | `maps.copy(map, offset)`                                      | `CellMap`      | `IndexError` | `grid.maps.copy(map, UP)`                                                        |
+|             | `maps.delete(map)`                                            | `None`         |              | `grid.maps.delete(map)`                                                          |
+|             | `maps.clear()`                                                | `None`         |              | `grid.maps.clear()`                                                              |
+| *Movement*  | `maps.move(map, cell)`                                        | `None`         | `IndexError` | `grid.maps.move(map, cell)`                                                      |
+|             | `maps.move(map, offset)`                                      | `None`         | `IndexError` | `grid.maps.move(map, UP)`                                                        |
+| *Location*  | `maps.cell_of(map)`                                           | `Cell`         | `KeyError`   | `grid.maps.cell_of(map)`                                                         |
 | *Querying*  | `maps.select(*, matches=None, has=None, at_cells=None)`       | `set[CellMap]` | `TypeError`  | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
 |             | `maps.exists(*, matches=None, has=None, at_cells=None)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
 |             | `maps.count(*, matches=None, has=None, at_cells=None)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
@@ -163,9 +175,9 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### grid.maps.GlobalMap
 
-|            | Member     | Type  | Raises | Usage      |
-| ---------- | ---------- | ----- | ------ | ---------- |
-| *Location* | `map.name` | `str` |        | `map.name` |
+|            | Member     | Type  | Raises       | Usage      |
+| ---------- | ---------- | ----- | ------------ | ---------- |
+| *Location* | `map.name` | `str` | `ValueError` | `map.name` |
 
 #### grid.maps.GlobalMapStore
 
@@ -181,7 +193,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 #### runtime.color.Color
 
-|                  | Member                  | Type    | Raises | Usage                       |
-| ---------------- | ----------------------- | ------- | ------ | --------------------------- |
-| *Construction*   | `Color(r, g, b, a=1.0)` | `Color` |        | `Color(1.0, 1.0, 1.0, 0.5)` |
-| *Transformation* | `color.with_opacity(a)` | `Color` |        | `color.with_opacity(0.5)`   |
+|                  | Member                  | Type    | Usage                       |
+| ---------------- | ----------------------- | ------- | --------------------------- |
+| *Construction*   | `Color(r, g, b, a=1.0)` | `Color` | `Color(1.0, 1.0, 1.0, 0.5)` |
+| *Transformation* | `color.with_opacity(a)` | `Color` | `color.with_opacity(0.5)`   |

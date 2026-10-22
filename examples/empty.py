@@ -5,28 +5,33 @@
 from gridcode import *
 
 
-class Empty(Program, size=16, frame_rate=8):
+program = Program("Empty", size=16, frame_rate=8)
 
-    @staticmethod
-    def setup(grid: Grid) -> None:
-        pass
 
-    @staticmethod
-    def update(grid: Grid) -> None:
-        pass
+@program.setup
+def setup(grid: Grid) -> None:
+    pass
 
-    @staticmethod
-    def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        return Color(1.0, 1.0, 1.0)
 
-    @staticmethod
-    def on_key_press(grid: Grid, key: str) -> None:
-        pass
+@program.update
+def update(grid: Grid) -> None:
+    pass
 
-    @staticmethod
-    def on_cell_click(grid: Grid, cell: Cell) -> None:
-        pass
+
+@program.color
+def color(grid: Grid, cell: Cell) -> Color:
+    return Color(1.0, 1.0, 1.0)
+
+
+@program.on_key
+def on_key(grid: Grid, key: str) -> None:
+    pass
+
+
+@program.on_click
+def on_click(grid: Grid, cell: Cell) -> None:
+    pass
 
 
 if __name__ == "__main__":
-    run(Empty)
+    run(program)

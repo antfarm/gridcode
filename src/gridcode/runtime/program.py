@@ -1,71 +1,60 @@
 """``gridcode.runtime.program``"""
 
-import inspect
-from abc import ABC, abstractmethod
-from annotationlib import Format
+from collections.abc import Callable
 
 from ..cells import Cell
 from ..maps import Fields
 from .grid import Grid
 from .color import Color
 
-
-class Program(ABC):
-    """``Program``"""
-
-    size: int
-    frame_rate: float
-    indexed_fields: list[str] | Fields
-
-    def __init_subclass__(cls, size: int = 16, frame_rate: float = 8,
-                          index: list[str] | Fields | None = None, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls.size = size
-        cls.frame_rate = frame_rate
-        cls.indexed_fields = index if index is not None else []
-
-        for name in ("setup", "update", "color_for_cell", "on_cell_click", "on_key_press"):
-            function = cls.__dict__.get(name)
-            if function is None:
-                continue
-            if not isinstance(function, staticmethod):
-                raise TypeError(f"{cls.__name__}.{name} must be a @staticmethod")
-
-            if inspect.signature(function.__func__) != inspect.signature(getattr(Program, name)):
-                subclass_signature = inspect.signature(
-                    function.__func__, annotation_format=Format.STRING)
-                contract_signature = inspect.signature(
-                    getattr(Program, name), annotation_format=Format.STRING)
-                raise TypeError(
-                    f"{cls.__name__}.{name}{subclass_signature}"
-                    f" must match {name}{contract_signature}".replace("'", ""))
-
-    @staticmethod
-    @abstractmethod
-    def setup(grid: Grid) -> None:
-        """``setup(grid)``"""
-
-    @staticmethod
-    @abstractmethod
-    def update(grid: Grid) -> None:
-        """``update(grid)``"""
-
-    @staticmethod
-    @abstractmethod
-    def color_for_cell(grid: Grid, cell: Cell) -> Color:
-        """``color_for_cell(grid, cell)``"""
-
-    @staticmethod
-    @abstractmethod
-    def on_cell_click(grid: Grid, cell: Cell) -> None:
-        """``on_cell_click(grid, cell)``"""
-
-    @staticmethod
-    @abstractmethod
-    def on_key_press(grid: Grid, key: str) -> None:
-        """``on_key_press(grid, key)``"""
+CALLBACKS = ("setup", "update", "color", "on_click", "on_key")
 
 
-def validate_program(program_class: type[Program]) -> None:
-    """``validate_program(program_class)``"""
-    program_class()
+class Program:
+    """``Program(title, size, frame_rate, index)``"""
+
+    __slots__ = ("title", "size", "frame_rate", "index",
+                 "_setup", "_update", "_color", "_on_click", "_on_key")
+
+    def __init__(self, title: str, *,
+                 size: int = 16,
+                 frame_rate: float = 8,
+                 index: list[str] | Fields | None = None):
+        self.title = title
+        self.size = size
+        self.frame_rate = frame_rate
+        self.index = index
+
+        for name in CALLBACKS:
+            setattr(self, f"_{name}", None)
+
+    def setup(self, function: Callable[[Grid], None]) -> Callable[[Grid], None]:
+        """``@program.setup``"""
+        self._setup = function
+        return function
+
+    def update(self, function: Callable[[Grid], None]) -> Callable[[Grid], None]:
+        """``@program.update``"""
+        self._update = function
+        return function
+
+    def color(self, function: Callable[[Grid, Cell], Color]) -> Callable[[Grid, Cell], Color]:
+        """``@program.color``"""
+        self._color = function
+        return function
+
+    def on_click(self, function: Callable[[Grid, Cell], None]) -> Callable[[Grid, Cell], None]:
+        """``@program.on_click``"""
+        self._on_click = function
+        return function
+
+    def on_key(self, function: Callable[[Grid, str], None]) -> Callable[[Grid, str], None]:
+        """``@program.on_key``"""
+        self._on_key = function
+        return function
+
+    def check_complete(self) -> None:
+        """``program.check_complete()``"""
+        missing = [name for name in CALLBACKS if getattr(self, f"_{name}") is None]
+        if missing:
+            raise TypeError(f"{self.title} is missing {', '.join(missing)}")
