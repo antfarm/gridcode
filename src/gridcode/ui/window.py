@@ -19,6 +19,7 @@ class Window:
     def __init__(self, ui, title: str, grid_size: int):
         self.root = tkinter.Tk()
         self.root.title(title)
+        self.root.resizable(False, False)
 
         self.root.bind("<Key>", lambda event: ui.key_pressed(key_name(event)))
 
