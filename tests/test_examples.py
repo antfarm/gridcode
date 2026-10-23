@@ -10,6 +10,7 @@ import pytest
 import gridcode
 from gridcode.runtime import Runtime
 
+
 EXAMPLES = Path(__file__).parent.parent / "examples"
 NAMES = sorted(path.stem for path in EXAMPLES.glob("*.py"))
 

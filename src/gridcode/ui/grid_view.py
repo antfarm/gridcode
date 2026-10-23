@@ -6,6 +6,7 @@ import tkinter
 
 from ..runtime import Color
 
+
 CANVAS_SIZE = 640
 
 

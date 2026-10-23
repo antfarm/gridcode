@@ -4,6 +4,7 @@ from .cell_maps import CellMapStore, Index
 from .global_maps import GlobalMapStore
 from .map import Map, Value
 
+
 Fields = Index.Fields
 
 __all__ = [

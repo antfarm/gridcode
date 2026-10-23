@@ -1,9 +1,10 @@
 """``gridcode``"""
 
 from .cells import Cell, Neighborhood, Offset
-from .gridcode import run
 from .data import Fields
+from .gridcode import run
 from .runtime import Color, Grid, Program
+
 
 ALL = Fields.ALL
 

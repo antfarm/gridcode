@@ -7,6 +7,7 @@ from ..cells import Cell, Offset
 from ..data import Map, Value
 from .grid import Grid
 
+
 SEPARATOR_WIDTH = 60
 INDENT = "   "
 

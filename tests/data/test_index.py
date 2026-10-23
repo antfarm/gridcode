@@ -6,6 +6,7 @@ import pytest
 
 from gridcode import ALL, Cell, Grid
 
+
 KINDS = ("ant", "bee", "food", "trail")
 
 

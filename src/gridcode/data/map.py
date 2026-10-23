@@ -4,6 +4,7 @@ import functools
 
 from ..cells import Cell, Offset
 
+
 type Value = bool | int | float | str | Cell | Offset
 """``Value``"""
 

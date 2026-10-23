@@ -2,6 +2,7 @@
 
 from .cells import Cell, CellGrid, CellStore, Neighborhood, Offset
 
+
 __all__ = [
     "Cell",
     "Offset",

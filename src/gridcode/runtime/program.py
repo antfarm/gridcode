@@ -4,8 +4,9 @@ from collections.abc import Callable
 
 from ..cells import Cell
 from ..data import Fields
-from .grid import Grid
 from .color import Color
+from .grid import Grid
+
 
 CALLBACKS = ("setup", "update", "color", "on_click", "on_key")
 
