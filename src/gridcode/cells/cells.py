@@ -1,4 +1,4 @@
-"""``gridcode.cells``"""
+"""``gridcode.cells.cells``"""
 
 import random
 from dataclasses import dataclass
