@@ -90,32 +90,6 @@ class CellGrid:
             return random.choice(cells)
         return set(random.sample(cells, count))
 
-    def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
-        """``grid.cells.wrap(cell)``
-
-        ``grid.cells.wrap(cells)``
-        """
-        if isinstance(cell_or_cells, Cell):
-            return self._wrapped(cell_or_cells)
-        return {self._wrapped(cell) for cell in cell_or_cells}
-
-    def nearest(self, candidates: set[Cell], to: Cell, *,
-                count: int | None = None) -> Cell | set[Cell]:
-        """``grid.cells.nearest(candidates, to)``
-
-        ``grid.cells.nearest(candidates, to, count)``
-        """
-        ordered = sorted(candidates, key=lambda candidate: self._distance(candidate, to))
-        if count is None:
-            if not ordered:
-                raise ValueError("nearest needs at least one candidate")
-            return ordered[0]
-        return set(ordered[:count])
-
-    def clip(self, cells: set[Cell]) -> set[Cell]:
-        """``grid.cells.clip(cells)``"""
-        return {cell for cell in cells if self._contains(cell)}
-
     def row(self, y: int) -> set[Cell]:
         """``grid.cells.row(y)``"""
         self._check_index(y)
@@ -143,6 +117,32 @@ class CellGrid:
         """``grid.cells.neighbors(cell, kind, radius, wrap)``"""
         cells = {cell + offset for offset in self._offsets(kind, radius)}
         return self._bounded(cells, wrap)
+
+    def nearest(self, candidates: set[Cell], to: Cell, *,
+                count: int | None = None) -> Cell | set[Cell]:
+        """``grid.cells.nearest(candidates, to)``
+
+        ``grid.cells.nearest(candidates, to, count)``
+        """
+        ordered = sorted(candidates, key=lambda candidate: self._distance(candidate, to))
+        if count is None:
+            if not ordered:
+                raise ValueError("nearest needs at least one candidate")
+            return ordered[0]
+        return set(ordered[:count])
+
+    def clip(self, cells: set[Cell]) -> set[Cell]:
+        """``grid.cells.clip(cells)``"""
+        return {cell for cell in cells if self._contains(cell)}
+
+    def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
+        """``grid.cells.wrap(cell)``
+
+        ``grid.cells.wrap(cells)``
+        """
+        if isinstance(cell_or_cells, Cell):
+            return self._wrapped(cell_or_cells)
+        return {self._wrapped(cell) for cell in cell_or_cells}
 
     def bounds_of(self, cells: set[Cell]) -> set[Cell]:
         """``grid.cells.bounds_of(cells)``"""

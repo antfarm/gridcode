@@ -32,14 +32,6 @@ class GlobalMapStore:
         self._maps[name] = map
         return map
 
-    def get(self, name: str) -> GlobalMap:
-        """``grid.globals.get(name)``"""
-        return self._maps[name]
-
-    def exists(self, name: str) -> bool:
-        """``grid.globals.exists(name)``"""
-        return name in self._maps
-
     def delete(self, name: str) -> None:
         """``grid.globals.delete(name)``"""
         self._maps.pop(name)._deleted = True
@@ -49,3 +41,11 @@ class GlobalMapStore:
         for map in self._maps.values():
             map._deleted = True
         self._maps.clear()
+
+    def get(self, name: str) -> GlobalMap:
+        """``grid.globals.get(name)``"""
+        return self._maps[name]
+
+    def exists(self, name: str) -> bool:
+        """``grid.globals.exists(name)``"""
+        return name in self._maps

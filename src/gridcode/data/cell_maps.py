@@ -50,10 +50,6 @@ class CellMapStore:
         self._cell_store = CellStore[CellMap](grid)
         self._index = Index(index) if index else None
 
-    @property
-    def _has_index(self) -> bool:
-                return self._index is not None
-
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.maps.add(cell, data)``"""
         map = CellMap(self, data)
@@ -71,12 +67,33 @@ class CellMapStore:
                        else cell_or_offset)
         return self.add(target_cell, dict(map._data))
 
+    def delete(self, map: CellMap) -> None:
+        """``grid.maps.delete(map)``"""
+        self._cell_store.delete(map)
+        if self._has_index:
+            self._index.remove_map(map)
+        map._deleted = True
+
+    def clear(self) -> None:
+        """``grid.maps.clear()``"""
+        for map in self._cell_store.cells_by_item:
+            map._deleted = True
+        self._cell_store.clear()
+        if self._has_index:
+            self._index.clear()
+
+    def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
+        """``grid.maps.move(map, cell)``
+
+        ``grid.maps.move(map, offset)``
+        """
+        target_cell = (map.cell + cell_or_offset if isinstance(cell_or_offset, Offset)
+                       else cell_or_offset)
+        self._cell_store.move(map, target_cell)
+
     def cell_of(self, map: CellMap) -> Cell:
         """``grid.maps.cell_of(map)``"""
         return self._cell_store.cell_of(map)
-
-    def _reindexing(self, map: CellMap):
-        return self._index.reindexing(map)
 
     def select(self, *,
                matches: dict[str, Value] | None = None,
@@ -125,29 +142,12 @@ class CellMapStore:
         return {map.cell
                 for map in self.select(matches=matches, has=has, at_cells=at_cells)}
 
-    def delete(self, map: CellMap) -> None:
-        """``grid.maps.delete(map)``"""
-        self._cell_store.delete(map)
-        if self._has_index:
-            self._index.remove_map(map)
-        map._deleted = True
+    @property
+    def _has_index(self) -> bool:
+                return self._index is not None
 
-    def clear(self) -> None:
-        """``grid.maps.clear()``"""
-        for map in self._cell_store.cells_by_item:
-            map._deleted = True
-        self._cell_store.clear()
-        if self._has_index:
-            self._index.clear()
-
-    def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
-        """``grid.maps.move(map, cell)``
-
-        ``grid.maps.move(map, offset)``
-        """
-        target_cell = (map.cell + cell_or_offset if isinstance(cell_or_offset, Offset)
-                       else cell_or_offset)
-        self._cell_store.move(map, target_cell)
+    def _reindexing(self, map: CellMap):
+        return self._index.reindexing(map)
 
 
 class Index:
