@@ -3,7 +3,7 @@
 from collections.abc import Callable
 
 from ..cells import Cell
-from ..maps import Fields
+from ..data import Fields
 from .grid import Grid
 from .color import Color
 

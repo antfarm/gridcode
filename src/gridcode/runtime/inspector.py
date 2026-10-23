@@ -4,7 +4,7 @@ import time
 from contextlib import contextmanager
 
 from ..cells import Cell, Offset
-from ..maps import Map, Value
+from ..data import Map, Value
 from .grid import Grid
 
 SEPARATOR_WIDTH = 60

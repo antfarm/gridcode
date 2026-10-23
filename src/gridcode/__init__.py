@@ -2,7 +2,7 @@
 
 from .cells import Cell, Neighborhood, Offset
 from .gridcode import run
-from .maps import Fields
+from .data import Fields
 from .runtime import Color, Grid, Program
 
 ALL = Fields.ALL

@@ -1,4 +1,4 @@
-"""``gridcode.maps.global_maps``"""
+"""``gridcode.data.global_maps``"""
 
 from .map import Map, Value, check_deleted
 

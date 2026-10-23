@@ -1,4 +1,4 @@
-"""``gridcode.maps.map``"""
+"""``gridcode.data.map``"""
 
 import functools
 

@@ -1,4 +1,4 @@
-"""``gridcode.maps``"""
+"""``gridcode.data``"""
 
 from .cell_maps import CellMapStore, Index
 from .global_maps import GlobalMapStore

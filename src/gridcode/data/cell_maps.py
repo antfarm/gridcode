@@ -1,4 +1,4 @@
-"""``gridcode.maps.cell_maps``"""
+"""``gridcode.data.cell_maps``"""
 
 from contextlib import contextmanager
 from enum import StrEnum

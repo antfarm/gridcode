@@ -1,7 +1,7 @@
 """``gridcode.runtime.grid``"""
 
 from ..cells import CellGrid
-from ..maps import CellMapStore, Fields, GlobalMapStore
+from ..data import CellMapStore, Fields, GlobalMapStore
 
 
 class Grid:
