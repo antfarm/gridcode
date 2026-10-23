@@ -44,14 +44,14 @@ class Window:
         self.inspect_check = tkinter.Checkbutton(self.controls,
                                                  text="Inspect",
                                                  variable=self.inspect_var,
-                                                 command=lambda: ui.set_inspecting(
+                                                 command=lambda: ui.set_inspector_enabled(
                                                      self.inspect_var.get()))
 
         for widget in (self.reset_button, self.start_button, self.pause_button,
                        self.step_button, self.inspect_check):
             widget.pack(side="left", padx=10)
 
-        self.update_controls(ui.running, ui.inspecting)
+        self.update_controls(ui.running, ui.inspector.enabled)
 
     def update_grid(self, colors: list[Color]) -> None:
         """``window.update_grid(colors)``"""
@@ -64,9 +64,9 @@ class Window:
         else:
             self.grid.remove_cell_highlight(x, y)
 
-    def update_controls(self, running: bool, inspecting: bool) -> None:
-        """``window.update_controls(running, inspecting)``"""
+    def update_controls(self, running: bool, inspector_enabled: bool) -> None:
+        """``window.update_controls(running, inspector_enabled)``"""
         self.start_button["state"] = "disabled" if running else "normal"
         self.step_button["state"] = "disabled" if running else "normal"
         self.pause_button["state"] = "normal" if running else "disabled"
-        self.inspect_var.set(inspecting)
+        self.inspect_var.set(inspector_enabled)
