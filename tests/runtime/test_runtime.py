@@ -97,9 +97,9 @@ def test_colors_gives_one_color_per_cell_row_by_row():
 
 
 def test_the_index_declaration_reaches_the_grid():
-    assert Runtime(complete_program(index=["kind"])).grid.maps.has_index
-    assert Runtime(complete_program(index=ALL)).grid.maps.has_index
-    assert not Runtime(complete_program()).grid.maps.has_index
+    assert Runtime(complete_program(index=["kind"])).grid.maps._has_index
+    assert Runtime(complete_program(index=ALL)).grid.maps._has_index
+    assert not Runtime(complete_program()).grid.maps._has_index
 
 
 def test_the_index_survives_a_reset():
@@ -107,4 +107,4 @@ def test_the_index_survives_a_reset():
 
     runtime.reset()
 
-    assert runtime.grid.maps.has_index
+    assert runtime.grid.maps._has_index

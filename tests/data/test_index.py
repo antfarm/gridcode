@@ -108,10 +108,10 @@ def test_clear_empties_the_index():
 
 
 def test_an_index_is_only_built_when_fields_are_declared():
-    assert not Grid(8).maps.has_index
-    assert not Grid(8, []).maps.has_index
-    assert Grid(8, ["kind"]).maps.has_index
-    assert Grid(8, ALL).maps.has_index
+    assert not Grid(8).maps._has_index
+    assert not Grid(8, []).maps._has_index
+    assert Grid(8, ["kind"]).maps._has_index
+    assert Grid(8, ALL).maps._has_index
 
 
 def test_only_declared_fields_are_indexed():

@@ -25,19 +25,19 @@ class CellMap(Map):
     @check_deleted
     def set(self, data: dict[str, Value]) -> None:
         """``map.set(data)``"""
-        if not self._store.has_index:
+        if not self._store._has_index:
             super().set(data)
         else:
-            with self._store.reindexing(self):
+            with self._store._reindexing(self):
                 super().set(data)
 
     @check_deleted
     def delete(self, key: str, *more_keys: str) -> None:
         """``map.delete(key, key, ...)``"""
-        if not self._store.has_index:
+        if not self._store._has_index:
             super().delete(key, *more_keys)
         else:
-            with self._store.reindexing(self):
+            with self._store._reindexing(self):
                 super().delete(key, *more_keys)
 
 
@@ -51,15 +51,14 @@ class CellMapStore:
         self._index = Index(index) if index else None
 
     @property
-    def has_index(self) -> bool:
-        """``grid.maps.has_index``"""
-        return self._index is not None
+    def _has_index(self) -> bool:
+                return self._index is not None
 
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.maps.add(cell, data)``"""
         map = CellMap(self, data)
         self._cell_store.add(cell, map)
-        if self.has_index:
+        if self._has_index:
             self._index.add_map(map)
         return map
 
@@ -76,8 +75,7 @@ class CellMapStore:
         """``grid.maps.cell_of(map)``"""
         return self._cell_store.cell_of(map)
 
-    def reindexing(self, map: CellMap):
-        """``with grid.maps.reindexing(map): ...``"""
+    def _reindexing(self, map: CellMap):
         return self._index.reindexing(map)
 
     def select(self, *,
@@ -85,7 +83,7 @@ class CellMapStore:
                has: set[str] | None = None,
                at_cells: set[Cell] | None = None) -> set[CellMap]:
         """``grid.maps.select(matches, has, at_cells)``"""
-        if not self.has_index:
+        if not self._has_index:
             candidate_sets, rest_matches, rest_has = [], matches or {}, has or set()
         else:
             candidate_sets, rest_matches, rest_has = self._index.sets_for(matches, has)
@@ -130,7 +128,7 @@ class CellMapStore:
     def delete(self, map: CellMap) -> None:
         """``grid.maps.delete(map)``"""
         self._cell_store.delete(map)
-        if self.has_index:
+        if self._has_index:
             self._index.remove_map(map)
         map._deleted = True
 
@@ -139,7 +137,7 @@ class CellMapStore:
         for map in self._cell_store.cells_by_item:
             map._deleted = True
         self._cell_store.clear()
-        if self.has_index:
+        if self._has_index:
             self._index.clear()
 
     def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
