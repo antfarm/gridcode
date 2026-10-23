@@ -23,13 +23,13 @@ def color(grid: Grid, cell: Cell) -> Color:
     return Color(1.0, 1.0, 1.0)
 
 
-@program.on_key
-def on_key(grid: Grid, key: str) -> None:
+@program.on_click
+def on_click(grid: Grid, cell: Cell) -> None:
     pass
 
 
-@program.on_click
-def on_click(grid: Grid, cell: Cell) -> None:
+@program.on_key
+def on_key(grid: Grid, key: str) -> None:
     pass
 
 

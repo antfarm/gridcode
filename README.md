@@ -2,6 +2,61 @@
 
 A minimal framework for grid-based games and simulations.
 
+## Installation
+
+Python 3.14 or later and tkinter are required. tkinter is not on PyPI — it ships with Python, but most platforms package it separately.
+
+On macOS:
+
+```sh
+brew install python@3.14 python-tk@3.14
+```
+
+On Linux:
+
+```sh
+apt install python3-tk        # Debian, Ubuntu
+dnf install python3-tkinter   # Fedora, RHEL
+pacman -S tk                  # Arch
+```
+
+Then clone the repository and install Gridcode into a virtual environment:
+
+```sh
+git clone https://github.com/antfarm/gridcode.git
+cd gridcode
+python3 -m venv .venv
+source .venv/bin/activate
+make install
+```
+
+## Running the Examples
+
+The examples are simply executable Python scripts:
+
+```sh
+./examples/snake.py
+```
+
+## Using Gridcode
+
+To write your own programs with Gridcode, install it from the repository. Here is a typical workflow that creates a virtual environment in a project directory to isolate changes from your system's Python installation:
+
+```sh
+mkdir my_project
+cd my_project
+python3 -m venv .venv
+source .venv/bin/activate
+pip install git+https://github.com/antfarm/gridcode.git
+```
+
+Now you can write your program, e.g. in a file `my_program.py`, and execute it (`./examples/empty.py` in this repo is a good starting point):
+
+```sh
+chmod +x my_program.py
+./my_program.py
+```
+
 ## Program Structure
 
 A Gridcode program is a `Program` object with five callback functions that are assigned via its decorators: `setup`, `update`, `color`, `on_key` and `on_click`.
