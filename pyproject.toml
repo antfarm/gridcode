@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gridcode"
 version = "0.1.0"
-description = "A minimal engine for grid-based games and simulations"
+description = "A minimal framework for grid-based games and simulations"
 requires-python = ">=3.14"
 
 [project.optional-dependencies]
