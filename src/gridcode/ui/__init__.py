@@ -8,7 +8,6 @@ from .window import Window
 
 __all__ = [
     "UI",
-    "Window",
 ]
 
 
