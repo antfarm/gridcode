@@ -62,7 +62,6 @@ class Inspector:
             print(self._inspection_string(label, grid))
 
     def _inspection_string(self, label: str, grid: Grid) -> str:
-        """``inspector._inspection_string(label, grid)``"""
         blocks = [_separator_string(label)]
 
         for name, map in grid.globals._maps.items():
@@ -79,7 +78,6 @@ class Inspector:
 
 
 def _value_string(value: Value) -> str:
-    """``_value_string(value)``"""
     if isinstance(value, Cell):
         return f"(cell {value.x} {value.y})"
     if isinstance(value, Offset):
@@ -92,12 +90,10 @@ def _value_string(value: Value) -> str:
 
 
 def _separator_string(label: str) -> str:
-    """``_separator_string(label)``"""
     return f"{"─" * SEPARATOR_WIDTH} {label}"
 
 
 def _map_string(map: Map) -> str:
-    """``_map_string(map)``"""
     pairs = sorted((key, _value_string(value)) for key, value in map._data.items())
     key_width = max((len(key) for key, _ in pairs), default=1)
     value_width = max((len(value) for _, value in pairs), default=1)

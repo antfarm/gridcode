@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from enum import StrEnum
 
 from ..cells import Cell, CellGrid, CellStore, Offset
-from .map import Data, Map, Value, check_deleted
+from .map import Map, Value, check_deleted
 
 
 class CellMap(Map):
@@ -44,23 +44,23 @@ class CellMap(Map):
 class CellMapStore:
     """``CellMapStore``"""
 
-    __slots__ = ("_cell_store", "_data_index")
+    __slots__ = ("_cell_store", "_index")
 
     def __init__(self, grid: CellGrid, index: list[str] | Fields | None = None):
         self._cell_store = CellStore[CellMap](grid)
-        self._data_index = DataIndex(index) if index else None
+        self._index = Index(index) if index else None
 
     @property
     def has_index(self) -> bool:
         """``grid.maps.has_index``"""
-        return self._data_index is not None
+        return self._index is not None
 
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.maps.add(cell, data)``"""
         map = CellMap(self, data)
         self._cell_store.add(cell, map)
         if self.has_index:
-            self._data_index.add_map(map)
+            self._index.add_map(map)
         return map
 
     def copy(self, map: CellMap, cell_or_offset: Cell | Offset) -> CellMap:
@@ -78,7 +78,7 @@ class CellMapStore:
 
     def reindexing(self, map: CellMap):
         """``with grid.maps.reindexing(map): ...``"""
-        return self._data_index.reindexing(map)
+        return self._index.reindexing(map)
 
     def select(self, *,
                matches: dict[str, Value] | None = None,
@@ -88,7 +88,7 @@ class CellMapStore:
         if not self.has_index:
             candidate_sets, rest_matches, rest_has = [], matches or {}, has or set()
         else:
-            candidate_sets, rest_matches, rest_has = self._data_index.sets_for(matches, has)
+            candidate_sets, rest_matches, rest_has = self._index.sets_for(matches, has)
         if at_cells is not None:
             maps_at_cells = set()
             for cell in at_cells:
@@ -131,7 +131,7 @@ class CellMapStore:
         """``grid.maps.delete(map)``"""
         self._cell_store.delete(map)
         if self.has_index:
-            self._data_index.remove_map(map)
+            self._index.remove_map(map)
         map._deleted = True
 
     def clear(self) -> None:
@@ -140,7 +140,7 @@ class CellMapStore:
             map._deleted = True
         self._cell_store.clear()
         if self.has_index:
-            self._data_index.clear()
+            self._index.clear()
 
     def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
         """``grid.maps.move(map, cell)``
@@ -152,30 +152,30 @@ class CellMapStore:
         self._cell_store.move(map, target_cell)
 
 
-class DataIndex:
-    """``DataIndex``"""
+class Index:
+    """``Index``"""
 
     class Fields(StrEnum):
-        """``DataIndex.Fields``"""
+        """``Index.Fields``"""
 
         ALL = "all"
-        """``DataIndex.Fields.ALL``"""
+        """``Index.Fields.ALL``"""
 
     __slots__ = ("indexed_keys", "maps_by_key", "maps_by_data")
 
     def __init__(self, index: list[str] | Fields):
-        self.indexed_keys = (DataIndex.Fields.ALL if index is DataIndex.Fields.ALL
+        self.indexed_keys = (Index.Fields.ALL if index is Index.Fields.ALL
                              else frozenset(index))
         self.maps_by_key: dict[str, set[CellMap]] = {}
         self.maps_by_data: dict[tuple[str, Value], set[CellMap]] = {}
 
     def is_indexed(self, key: str) -> bool:
-        """``data_index.is_indexed(key)``"""
-        return self.indexed_keys is DataIndex.Fields.ALL or key in self.indexed_keys
+        """``index.is_indexed(key)``"""
+        return self.indexed_keys is Index.Fields.ALL or key in self.indexed_keys
 
     @contextmanager
     def reindexing(self, map: CellMap):
-        """``with data_index.reindexing(map): ...``"""
+        """``with index.reindexing(map): ...``"""
         self.remove_map(map)
         try:
             yield
@@ -186,7 +186,7 @@ class DataIndex:
                  has: set[str] | None) -> tuple[list[set[CellMap]],
                                                 dict[str, Value],
                                                 set[str]]:
-        """``data_index.sets_for(matches, has)``"""
+        """``index.sets_for(matches, has)``"""
         sets = []
         rest_matches = {}
         rest_has = set()
@@ -206,27 +206,27 @@ class DataIndex:
         return sets, rest_matches, rest_has
 
     def add_map(self, map: CellMap) -> None:
-        """``data_index.add_map(map)``"""
+        """``index.add_map(map)``"""
         for key, value in map._data.items():
             if self.is_indexed(key):
                 self._add(map, key, value)
 
     def remove_map(self, map: CellMap) -> None:
-        """``data_index.remove_map(map)``"""
+        """``index.remove_map(map)``"""
         for key, value in map._data.items():
             if self.is_indexed(key):
                 self._remove(map, key, value)
 
     def maps_with_key(self, key: str) -> set[CellMap]:
-        """``data_index.maps_with_key(key)``"""
+        """``index.maps_with_key(key)``"""
         return set(self.maps_by_key.get(key, ()))
 
     def maps_with_data(self, key: str, value: Value) -> set[CellMap]:
-        """``data_index.maps_with_data(key, value)``"""
+        """``index.maps_with_data(key, value)``"""
         return set(self.maps_by_data.get((key, value), ()))
 
     def clear(self) -> None:
-        """``data_index.clear()``"""
+        """``index.clear()``"""
         self.maps_by_key.clear()
         self.maps_by_data.clear()
 

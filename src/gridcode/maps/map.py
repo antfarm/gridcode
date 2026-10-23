@@ -8,34 +8,6 @@ type Value = bool | int | float | str | Cell | Offset
 """``Value``"""
 
 
-class Data:
-    """``Data(key=value)``"""
-
-    __slots__ = ("items",)
-
-    def __init__(self, **values: Value):
-        for key, value in values.items():
-            check_value(key, value)
-        self.items = tuple(values.items())
-
-    def __eq__(self, other) -> bool:
-        return isinstance(other, Data) and self.items == other.items
-
-    def __hash__(self) -> int:
-        return hash(self.items)
-
-    def __repr__(self) -> str:
-        inside = ", ".join(f"{key}={value!r}" for key, value in self.items)
-        return f"Data({inside})"
-
-
-def check_value(key: str, value) -> None:
-    """``check_value(key, value)``"""
-    allowed = (bool, int, float, str, Cell, Offset)
-    if not isinstance(value, allowed):
-        raise TypeError(f"{key}: {type(value).__name__} is not a GridCode value")
-
-
 def check_deleted(method):
     """``@check_deleted``"""
     @functools.wraps(method)
@@ -53,7 +25,7 @@ class Map:
 
     def __init__(self, data: dict[str, Value]):
         for key, value in data.items():
-            check_value(key, value)
+            _check_value_type(key, value)
         self._data = dict(data)
         self._deleted = False
 
@@ -76,7 +48,7 @@ class Map:
     def set(self, data: dict[str, Value]) -> None:
         """``map.set(data)``"""
         for key, value in data.items():
-            check_value(key, value)
+            _check_value_type(key, value)
         self._data.update(data)
 
     @check_deleted
@@ -98,3 +70,9 @@ class Map:
     def __repr__(self) -> str:
         inside = ", ".join(f"{key}={value!r}" for key, value in self._data.items())
         return f"<map {inside}>"
+
+
+def _check_value_type(key: str, value) -> None:
+    allowed = (bool, int, float, str, Cell, Offset)
+    if not isinstance(value, allowed):
+        raise TypeError(f"{key}: {type(value).__name__} is not a GridCode value")
