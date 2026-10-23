@@ -1,12 +1,13 @@
 # Gridcode
 
-A minimal engine for grid-based games and simulations.
+A minimal framework for grid-based games and simulations.
 
 ## Program Structure
 
-A Gridcode program is an instance of the `Program` class that is assigned five callback functions via its decorators: `setup`, `update`, `color`, `on_key` and `on_click`. These callbacks then get called by the engine with the `grid` instance passed as an argument.
+A Gridcode program is a `Program` object with five callback functions that are assigned via its decorators: `setup`, `update`, `color`, `on_key` and `on_click`.
 
-A program is executed by calling the `run` function with the instance.
+A program is executed by calling the `run` function with the instance. During execution, the framework calls the program's callback functions passing the `Grid` instance, which is supposed to be the only mutable state a program keeps.
+
 
 ```python
 #!/usr/bin/env python3
@@ -65,7 +66,7 @@ The color of each cell is determined in every tick by calling `color` for the gi
 | *Settings*   | `title`            | `str`                           | `Program("Snake")`  |
 |              | `size=16`          | `int`                           | `size=32`           |
 |              | `frame_rate=8`     | `float`                         | `frame_rate=2`      |
-|              | `index=None`       | `list[str] \                    | ALL`                |
+|              | `index=None`       | `list[str] \| ALL`              | `index=["id"]`      |
 | *Decorators* | `program.setup`    | `Callable[[Grid], None]`        | `@program.setup`    |
 |              | `program.update`   | `Callable[[Grid], None]`        | `@program.update`   |
 |              | `program.color`    | `Callable[[Grid, Cell], Color]` | `@program.color`    |
@@ -133,6 +134,10 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 | *Property*       | `cells.size`                                           | `int`       |              | `grid.cells.size`                                                   |
 
 ### Key/Value Maps
+
+```python
+type Value = bool | int | float | str | Cell | Offset
+```
 
 #### grid.maps.Map
 
