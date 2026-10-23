@@ -46,7 +46,7 @@ class CellMapStore:
 
     __slots__ = ("_cell_store", "_index")
 
-    def __init__(self, grid: CellGrid, index: list[str] | Fields | None = None):
+    def __init__(self, grid: CellGrid, index: list[str] | Index.Fields | None = None):
         self._cell_store = CellStore[CellMap](grid)
         self._index = Index(index) if index else None
 
