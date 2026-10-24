@@ -12,7 +12,7 @@ KINDS = ("ant", "bee", "food", "trail")
 
 def scanned(grid, matches=None, has=None, at_cells=None):
     """What a query should return, found by looking at every map."""
-    maps = set(grid.data._cell_store.cells_by_item)
+    maps = grid.data._cell_store.all_items()
     if at_cells is not None:
         maps = {map for map in maps if map.cell in at_cells}
     if matches:
@@ -69,7 +69,7 @@ def test_the_index_holds_no_deleted_maps():
     for map in list(grid.data.select(matches={"kind": "ant"})):
         grid.data.delete(map)
 
-    alive = set(grid.data._cell_store.cells_by_item)
+    alive = grid.data._cell_store.all_items()
     assert all(maps <= alive for maps in index.maps_by_key.values())
     assert all(maps <= alive for maps in index.maps_by_data.values())
     assert grid.data.count(matches={"kind": "ant"}) == 0

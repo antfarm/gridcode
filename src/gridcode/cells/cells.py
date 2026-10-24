@@ -190,27 +190,27 @@ class CellGrid:
 class CellStore[Item]:
     """``CellStore``"""
 
-    __slots__ = ("grid", "items", "cells_by_item")
+    __slots__ = ("_grid", "_items", "_cells_of_item")
 
     def __init__(self, grid: CellGrid):
-        self.grid = grid
-        self.items: dict[Cell, set[Item]] = {}
-        self.cells_by_item: dict[Item, Cell] = {}
+        self._grid = grid
+        self._items: dict[Cell, set[Item]] = {}
+        self._cells_of_item: dict[Item, Cell] = {}
 
     def add(self, cell: Cell, item: Item) -> None:
         """``store.add(cell, item)``"""
         self._check_bounds(cell)
-        self.items.setdefault(cell, set()).add(item)
-        self.cells_by_item[item] = cell
+        self._items.setdefault(cell, set()).add(item)
+        self._cells_of_item[item] = cell
 
     def delete(self, item: Item) -> None:
         """``store.delete(item)``"""
         cell = self.cell_of(item)
-        items = self.items[cell]
+        items = self._items[cell]
         items.discard(item)
         if not items:
-            del self.items[cell]
-        del self.cells_by_item[item]
+            del self._items[cell]
+        del self._cells_of_item[item]
 
     def move(self, item: Item, cell: Cell) -> None:
         """``store.move(item, cell)``"""
@@ -220,20 +220,24 @@ class CellStore[Item]:
 
     def items_at(self, cell: Cell) -> set[Item]:
         """``store.items_at(cell)``"""
-        return set(self.items.get(cell, ()))
+        return set(self._items.get(cell, ()))
+
+    def all_items(self) -> set[Item]:
+        """``store.all_items()``"""
+        return {item for items in self._items.values() for item in items}
 
     def cell_of(self, item: Item) -> Cell:
         """``store.cell_of(item)``"""
-        cell = self.cells_by_item.get(item)
+        cell = self._cells_of_item.get(item)
         if cell is None:
             raise KeyError(f"{item!r} is not in the grid")
         return cell
 
     def clear(self) -> None:
         """``store.clear()``"""
-        self.items.clear()
-        self.cells_by_item.clear()
+        self._items.clear()
+        self._cells_of_item.clear()
 
     def _check_bounds(self, cell: Cell) -> None:
-        if not self.grid._contains(cell):
+        if not self._grid._contains(cell):
             raise IndexError(f"{cell} is outside the grid")

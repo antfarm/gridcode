@@ -75,7 +75,7 @@ class DataStore:
 
     def clear_cells(self) -> None:
         """``grid.data.clear_cells()``"""
-        for map in self._cell_store.cells_by_item:
+        for map in self._cell_store.all_items():
             map._deleted = True
         self._cell_store.clear()
         if self._has_index:
@@ -118,7 +118,7 @@ class DataStore:
                 maps_at_cells |= self._cell_store.items_at(cell)
             candidate_sets.append(maps_at_cells)
         if not candidate_sets:
-            candidate_sets.append(set(self._cell_store.cells_by_item))
+            candidate_sets.append(self._cell_store.all_items())
 
         maps = (candidate_sets[0] if len(candidate_sets) == 1
                 else set.intersection(*candidate_sets))
