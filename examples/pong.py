@@ -12,9 +12,9 @@ program = Program("Pong", size=32, frame_rate=30)
 
 @program.setup
 def setup(grid: Grid) -> None:
-    for wall_cell in grid.cells.col(0):
+    for wall_cell in grid.cells.column(0):
         grid.maps.add(wall_cell, {"type": "wall", "dx": 1})
-    for wall_cell in grid.cells.col(grid.cells.size - 1):
+    for wall_cell in grid.cells.column(grid.cells.size - 1):
         grid.maps.add(wall_cell, {"type": "wall", "dx": -1})
     for wall_cell in grid.cells.row(0):
         grid.maps.add(wall_cell, {"type": "wall", "dy": 1})

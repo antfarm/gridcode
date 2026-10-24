@@ -95,8 +95,8 @@ class CellGrid:
         self._check_index(y)
         return {Cell(x, y) for x in range(self.size)}
 
-    def col(self, x: int) -> set[Cell]:
-        """``grid.cells.col(x)``"""
+    def column(self, x: int) -> set[Cell]:
+        """``grid.cells.column(x)``"""
         self._check_index(x)
         return {Cell(x, y) for y in range(self.size)}
 

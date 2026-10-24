@@ -177,7 +177,7 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 |                  | `cells.random()`                                       | `Cell`      |              | `grid.cells.random()`                                               |
 |                  | `cells.random(*, count)`                               | `set[Cell]` | `ValueError` | `grid.cells.random(count=5)`                                        |
 |                  | `cells.row(y)`                                         | `set[Cell]` | `IndexError` | `grid.cells.row(3)`                                                 |
-|                  | `cells.col(x)`                                         | `set[Cell]` | `IndexError` | `grid.cells.col(5)`                                                 |
+|                  | `cells.column(x)`                                      | `set[Cell]` | `IndexError` | `grid.cells.column(5)`                                              |
 |                  | `cells.rect(x, y, width, height, *, wrap)`             | `set[Cell]` |              | `grid.cells.rect(0, 0, 8, 8, wrap=False)`                           |
 |                  | `cells.neighbors(cell, *, kind=MOORE, radius=1, wrap)` | `set[Cell]` |              | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2, wrap=True)` |
 | *Filter*         | `cells.nearest(candidates, to)`                        | `Cell`      | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3)`                      |

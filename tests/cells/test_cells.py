@@ -12,20 +12,20 @@ def test_all_returns_every_cell():
     assert grid.all() == {Cell(x, y) for y in range(3) for x in range(3)}
 
 
-def test_row_and_col_return_a_line_of_cells():
+def test_row_and_column_return_a_line_of_cells():
     grid = CellGrid(3)
 
     assert grid.row(1) == {Cell(0, 1), Cell(1, 1), Cell(2, 1)}
-    assert grid.col(2) == {Cell(2, 0), Cell(2, 1), Cell(2, 2)}
+    assert grid.column(2) == {Cell(2, 0), Cell(2, 1), Cell(2, 2)}
 
 
-def test_row_and_col_reject_an_index_outside_the_grid():
+def test_row_and_column_reject_an_index_outside_the_grid():
     grid = CellGrid(3)
 
     with pytest.raises(IndexError):
         grid.row(3)
     with pytest.raises(IndexError):
-        grid.col(-1)
+        grid.column(-1)
 
 
 def test_wrap_moves_a_cell_inside_the_grid():
