@@ -9,9 +9,9 @@ def test_values_must_be_gridcode_values():
     grid = Grid(8)
 
     with pytest.raises(TypeError):
-        grid.maps.add(Cell(1, 1), {"bad": [1, 2]})
+        grid.data.add(Cell(1, 1), {"bad": [1, 2]})
 
-    ant = grid.maps.add(Cell(1, 1), {"kind": "ant"})
+    ant = grid.data.add(Cell(1, 1), {"kind": "ant"})
     with pytest.raises(TypeError):
         ant["bad"] = {"nested": True}
 
@@ -19,7 +19,7 @@ def test_values_must_be_gridcode_values():
 def test_every_value_type_is_accepted():
     grid = Grid(8)
 
-    map = grid.maps.add(Cell(1, 1), {"flag": True, "count": 2, "rate": 0.5,
+    map = grid.data.add(Cell(1, 1), {"flag": True, "count": 2, "rate": 0.5,
                                      "kind": "ant", "home": Cell(0, 0),
                                      "heading": Offset(1, 0)})
 
@@ -29,7 +29,7 @@ def test_every_value_type_is_accepted():
 
 def test_get_and_delete_take_several_keys():
     grid = Grid(8)
-    map = grid.maps.add(Cell(1, 1), {"a": 1, "b": 2, "c": 3})
+    map = grid.data.add(Cell(1, 1), {"a": 1, "b": 2, "c": 3})
 
     assert map.get("a", "c") == (1, 3)
 
@@ -41,7 +41,7 @@ def test_get_and_delete_take_several_keys():
 
 def test_has_and_matches_ask_about_keys_and_values():
     grid = Grid(8)
-    map = grid.maps.add(Cell(1, 1), {"kind": "ant", "energy": 3})
+    map = grid.data.add(Cell(1, 1), {"kind": "ant", "energy": 3})
 
     assert map.has("kind", "energy")
     assert not map.has("kind", "missing")
@@ -51,7 +51,7 @@ def test_has_and_matches_ask_about_keys_and_values():
 
 def test_missing_key_raises():
     grid = Grid(8)
-    map = grid.maps.add(Cell(1, 1), {"kind": "ant"})
+    map = grid.data.add(Cell(1, 1), {"kind": "ant"})
 
     with pytest.raises(KeyError):
         map["missing"]

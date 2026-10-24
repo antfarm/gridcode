@@ -11,11 +11,11 @@ def complete_program(title="Test", **settings):
 
     @program.setup
     def setup(grid: Grid) -> None:
-        grid.maps.add(Cell(0, 0), {"kind": "ant"})
+        grid.data.add(Cell(0, 0), {"kind": "ant"})
 
     @program.update
     def update(grid: Grid) -> None:
-        grid.maps.add(Cell(1, 1), {"kind": "trail"})
+        grid.data.add(Cell(1, 1), {"kind": "trail"})
 
     @program.color
     def color(grid: Grid, cell: Cell) -> Color:
@@ -23,11 +23,11 @@ def complete_program(title="Test", **settings):
 
     @program.on_click
     def on_click(grid: Grid, cell: Cell) -> None:
-        grid.maps.add(cell, {"kind": "click"})
+        grid.data.add(cell, {"kind": "click"})
 
     @program.on_key
     def on_key(grid: Grid, key: str) -> None:
-        grid.maps.add(Cell(2, 2), {"kind": key})
+        grid.data.add(Cell(2, 2), {"kind": key})
 
     return program
 
@@ -52,7 +52,7 @@ def test_construction_runs_setup():
     runtime = Runtime(complete_program(size=4))
 
     assert runtime.tick == 0
-    assert runtime.grid.maps.count(matches={"kind": "ant"}) == 1
+    assert runtime.grid.data.count(matches={"kind": "ant"}) == 1
 
 
 def test_a_step_runs_update_and_advances_the_tick():
@@ -61,7 +61,7 @@ def test_a_step_runs_update_and_advances_the_tick():
     runtime.step()
 
     assert runtime.tick == 1
-    assert runtime.grid.maps.count(matches={"kind": "trail"}) == 1
+    assert runtime.grid.data.count(matches={"kind": "trail"}) == 1
 
 
 def test_reset_builds_a_fresh_grid_and_runs_setup_again():
@@ -73,8 +73,8 @@ def test_reset_builds_a_fresh_grid_and_runs_setup_again():
 
     assert runtime.tick == 0
     assert runtime.grid is not first_grid
-    assert runtime.grid.maps.count(matches={"kind": "trail"}) == 0
-    assert runtime.grid.maps.count(matches={"kind": "ant"}) == 1
+    assert runtime.grid.data.count(matches={"kind": "trail"}) == 0
+    assert runtime.grid.data.count(matches={"kind": "ant"}) == 1
 
 
 def test_events_reach_the_program():
@@ -83,8 +83,8 @@ def test_events_reach_the_program():
     runtime.cell_click(3, 3)
     runtime.key_press("left")
 
-    assert runtime.grid.maps.count(matches={"kind": "click"}, at_cells={Cell(3, 3)}) == 1
-    assert runtime.grid.maps.count(matches={"kind": "left"}) == 1
+    assert runtime.grid.data.count(matches={"kind": "click"}, at_cells={Cell(3, 3)}) == 1
+    assert runtime.grid.data.count(matches={"kind": "left"}) == 1
 
 
 def test_colors_gives_one_color_per_cell_row_by_row():
@@ -97,9 +97,9 @@ def test_colors_gives_one_color_per_cell_row_by_row():
 
 
 def test_the_index_declaration_reaches_the_grid():
-    assert Runtime(complete_program(index=["kind"])).grid.maps._has_index
-    assert Runtime(complete_program(index=ALL)).grid.maps._has_index
-    assert not Runtime(complete_program()).grid.maps._has_index
+    assert Runtime(complete_program(index=["kind"])).grid.data._has_index
+    assert Runtime(complete_program(index=ALL)).grid.data._has_index
+    assert not Runtime(complete_program()).grid.data._has_index
 
 
 def test_the_index_survives_a_reset():
@@ -107,4 +107,4 @@ def test_the_index_survives_a_reset():
 
     runtime.reset()
 
-    assert runtime.grid.maps._has_index
+    assert runtime.grid.data._has_index

@@ -12,7 +12,7 @@ program = Program("Blink", size=16, frame_rate=2)
 def setup(grid: Grid) -> None:
     for cell in grid.cells.all():
         if cell.x == cell.y:
-            grid.maps.add(cell, {})
+            grid.data.add(cell, {})
 
 
 @program.update
@@ -23,7 +23,7 @@ def update(grid: Grid) -> None:
 
 @program.color
 def color(grid: Grid, cell: Cell) -> Color:
-    if grid.maps.exists(at_cells={cell}):
+    if grid.data.exists(at_cells={cell}):
         return Color(1.0, 0.8, 0.2)
     return Color(0.0, 0.0, 0.0)
 
@@ -39,12 +39,12 @@ def on_key(grid: Grid, key: str) -> None:
 
 
 def toggle_cell(grid: Grid, cell: Cell) -> None:
-    maps = grid.maps.select(at_cells={cell})
+    maps = grid.data.select(at_cells={cell})
     if maps:
         for map in maps:
-            grid.maps.delete(map)
+            grid.data.delete(map)
     else:
-        grid.maps.add(cell, {})
+        grid.data.add(cell, {})
 
 
 if __name__ == "__main__":

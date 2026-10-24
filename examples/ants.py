@@ -13,7 +13,7 @@ program = Program("Ants", size=64, frame_rate=10)
 @program.setup
 def setup(grid: Grid) -> None:
     for _ in range(100):
-        grid.maps.add(grid.cells.random(),
+        grid.data.add(grid.cells.random(),
                       {"type": "ant",
                        "direction": random_direction()})
 
@@ -22,31 +22,31 @@ def setup(grid: Grid) -> None:
 def update(grid: Grid) -> None:
     evaporation_rate = 0.07
 
-    for trail in grid.maps.select(matches={"type": "trail"}):
+    for trail in grid.data.select(matches={"type": "trail"}):
         concentration = trail["concentration"]
         new_concentration = concentration * (1.0 - evaporation_rate)
         if new_concentration < evaporation_rate:
-            grid.maps.delete(trail)
+            grid.data.delete(trail)
         else:
             trail["concentration"] = new_concentration
 
-    for ant in grid.maps.select(matches={"type": "ant"}):
+    for ant in grid.data.select(matches={"type": "ant"}):
         cell = ant.cell
-        trails = grid.maps.select(matches={"type": "trail"}, at_cells={cell})
+        trails = grid.data.select(matches={"type": "trail"}, at_cells={cell})
         if trails:
             for trail in trails:
                 trail["concentration"] = trail["concentration"] + 1.0
         else:
-            grid.maps.add(cell, {"type": "trail", "concentration": 1.0})
+            grid.data.add(cell, {"type": "trail", "concentration": 1.0})
         new_cell = grid.cells.wrap(cell + ant["direction"])
-        grid.maps.move(ant, new_cell)
+        grid.data.move(ant, new_cell)
 
 
 @program.color
 def color(grid: Grid, cell: Cell) -> Color:
-    if grid.maps.exists(matches={"type": "ant"}, at_cells={cell}):
+    if grid.data.exists(matches={"type": "ant"}, at_cells={cell}):
         return Color(1.0, 0.8, 0.2)
-    for trail in grid.maps.select(matches={"type": "trail"}, at_cells={cell}):
+    for trail in grid.data.select(matches={"type": "trail"}, at_cells={cell}):
         opacity = min(1.0, trail["concentration"] * 0.5)
         return Color(0.2, 0.9, 0.0, opacity)
     return Color(0.0, 0.0, 0.0)

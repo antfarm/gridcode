@@ -13,62 +13,61 @@ program = Program("Snake", size=16, frame_rate=8)
 @program.setup
 def setup(grid: Grid) -> None:
     center_cell = Cell(grid.cells.size // 2, grid.cells.size // 2)
-    grid.maps.add(center_cell, {"type": "snake",
+    grid.data.add(center_cell, {"type": "snake",
                                 "id": 0,
                                 "head": True})
 
-    snake_cells = grid.maps.select_cells(matches={"type": "snake"})
+    snake_cells = grid.data.select_cells(matches={"type": "snake"})
     food_cell = random.choice(list(grid.cells.all() - snake_cells))
-    grid.maps.add(food_cell, {"type": "food"})
+    grid.data.add(food_cell, {"type": "food"})
 
     direction = random.choice([LEFT, RIGHT, UP, DOWN])
-    grid.globals.add("game", {"direction": direction,
-                              "key_direction": direction,
-                              "over": False})
+    grid.data.globals.set({"direction": direction,
+                           "key_direction": direction,
+                           "game_over": False})
 
 
 @program.update
 def update(grid: Grid) -> None:
-    game = grid.globals.get("game")
-    game["direction"] = game["key_direction"]
+    grid.data.globals["direction"] = grid.data.globals["key_direction"]
 
-    if game["over"]:
+    if grid.data.globals["game_over"]:
         return
 
-    snake = grid.maps.select(matches={"type": "snake"})
+    snake = grid.data.select(matches={"type": "snake"})
     head = max(snake, key=lambda m: m["id"])
 
-    target_cell = grid.cells.wrap(head.cell + game["direction"])
-    food = grid.maps.select(matches={"type": "food"}, at_cells={target_cell})
+    target_cell = grid.cells.wrap(head.cell + grid.data.globals["direction"])
+    food = grid.data.select(matches={"type": "food"}, at_cells={target_cell})
 
     head_id = head["id"]
     head.delete("head")
 
     if food:
         for food_map in food:
-            grid.maps.delete(food_map)
+            grid.data.delete(food_map)
         snake_cells = {m.cell for m in snake}
         food_cell = random.choice(list(grid.cells.all() - snake_cells - {target_cell}))
-        grid.maps.add(food_cell, {"type": "food"})
+        grid.data.add(food_cell, {"type": "food"})
     else:
-        grid.maps.delete(min(snake, key=lambda m: m["id"]))
+        grid.data.delete(min(snake, key=lambda m: m["id"]))
 
-    if grid.maps.exists(matches={"type": "snake"}, at_cells={target_cell}):
-        game["over"] = True
+    if grid.data.exists(matches={"type": "snake"}, at_cells={target_cell}):
+        grid.data.globals["game_over"] = True
 
-    grid.maps.add(target_cell,
+    grid.data.add(target_cell,
                   {"type": "snake", "head": True, "id": head_id + 1})
 
 
 @program.color
 def color(grid: Grid, cell: Cell) -> Color:
-    if grid.maps.exists(at_cells={cell}, matches={"head": True}):
+    if grid.data.exists(at_cells={cell}, matches={"head": True}):
         return Color(0.2, 0.4, 0.6)
-    if grid.maps.exists(at_cells={cell}, matches={"type": "snake"}):
+    if grid.data.exists(at_cells={cell}, matches={"type": "snake"}):
         return Color(0.2, 0.4, 0.6, 0.5)
-    if grid.maps.exists(at_cells={cell}, matches={"type": "food"}):
+    if grid.data.exists(at_cells={cell}, matches={"type": "food"}):
         return Color(0.7, 0.2, 0.2)
-    if grid.globals.get("game")["over"]:
+    if grid.data.globals["game_over"]:
         return Color(0.7, 0.2, 0.2)
     return Color(0.0, 0.0, 0.0)
 
@@ -83,9 +82,8 @@ def on_key(grid: Grid, key: str) -> None:
     key_direction = {"left": LEFT, "right": RIGHT, "up": UP, "down": DOWN}.get(key)
 
     if key_direction is not None:
-        game = grid.globals.get("game")
-        if key_direction != -game["direction"]:
-            game["key_direction"] = key_direction
+        if key_direction != -grid.data.globals["direction"]:
+            grid.data.globals["key_direction"] = key_direction
 
 
 if __name__ == "__main__":

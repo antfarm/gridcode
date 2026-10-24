@@ -26,16 +26,16 @@ def test_an_empty_grid_shows_only_the_separator():
     assert inspector_on()._inspection_string("tick 0", grid).strip().endswith("tick 0")
 
 
-def test_global_maps_are_always_shown():
+def test_globals_are_shown_when_they_hold_data():
     grid = Grid(4)
-    grid.globals.add("game", {"over": False, "score": 2})
+    grid.data.globals.set({"over": False, "score": 2})
 
     text = inspector_on()._inspection_string("tick 0", grid)
 
     assert text == (
         "──────────────────────────────────────────────────────────── tick 0\n"
         "\n"
-        "game\n"
+        "globals\n"
         "\n"
         "   ┌───────┬───────┐\n"
         "   │ over  │ false │\n"
@@ -46,7 +46,7 @@ def test_global_maps_are_always_shown():
 
 def test_the_inspected_cell_shows_its_maps():
     grid = Grid(4)
-    grid.maps.add(Cell(2, 3), {"kind": "ant"})
+    grid.data.add(Cell(2, 3), {"kind": "ant"})
 
     text = inspector_on(Cell(2, 3))._inspection_string("cell (2,3)", grid)
 
@@ -56,7 +56,7 @@ def test_the_inspected_cell_shows_its_maps():
 
 def test_an_empty_cell_adds_nothing():
     grid = Grid(4)
-    grid.maps.add(Cell(0, 0), {"kind": "ant"})
+    grid.data.add(Cell(0, 0), {"kind": "ant"})
 
     text = inspector_on(Cell(2, 2))._inspection_string("cell (2,2)", grid)
 
@@ -66,7 +66,7 @@ def test_an_empty_cell_adds_nothing():
 
 def test_keys_are_sorted_and_columns_aligned():
     grid = Grid(4)
-    grid.maps.add(Cell(0, 0), {"zebra": 1, "ant": 22, "mongoose": 333})
+    grid.data.add(Cell(0, 0), {"zebra": 1, "ant": 22, "mongoose": 333})
 
     rows = [line for line in
             inspector_on(Cell(0, 0))._inspection_string("", grid).split("\n")
@@ -78,7 +78,7 @@ def test_keys_are_sorted_and_columns_aligned():
 
 def test_values_use_gridcode_notation():
     grid = Grid(4)
-    grid.maps.add(Cell(0, 0), {"home": Cell(1, 2), "heading": Offset(-1, 0),
+    grid.data.add(Cell(0, 0), {"home": Cell(1, 2), "heading": Offset(-1, 0),
                                "alive": True, "dead": False, "rate": 0.5})
 
     text = inspector_on(Cell(0, 0))._inspection_string("", grid)
@@ -91,7 +91,7 @@ def test_values_use_gridcode_notation():
 
 def test_an_empty_map_renders_as_an_empty_table():
     grid = Grid(4)
-    grid.maps.add(Cell(0, 0), {})
+    grid.data.add(Cell(0, 0), {})
 
     text = inspector_on(Cell(0, 0))._inspection_string("", grid)
 
@@ -100,7 +100,7 @@ def test_an_empty_map_renders_as_an_empty_table():
 
 def test_nothing_is_printed_while_disabled(capsys):
     grid = Grid(4)
-    grid.globals.add("game", {"score": 0})
+    grid.data.globals.set({"score": 0})
     inspector = Inspector()
 
     inspector.on_tick(3, grid)

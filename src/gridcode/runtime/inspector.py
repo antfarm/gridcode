@@ -65,12 +65,12 @@ class Inspector:
     def _inspection_string(self, label: str, grid: Grid) -> str:
         blocks = [_separator_string(label)]
 
-        for name, map in grid.globals._maps.items():
-            blocks.append(name)
-            blocks.append(_map_string(map))
+        if grid.data.globals._data:
+            blocks.append("globals")
+            blocks.append(_map_string(grid.data.globals))
 
         if self.cell is not None:
-            maps = grid.maps.select(at_cells={self.cell})
+            maps = grid.data.select(at_cells={self.cell})
             if maps:
                 blocks.append(f"cell ({self.cell.x},{self.cell.y})")
                 blocks.extend(_map_string(map) for map in maps)

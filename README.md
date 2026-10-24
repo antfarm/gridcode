@@ -130,19 +130,16 @@ The color of each cell is determined in every tick by calling `color` for the gi
 
 ### Grid Components
 
-The `grid` instance that is passed to the program callback functions gives acces to cell data and global data stored in maps via its `maps`and `globals` members.
-
-Cells and cell sets can be constructed, transformed or filtered vusing the `cells` member.
+The `grid` instance that is passed to the program callback functions gives access to cell data (`grid.data`) and global values (`grid.data.globals`). Cells and cell sets can be constructed, transformed or filtered (`grid.cells`).
 
 #### grid.Grid
 
-|               | Member    | Type             | Usage                                      |
-| ------------- | --------- | ---------------- | ------------------------------------------ |
-| *Topology*    | `cells`   | `CellGrid`       | `grid.cells.all()`                         |
-| *Cell data*   | `maps`    | `CellMapStore`   | `grid.maps.select(matches={"key": value})` |
-| *Global data* | `globals` | `GlobalMapStore` | `grid.globals.get("name")`                 |
+|            | Member  | Type        | Usage                                      |
+| ---------- | ------- | ----------- | ------------------------------------------ |
+| *Topology* | `cells` | `CellGrid`  | `grid.cells.all()`                         |
+| *Data*     | `data`  | `DataStore` | `grid.data.select(matches={"key": value})` |
 
-### Cells and Grid Geometry
+### Grid Geometry, Cells and Offsets
 
 #### grid.cells.Cell
 
@@ -190,11 +187,13 @@ Cells and cell sets can be constructed, transformed or filtered vusing the `cell
 
 ### Key/Value Maps
 
+#### grid.data.Value
+
 ```python
 type Value = bool | int | float | str | Cell | Offset
 ```
 
-#### grid.maps.Map
+#### grid.data.Map
 
 |            | Member                      | Type                | Raises      | Usage                                       |
 | ---------- | --------------------------- | ------------------- | ----------- | ------------------------------------------- |
@@ -208,46 +207,31 @@ type Value = bool | int | float | str | Cell | Offset
 
 ### Maps on the Grid
 
-#### grid.maps.CellMap
+#### grid.data.CellMap
 
 |            | Member     | Type   | Raises                  | Usage      |
 | ---------- | ---------- | ------ | ----------------------- | ---------- |
 | *Location* | `map.cell` | `Cell` | `ValueError` `KeyError` | `map.cell` |
 
-#### grid.maps.CellMapStore
+#### grid.data.DataStore
 
 |             | Member                                                        | Type           | Raises       | Usage                                                                            |
 | ----------- | ------------------------------------------------------------- | -------------- | ------------ | -------------------------------------------------------------------------------- |
-| *Lifecycle* | `maps.add(cell, data)`                                        | `CellMap`      | `TypeError`  | `grid.maps.add(cell, {"key": value})`                                            |
-|             | `maps.copy(map, cell)`                                        | `CellMap`      | `IndexError` | `grid.maps.copy(map, cell)`                                                      |
-|             | `maps.copy(map, offset)`                                      | `CellMap`      | `IndexError` | `grid.maps.copy(map, UP)`                                                        |
-|             | `maps.delete(map)`                                            | `None`         |              | `grid.maps.delete(map)`                                                          |
-|             | `maps.clear()`                                                | `None`         |              | `grid.maps.clear()`                                                              |
-| *Movement*  | `maps.move(map, cell)`                                        | `None`         | `IndexError` | `grid.maps.move(map, cell)`                                                      |
-|             | `maps.move(map, offset)`                                      | `None`         | `IndexError` | `grid.maps.move(map, UP)`                                                        |
-| *Location*  | `maps.cell_of(map)`                                           | `Cell`         | `KeyError`   | `grid.maps.cell_of(map)`                                                         |
-| *Querying*  | `maps.select(*, matches=None, has=None, at_cells=None)`       | `set[CellMap]` | `TypeError`  | `grid.maps.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
-|             | `maps.exists(*, matches=None, has=None, at_cells=None)`       | `bool`         | `TypeError`  | `grid.maps.exists(matches={"key": value}, at_cells={cell})`                      |
-|             | `maps.count(*, matches=None, has=None, at_cells=None)`        | `int`          | `TypeError`  | `grid.maps.count(has={"key"}, at_cells=cells)`                                   |
-|             | `maps.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.maps.select_cells(matches={"key": value})`                                 |
-
-### Global Maps
-
-#### grid.maps.GlobalMap
-
-|            | Member     | Type  | Raises       | Usage      |
-| ---------- | ---------- | ----- | ------------ | ---------- |
-| *Location* | `map.name` | `str` | `ValueError` | `map.name` |
-
-#### grid.maps.GlobalMapStore
-
-|             | Member                    | Type        | Raises                   | Usage                                      |
-| ----------- | ------------------------- | ----------- | ------------------------ | ------------------------------------------ |
-| *Lifecycle* | `globals.add(name, data)` | `GlobalMap` | `TypeError` `ValueError` | `grid.globals.add("name", {"key": value})` |
-|             | `globals.delete(name)`    | `None`      | `KeyError`               | `grid.globals.delete("name")`              |
-|             | `globals.clear()`         | `None`      |                          | `grid.globals.clear()`                     |
-| *Querying*  | `globals.get(name)`       | `GlobalMap` | `KeyError`               | `grid.globals.get("name")`                 |
-|             | `globals.exists(name)`    | `bool`      |                          | `grid.globals.exists("name")`              |
+| *Lifecycle* | `data.add(cell, data)`                                        | `CellMap`      | `TypeError`  | `grid.data.add(cell, {"key": value})`                                            |
+|             | `data.copy(map, cell)`                                        | `CellMap`      | `IndexError` | `grid.data.copy(map, cell)`                                                      |
+|             | `data.copy(map, offset)`                                      | `CellMap`      | `IndexError` | `grid.data.copy(map, UP)`                                                        |
+|             | `data.delete(map)`                                            | `None`         |              | `grid.data.delete(map)`                                                          |
+|             | `data.clear_cells()`                                          | `None`         |              | `grid.data.clear_cells()`                                                        |
+|             | `data.clear_globals()`                                        | `None`         |              | `grid.data.clear_globals()`                                                      |
+|             | `data.clear()`                                                | `None`         |              | `grid.data.clear()`                                                              |
+| *Movement*  | `data.move(map, cell)`                                        | `None`         | `IndexError` | `grid.data.move(map, cell)`                                                      |
+|             | `data.move(map, offset)`                                      | `None`         | `IndexError` | `grid.data.move(map, UP)`                                                        |
+| *Location*  | `data.cell_of(map)`                                           | `Cell`         | `KeyError`   | `grid.data.cell_of(map)`                                                         |
+| *Querying*  | `data.select(*, matches=None, has=None, at_cells=None)`       | `set[CellMap]` | `TypeError`  | `grid.data.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
+|             | `data.exists(*, matches=None, has=None, at_cells=None)`       | `bool`         | `TypeError`  | `grid.data.exists(matches={"key": value}, at_cells={cell})`                      |
+|             | `data.count(*, matches=None, has=None, at_cells=None)`        | `int`          | `TypeError`  | `grid.data.count(has={"key"}, at_cells=cells)`                                   |
+|             | `data.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.data.select_cells(matches={"key": value})`                                 |
+| *Globals*   | `data.globals`                                                | `Map`          |              | `grid.data.globals["key"] = value`                                               |
 
 ### Runtime
 

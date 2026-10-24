@@ -12,7 +12,7 @@ KINDS = ("ant", "bee", "food", "trail")
 
 def scanned(grid, matches=None, has=None, at_cells=None):
     """What a query should return, found by looking at every map."""
-    maps = set(grid.maps._cell_store.cells_by_item)
+    maps = set(grid.data._cell_store.cells_by_item)
     if at_cells is not None:
         maps = {map for map in maps if map.cell in at_cells}
     if matches:
@@ -34,7 +34,7 @@ def populated(index, seed=1):
             data["energy"] = random.randrange(3)
         if random.random() < 0.3:
             data["alive"] = True
-        grid.maps.add(cell, data)
+        grid.data.add(cell, data)
     return grid
 
 
@@ -59,67 +59,67 @@ QUERIES = [
 def test_select_agrees_with_a_full_scan(index, query):
     grid = populated(index)
 
-    assert grid.maps.select(**query) == scanned(grid, **query)
+    assert grid.data.select(**query) == scanned(grid, **query)
 
 
 def test_the_index_holds_no_deleted_maps():
     grid = populated(ALL)
-    index = grid.maps._index
+    index = grid.data._index
 
-    for map in list(grid.maps.select(matches={"kind": "ant"})):
-        grid.maps.delete(map)
+    for map in list(grid.data.select(matches={"kind": "ant"})):
+        grid.data.delete(map)
 
-    alive = set(grid.maps._cell_store.cells_by_item)
+    alive = set(grid.data._cell_store.cells_by_item)
     assert all(maps <= alive for maps in index.maps_by_key.values())
     assert all(maps <= alive for maps in index.maps_by_data.values())
-    assert grid.maps.count(matches={"kind": "ant"}) == 0
+    assert grid.data.count(matches={"kind": "ant"}) == 0
 
 
 def test_the_index_follows_a_changed_value():
     grid = Grid(8, ALL)
-    ant = grid.maps.add(Cell(1, 1), {"kind": "ant"})
+    ant = grid.data.add(Cell(1, 1), {"kind": "ant"})
 
     ant["kind"] = "bee"
 
-    assert grid.maps.count(matches={"kind": "ant"}) == 0
-    assert grid.maps.count(matches={"kind": "bee"}) == 1
-    assert scanned(grid, matches={"kind": "bee"}) == grid.maps.select(matches={"kind": "bee"})
+    assert grid.data.count(matches={"kind": "ant"}) == 0
+    assert grid.data.count(matches={"kind": "bee"}) == 1
+    assert scanned(grid, matches={"kind": "bee"}) == grid.data.select(matches={"kind": "bee"})
 
 
 def test_the_index_survives_a_rejected_write():
     grid = Grid(8, ALL)
-    ant = grid.maps.add(Cell(1, 1), {"kind": "ant"})
+    ant = grid.data.add(Cell(1, 1), {"kind": "ant"})
 
     with pytest.raises(TypeError):
         ant.set({"kind": "bee", "bad": [1]})
 
-    assert grid.maps.count(matches={"kind": "ant"}) == 1
-    assert grid.maps.select(matches={"kind": "ant"}) == {ant}
+    assert grid.data.count(matches={"kind": "ant"}) == 1
+    assert grid.data.select(matches={"kind": "ant"}) == {ant}
 
 
 def test_clear_empties_the_index():
     grid = populated(ALL)
-    index = grid.maps._index
+    index = grid.data._index
 
-    grid.maps.clear()
+    grid.data.clear_cells()
 
     assert index.maps_by_key == {}
     assert index.maps_by_data == {}
-    assert grid.maps.count(matches={"kind": "ant"}) == 0
+    assert grid.data.count(matches={"kind": "ant"}) == 0
 
 
 def test_an_index_is_only_built_when_fields_are_declared():
-    assert not Grid(8).maps._has_index
-    assert not Grid(8, []).maps._has_index
-    assert Grid(8, ["kind"]).maps._has_index
-    assert Grid(8, ALL).maps._has_index
+    assert not Grid(8).data._has_index
+    assert not Grid(8, []).data._has_index
+    assert Grid(8, ["kind"]).data._has_index
+    assert Grid(8, ALL).data._has_index
 
 
 def test_only_declared_fields_are_indexed():
     grid = Grid(8, ["kind"])
-    index = grid.maps._index
+    index = grid.data._index
 
-    grid.maps.add(Cell(1, 1), {"kind": "ant", "energy": 3})
+    grid.data.add(Cell(1, 1), {"kind": "ant", "energy": 3})
 
     assert index.is_indexed("kind")
     assert not index.is_indexed("energy")

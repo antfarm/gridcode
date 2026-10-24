@@ -1,7 +1,7 @@
 """``gridcode.data``"""
 
-from .cell_maps import CellMapStore, Index
-from .global_maps import GlobalMapStore
+from .data import DataStore
+from .index import Index
 from .map import Map, Value
 
 
@@ -10,7 +10,6 @@ Fields = Index.Fields
 __all__ = [
     "Value",
     "Map",
-    "CellMapStore",
-    "GlobalMapStore",
+    "DataStore",
     "Fields",
 ]
