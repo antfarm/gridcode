@@ -3,7 +3,7 @@
 import pytest
 
 from gridcode import ALL, Cell, Color, Grid, Program
-from gridcode.runtime import Runtime
+from gridcode.runtime.runtime import Runtime
 
 
 def complete_program(title="Test", **settings):

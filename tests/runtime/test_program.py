@@ -3,7 +3,7 @@
 import pytest
 
 from gridcode import Cell, Color, Grid, Program
-from gridcode.runtime import Runtime
+from gridcode.runtime.runtime import Runtime
 
 
 def test_settings_have_defaults():

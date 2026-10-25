@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 import gridcode
-from gridcode.runtime import Runtime
+from gridcode.runtime.runtime import Runtime
 
 
 EXAMPLES = Path(__file__).parent.parent / "examples"

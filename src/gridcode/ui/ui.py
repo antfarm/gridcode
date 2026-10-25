@@ -2,8 +2,8 @@
 
 import time
 
-from ..runtime import Runtime
 from ..runtime.inspector import Inspector
+from ..runtime.runtime import Runtime
 from .window import Window
 
 

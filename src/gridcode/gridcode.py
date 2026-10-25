@@ -1,10 +1,11 @@
 """``gridcode.gridcode``"""
 
-from .runtime import Program, Runtime
+from .runtime import Program
+from .runtime.runtime import Runtime
 
 
 def run(program: Program) -> None:
     """``run(program)``"""
-    from .ui import UI
+    from .ui.ui import UI
 
     UI(Runtime(program)).show()

@@ -250,5 +250,5 @@ type Value = bool | int | float | str | Cell | Offset
 |             | Member                | Type   | Raises       | Usage                                            |
 | ----------- | --------------------- | ------ | ------------ | ------------------------------------------------ |
 | *Reduction* | `only(set)`           | `Item` | `ValueError` | `only(grid.data.select(at_cells={cell}))`        |
-|             | `only(set, default)`  | `Item` | `ValueError` | `only(grid.data.select(at_cells={cell}), None)`  |
+|             | `only(set, default)`  | `Item \| None` | `ValueError` | `only(grid.data.select(at_cells={cell}), None)` |
 

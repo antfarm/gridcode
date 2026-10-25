@@ -1,6 +1,7 @@
 """``gridcode.data.data``"""
 
-from ..cells import Cell, CellGrid, CellStore, Offset
+from ..cells import Cell, CellGrid, Offset
+from ..cells.cells import CellStore
 from .index import Index
 from .map import Map, Value, check_deleted
 

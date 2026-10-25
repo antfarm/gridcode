@@ -1,6 +1,6 @@
 """``gridcode.cells``"""
 
-from .cells import Cell, CellGrid, CellStore, Neighborhood, Offset
+from .cells import Cell, CellGrid, Neighborhood, Offset
 
 
 __all__ = [
@@ -8,5 +8,4 @@ __all__ = [
     "Offset",
     "Neighborhood",
     "CellGrid",
-    "CellStore",
 ]

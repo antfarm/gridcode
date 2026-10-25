@@ -3,7 +3,8 @@
 import pytest
 
 from gridcode import Cell, Offset
-from gridcode.cells import CellGrid, CellStore, Neighborhood
+from gridcode.cells import CellGrid, Neighborhood
+from gridcode.cells.cells import CellStore
 
 
 def test_all_returns_every_cell():
