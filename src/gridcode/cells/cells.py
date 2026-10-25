@@ -131,9 +131,13 @@ class CellGrid:
             return ordered[0]
         return set(ordered[:count])
 
+    def contains(self, cell: Cell) -> bool:
+        """``grid.cells.contains(cell)``"""
+        return 0 <= cell.x < self.size and 0 <= cell.y < self.size
+
     def clip(self, cells: set[Cell]) -> set[Cell]:
         """``grid.cells.clip(cells)``"""
-        return {cell for cell in cells if self._contains(cell)}
+        return {cell for cell in cells if self.contains(cell)}
 
     def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
         """``grid.cells.wrap(cell)``
@@ -159,9 +163,6 @@ class CellGrid:
 
     def _wrapped(self, cell: Cell) -> Cell:
         return Cell(cell.x % self.size, cell.y % self.size)
-
-    def _contains(self, cell: Cell) -> bool:
-        return 0 <= cell.x < self.size and 0 <= cell.y < self.size
 
     def _bounded(self, cells: set[Cell], wrap: bool) -> set[Cell]:
         if wrap:
@@ -190,54 +191,29 @@ class CellGrid:
 class CellStore[Item]:
     """``CellStore``"""
 
-    __slots__ = ("_grid", "_items", "_cells_of_item")
+    __slots__ = ("_grid", "_items")
 
     def __init__(self, grid: CellGrid):
         self._grid = grid
-        self._items: dict[Cell, set[Item]] = {}
-        self._cells_of_item: dict[Item, Cell] = {}
+        self._items: dict[Cell, Item] = {}
 
-    def add(self, cell: Cell, item: Item) -> None:
-        """``store.add(cell, item)``"""
+    def set(self, cell: Cell, item: Item) -> None:
+        """``store.set(cell, item)``"""
         self._check_bounds(cell)
-        self._items.setdefault(cell, set()).add(item)
-        self._cells_of_item[item] = cell
+        self._items[cell] = item
 
-    def delete(self, item: Item) -> None:
-        """``store.delete(item)``"""
-        cell = self.cell_of(item)
-        items = self._items[cell]
-        items.discard(item)
-        if not items:
-            del self._items[cell]
-        del self._cells_of_item[item]
+    def delete(self, cell: Cell) -> None:
+        """``store.delete(cell)``"""
+        self._items.pop(cell, None)
 
-    def move(self, item: Item, cell: Cell) -> None:
-        """``store.move(item, cell)``"""
-        self._check_bounds(cell)
-        self.delete(item)
-        self.add(cell, item)
-
-    def items_at(self, cell: Cell) -> set[Item]:
-        """``store.items_at(cell)``"""
-        return set(self._items.get(cell, ()))
-
-    def all_items(self) -> set[Item]:
-        """``store.all_items()``"""
-        return {item for items in self._items.values() for item in items}
-
-    def cell_of(self, item: Item) -> Cell:
-        """``store.cell_of(item)``"""
-        cell = self._cells_of_item.get(item)
-        if cell is None:
-            raise KeyError(f"{item!r} is not in the grid")
-        return cell
+    def item_at(self, cell: Cell) -> Item | None:
+        """``store.item_at(cell)``"""
+        return self._items.get(cell)
 
     def clear(self) -> None:
         """``store.clear()``"""
         self._items.clear()
-        self._cells_of_item.clear()
 
     def _check_bounds(self, cell: Cell) -> None:
-        if not self._grid._contains(cell):
+        if not self._grid.contains(cell):
             raise IndexError(f"{cell} is outside the grid")

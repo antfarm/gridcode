@@ -42,17 +42,19 @@ class CellMap(Map):
 class DataStore:
     """``DataStore``"""
 
-    __slots__ = ("globals", "_cell_store", "_index")
+    __slots__ = ("globals", "_grid", "_cell_store", "_map_locations", "_index")
 
     def __init__(self, grid: CellGrid, index: list[str] | Index.Fields | None = None):
         self.globals = Map({})
-        self._cell_store = CellStore[CellMap](grid)
+        self._grid = grid
+        self._cell_store = CellStore[set[CellMap]](grid)
+        self._map_locations: dict[CellMap, Cell] = {}
         self._index = Index(index) if index else None
 
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.data.add(cell, data)``"""
         map = CellMap(self, data)
-        self._cell_store.add(cell, map)
+        self._place(cell, map)
         if self._has_index:
             self._index.add_map(map)
         return map
@@ -68,16 +70,17 @@ class DataStore:
 
     def delete(self, map: CellMap) -> None:
         """``grid.data.delete(map)``"""
-        self._cell_store.delete(map)
+        self._remove(map)
         if self._has_index:
             self._index.remove_map(map)
         map._deleted = True
 
     def clear_cells(self) -> None:
         """``grid.data.clear_cells()``"""
-        for map in self._cell_store.all_items():
+        for map in self._map_locations:
             map._deleted = True
         self._cell_store.clear()
+        self._map_locations.clear()
         if self._has_index:
             self._index.clear()
 
@@ -97,11 +100,19 @@ class DataStore:
         """
         target_cell = (map.cell + cell_or_offset if isinstance(cell_or_offset, Offset)
                        else cell_or_offset)
-        self._cell_store.move(map, target_cell)
+        if not self._grid.contains(target_cell):
+            raise IndexError(f"{target_cell} is outside the grid")
+
+        if target_cell != map.cell:
+            self._remove(map)
+            self._place(target_cell, map)
 
     def cell_of(self, map: CellMap) -> Cell:
         """``grid.data.cell_of(map)``"""
-        return self._cell_store.cell_of(map)
+        cell = self._map_locations.get(map)
+        if cell is None:
+            raise KeyError(f"{map!r} is not in the grid")
+        return cell
 
     def select(self, *,
                matches: dict[str, Value] | None = None,
@@ -115,10 +126,10 @@ class DataStore:
         if at_cells is not None:
             maps_at_cells = set()
             for cell in at_cells:
-                maps_at_cells |= self._cell_store.items_at(cell)
+                maps_at_cells |= self._cell_store.item_at(cell) or set()
             candidate_sets.append(maps_at_cells)
         if not candidate_sets:
-            candidate_sets.append(self._cell_store.all_items())
+            candidate_sets.append(self._all_maps())
 
         maps = (candidate_sets[0] if len(candidate_sets) == 1
                 else set.intersection(*candidate_sets))
@@ -152,7 +163,29 @@ class DataStore:
 
     @property
     def _has_index(self) -> bool:
-                return self._index is not None
+        return self._index is not None
 
     def _reindexing(self, map: CellMap):
         return self._index.reindexing(map)
+
+    def _all_maps(self) -> set[CellMap]:
+        return set(self._map_locations)
+
+    def _maps_at(self, cell: Cell) -> set[CellMap]:
+        maps = self._cell_store.item_at(cell)
+        if maps is None:
+            maps = set()
+            self._cell_store.set(cell, maps)
+        return maps
+
+    def _place(self, cell: Cell, map: CellMap) -> None:
+        self._maps_at(cell).add(map)
+        self._map_locations[map] = cell
+
+    def _remove(self, map: CellMap) -> None:
+        cell = self.cell_of(map)
+        maps = self._cell_store.item_at(cell)
+        maps.discard(map)
+        if not maps:
+            self._cell_store.delete(cell)
+        del self._map_locations[map]

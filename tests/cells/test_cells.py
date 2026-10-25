@@ -3,7 +3,7 @@
 import pytest
 
 from gridcode import Cell, Offset
-from gridcode.cells import CellGrid, Neighborhood
+from gridcode.cells import CellGrid, CellStore, Neighborhood
 
 
 def test_all_returns_every_cell():
@@ -33,6 +33,15 @@ def test_wrap_moves_a_cell_inside_the_grid():
 
     assert grid.wrap(Cell(4, -1)) == Cell(0, 3)
     assert grid.wrap({Cell(-1, -1), Cell(2, 2)}) == {Cell(3, 3), Cell(2, 2)}
+
+
+def test_contains_tells_whether_a_cell_is_on_the_grid():
+    grid = CellGrid(3)
+
+    assert grid.contains(Cell(0, 0))
+    assert grid.contains(Cell(2, 2))
+    assert not grid.contains(Cell(3, 0))
+    assert not grid.contains(Cell(0, -1))
 
 
 def test_clip_drops_cells_outside_the_grid():
@@ -130,3 +139,64 @@ def test_cell_arithmetic():
     assert Cell(2, 1) - Offset(1, 0) == Cell(1, 1)
     assert Cell(2, 1) - Cell(1, 1) == Offset(1, 0)
     assert -Offset(1, 0) == Offset(-1, 0)
+
+
+def test_a_cell_holds_the_item_it_was_given():
+    store = CellStore[str](CellGrid(4))
+
+    store.set(Cell(1, 2), "wall")
+
+    assert store.item_at(Cell(1, 2)) == "wall"
+
+
+def test_an_empty_cell_holds_nothing():
+    store = CellStore[str](CellGrid(4))
+
+    assert store.item_at(Cell(1, 2)) is None
+
+
+def test_setting_a_cell_replaces_what_was_there():
+    store = CellStore[str](CellGrid(4))
+
+    store.set(Cell(1, 2), "wall")
+    store.set(Cell(1, 2), "floor")
+
+    assert store.item_at(Cell(1, 2)) == "floor"
+
+
+def test_delete_empties_the_cell_and_allows_an_empty_one():
+    store = CellStore[str](CellGrid(4))
+    store.set(Cell(1, 2), "wall")
+
+    store.delete(Cell(1, 2))
+    store.delete(Cell(1, 2))
+
+    assert store.item_at(Cell(1, 2)) is None
+
+
+def test_a_cell_outside_the_grid_is_refused():
+    store = CellStore[str](CellGrid(4))
+
+    with pytest.raises(IndexError):
+        store.set(Cell(4, 0), "wall")
+
+
+def test_clear_empties_every_cell():
+    store = CellStore[str](CellGrid(4))
+    store.set(Cell(0, 0), "wall")
+    store.set(Cell(1, 1), "floor")
+
+    store.clear()
+
+    assert store.item_at(Cell(0, 0)) is None
+    assert store.item_at(Cell(1, 1)) is None
+
+
+def test_the_item_can_be_anything():
+    store = CellStore(CellGrid(4))
+
+    store.set(Cell(0, 0), (True, None))
+    store.set(Cell(1, 1), {"alive": True})
+
+    assert store.item_at(Cell(0, 0)) == (True, None)
+    assert store.item_at(Cell(1, 1)) == {"alive": True}

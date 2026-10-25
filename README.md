@@ -179,6 +179,7 @@ The `grid` instance that is passed to the program callback functions gives acces
 |                  | `cells.neighbors(cell, *, kind=MOORE, radius=1, wrap)` | `set[Cell]` |              | `grid.cells.neighbors(cell, kind=VON_NEUMANN, radius=2, wrap=True)` |
 | *Filter*         | `cells.nearest(candidates, to)`                        | `Cell`      | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3)`                      |
 |                  | `cells.nearest(candidates, to, *, count)`              | `set[Cell]` | `ValueError` | `grid.cells.nearest({cell1, cell2}, to=cell3, count=2)`             |
+|                  | `cells.contains(cell)`                                 | `bool`      |              | `grid.cells.contains(cell)`                                         |
 |                  | `cells.clip(cells)`                                    | `set[Cell]` |              | `grid.cells.clip({cell1, cell2})`                                   |
 | *Transformation* | `cells.wrap(cell)`                                     | `Cell`      |              | `grid.cells.wrap(cell)`                                             |
 |                  | `cells.wrap(cells)`                                    | `set[Cell]` |              | `grid.cells.wrap({cell1, cell2})`                                   |
