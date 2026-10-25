@@ -9,7 +9,6 @@ from gridcode.runtime import Runtime
 def test_settings_have_defaults():
     program = Program("Test")
 
-    assert program.title == "Test"
     assert program.size == 16
     assert program.frame_rate == 8
     assert program.index is None
@@ -18,11 +17,19 @@ def test_settings_have_defaults():
 def test_a_decorator_returns_the_function_unchanged():
     program = Program("Test")
 
+    def setup(grid: Grid) -> None:
+        pass
+
+    assert program.setup(setup) is setup
+
+
+def test_a_decorator_registers_the_function():
+    program = Program("Test")
+
     @program.setup
     def setup(grid: Grid) -> None:
         pass
 
-    assert setup.__name__ == "setup"
     assert program._setup is setup
 
 

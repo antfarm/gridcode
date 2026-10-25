@@ -1,4 +1,4 @@
-"""``tests.test_cells``"""
+"""``tests.cells.test_cells``"""
 
 import pytest
 
@@ -126,18 +126,31 @@ def test_bounds_of_fills_the_enclosing_rectangle():
     assert grid.bounds_of(set()) == set()
 
 
-def test_random_returns_cells_from_the_grid():
+def test_random_returns_a_cell_from_the_grid():
     grid = CellGrid(4)
 
     assert grid.random() in grid.all()
-    assert grid.random(count=3) <= grid.all()
-    assert len(grid.random(count=3)) == 3
 
 
-def test_cell_arithmetic():
+def test_random_with_a_count_returns_that_many_cells():
+    grid = CellGrid(4)
+
+    cells = grid.random(count=3)
+
+    assert len(cells) == 3
+    assert cells <= grid.all()
+
+
+def test_a_cell_and_an_offset_make_a_cell():
     assert Cell(1, 1) + Offset(1, 0) == Cell(2, 1)
     assert Cell(2, 1) - Offset(1, 0) == Cell(1, 1)
+
+
+def test_the_difference_between_two_cells_is_an_offset():
     assert Cell(2, 1) - Cell(1, 1) == Offset(1, 0)
+
+
+def test_an_offset_can_be_negated():
     assert -Offset(1, 0) == Offset(-1, 0)
 
 
@@ -164,11 +177,18 @@ def test_setting_a_cell_replaces_what_was_there():
     assert store.item_at(Cell(1, 2)) == "floor"
 
 
-def test_delete_empties_the_cell_and_allows_an_empty_one():
+def test_delete_empties_the_cell():
     store = CellStore[str](CellGrid(4))
     store.set(Cell(1, 2), "wall")
 
     store.delete(Cell(1, 2))
+
+    assert store.item_at(Cell(1, 2)) is None
+
+
+def test_deleting_an_empty_cell_is_allowed():
+    store = CellStore[str](CellGrid(4))
+
     store.delete(Cell(1, 2))
 
     assert store.item_at(Cell(1, 2)) is None
@@ -190,6 +210,19 @@ def test_clear_empties_every_cell():
 
     assert store.item_at(Cell(0, 0)) is None
     assert store.item_at(Cell(1, 1)) is None
+
+
+def test_two_stores_on_one_grid_are_independent():
+    grid = CellGrid(4)
+    terrain = CellStore[str](grid)
+    fog = CellStore[str](grid)
+
+    terrain.set(Cell(1, 1), "wall")
+    fog.set(Cell(1, 1), "hidden")
+    terrain.delete(Cell(1, 1))
+
+    assert terrain.item_at(Cell(1, 1)) is None
+    assert fog.item_at(Cell(1, 1)) == "hidden"
 
 
 def test_the_item_can_be_anything():

@@ -16,6 +16,17 @@ def test_values_must_be_gridcode_values():
         ant["bad"] = {"nested": True}
 
 
+def test_a_refused_set_writes_none_of_its_keys():
+    grid = Grid(8)
+    map = grid.data.add(Cell(1, 1), {"kind": "ant"})
+
+    with pytest.raises(TypeError):
+        map.set({"energy": 3, "bad": [1]})
+
+    assert not map.has("energy")
+    assert map["kind"] == "ant"
+
+
 def test_every_value_type_is_accepted():
     grid = Grid(8)
 

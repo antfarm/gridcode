@@ -1,7 +1,7 @@
-"""``tests.test_inspector``"""
+"""``tests.runtime.test_inspector``"""
 
 from gridcode import Cell, Grid, Offset
-from gridcode.runtime.inspector import Inspector
+from gridcode.runtime.inspector import SEPARATOR_WIDTH, Inspector
 
 
 def inspector_on(cell=None):
@@ -11,29 +11,35 @@ def inspector_on(cell=None):
     return inspector
 
 
-def test_the_separator_carries_the_label():
+def printed(capsys, label, grid, cell=None):
+    """What the inspector writes for one event, less the newline print adds."""
+    inspector_on(cell).print(label, grid)
+    return capsys.readouterr().out.removesuffix("\n")
+
+
+def test_the_separator_carries_the_label(capsys):
     grid = Grid(4)
 
-    first_line = inspector_on()._inspection_string("tick 7 · 1.5ms", grid).split("\n")[0]
+    first_line = printed(capsys, "tick 7 · 1.5ms", grid).split("\n")[0]
 
     assert first_line.endswith(" tick 7 · 1.5ms")
     assert set(first_line.split(" ")[0]) == {"─"}
 
 
-def test_an_empty_grid_shows_only_the_separator():
+def test_an_empty_grid_shows_only_the_separator(capsys):
     grid = Grid(4)
 
-    assert inspector_on()._inspection_string("tick 0", grid).strip().endswith("tick 0")
+    assert printed(capsys, "tick 0", grid).strip().endswith("tick 0")
 
 
-def test_globals_are_shown_when_they_hold_data():
+def test_globals_are_shown_when_they_hold_data(capsys):
     grid = Grid(4)
     grid.data.globals.set({"over": False, "score": 2})
 
-    text = inspector_on()._inspection_string("tick 0", grid)
+    text = printed(capsys, "tick 0", grid)
 
     assert text == (
-        "──────────────────────────────────────────────────────────── tick 0\n"
+        f"{'─' * SEPARATOR_WIDTH} tick 0\n"
         "\n"
         "globals\n"
         "\n"
@@ -44,44 +50,43 @@ def test_globals_are_shown_when_they_hold_data():
         "   └───────┴───────┘\n")
 
 
-def test_the_inspected_cell_shows_its_maps():
+def test_the_inspected_cell_shows_its_maps(capsys):
     grid = Grid(4)
     grid.data.add(Cell(2, 3), {"kind": "ant"})
 
-    text = inspector_on(Cell(2, 3))._inspection_string("cell (2,3)", grid)
+    text = printed(capsys, "cell (2,3)", grid, Cell(2, 3))
 
     assert "cell (2,3)\n" in text
     assert "│ kind │ ant │" in text
 
 
-def test_an_empty_cell_adds_nothing():
+def test_an_empty_cell_adds_nothing(capsys):
     grid = Grid(4)
     grid.data.add(Cell(0, 0), {"kind": "ant"})
 
-    text = inspector_on(Cell(2, 2))._inspection_string("cell (2,2)", grid)
+    text = printed(capsys, "cell (2,2)", grid, Cell(2, 2))
 
     assert "ant" not in text
     assert text.count("cell (2,2)") == 1
 
 
-def test_keys_are_sorted_and_columns_aligned():
+def test_keys_are_sorted_and_columns_aligned(capsys):
     grid = Grid(4)
     grid.data.add(Cell(0, 0), {"zebra": 1, "ant": 22, "mongoose": 333})
 
-    rows = [line for line in
-            inspector_on(Cell(0, 0))._inspection_string("", grid).split("\n")
+    rows = [line for line in printed(capsys, "", grid, Cell(0, 0)).split("\n")
             if line.startswith("   │")]
 
     assert [row.split("│")[1].strip() for row in rows] == ["ant", "mongoose", "zebra"]
     assert len({len(row) for row in rows}) == 1
 
 
-def test_values_use_gridcode_notation():
+def test_values_use_gridcode_notation(capsys):
     grid = Grid(4)
     grid.data.add(Cell(0, 0), {"home": Cell(1, 2), "heading": Offset(-1, 0),
                                "alive": True, "dead": False, "rate": 0.5})
 
-    text = inspector_on(Cell(0, 0))._inspection_string("", grid)
+    text = printed(capsys, "", grid, Cell(0, 0))
     rows = dict(tuple(cell.strip() for cell in line.split("│")[1:3])
                 for line in text.split("\n") if line.startswith("   │"))
 
@@ -89,11 +94,11 @@ def test_values_use_gridcode_notation():
                     "alive": "true", "dead": "false", "rate": "0.5"}
 
 
-def test_an_empty_map_renders_as_an_empty_table():
+def test_an_empty_map_renders_as_an_empty_table(capsys):
     grid = Grid(4)
     grid.data.add(Cell(0, 0), {})
 
-    text = inspector_on(Cell(0, 0))._inspection_string("", grid)
+    text = printed(capsys, "", grid, Cell(0, 0))
 
     assert "   ┌───┬───┐\n   └───┴───┘" in text
 

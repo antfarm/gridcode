@@ -2,7 +2,7 @@
 
 import pytest
 
-from gridcode import ALL, Cell, Grid, Offset
+from gridcode import Cell, Grid, Offset
 
 
 def test_add_stores_the_data_at_the_cell():
@@ -67,6 +67,16 @@ def test_copy_does_not_share_data_with_the_original():
     assert ant["kind"] == "ant"
 
 
+def test_move_to_the_same_cell_changes_nothing():
+    grid = Grid(8)
+    ant = grid.data.add(Cell(3, 3), {"kind": "ant"})
+
+    grid.data.move(ant, Cell(3, 3))
+
+    assert ant.cell == Cell(3, 3)
+    assert grid.data.count(at_cells={Cell(3, 3)}) == 1
+
+
 def test_moving_or_copying_off_the_grid_raises():
     grid = Grid(8)
     ant = grid.data.add(Cell(0, 0), {"kind": "ant"})
@@ -77,22 +87,43 @@ def test_moving_or_copying_off_the_grid_raises():
         grid.data.copy(ant, Cell(8, 0))
 
 
-def test_a_deleted_map_refuses_every_access():
+def test_a_refused_move_leaves_the_map_where_it_was():
+    grid = Grid(8)
+    ant = grid.data.add(Cell(0, 0), {"kind": "ant"})
+
+    with pytest.raises(IndexError):
+        grid.data.move(ant, Offset(0, -1))
+
+    assert ant.cell == Cell(0, 0)
+    assert grid.data.count(at_cells={Cell(0, 0)}) == 1
+
+
+def test_delete_removes_the_map_from_the_grid():
     grid = Grid(8)
     ant = grid.data.add(Cell(1, 1), {"kind": "ant"})
 
     grid.data.delete(ant)
 
     assert grid.data.count() == 0
-    for use in (lambda: ant["kind"],
-                lambda: ant.get("kind", "kind"),
-                lambda: ant.set({"kind": "bee"}),
-                lambda: ant.delete("kind"),
-                lambda: ant.has("kind"),
-                lambda: ant.matches({"kind": "ant"}),
-                lambda: ant.cell):
-        with pytest.raises(ValueError):
-            use()
+
+
+@pytest.mark.parametrize("use", [
+    lambda map: map["kind"],
+    lambda map: map.get("kind", "kind"),
+    lambda map: map.set({"kind": "bee"}),
+    lambda map: map.delete("kind"),
+    lambda map: map.has("kind"),
+    lambda map: map.matches({"kind": "ant"}),
+    lambda map: map.cell,
+], ids=["getitem", "get", "set", "delete", "has", "matches", "cell"])
+def test_a_deleted_map_refuses_every_access(use):
+    grid = Grid(8)
+    ant = grid.data.add(Cell(1, 1), {"kind": "ant"})
+
+    grid.data.delete(ant)
+
+    with pytest.raises(ValueError):
+        use(ant)
 
 
 def test_clear_cells_deletes_every_map():
@@ -121,12 +152,12 @@ def test_globals_hold_data_without_a_cell():
 def test_clear_globals_empties_the_globals_map():
     grid = Grid(8)
     grid.data.globals.set({"score": 7})
-    globals = grid.data.globals
+    globals_map = grid.data.globals
 
     grid.data.clear_globals()
 
     assert not grid.data.globals.has("score")
-    assert grid.data.globals is globals
+    assert grid.data.globals is globals_map
 
 
 def test_clear_empties_both_cells_and_globals():
@@ -156,35 +187,24 @@ def test_an_empty_map_is_allowed():
     assert not map.has("anything")
 
 
-def test_indexed_fields_do_not_change_what_a_program_sees():
-    for index in (None, [], ["kind"], ["kind", "energy"], ALL):
-        grid = Grid(8, index)
-        ant = grid.data.add(Cell(1, 1), {"kind": "ant", "energy": 3})
-        grid.data.add(Cell(1, 1), {"kind": "food"})
-        grid.data.add(Cell(4, 4), {"kind": "ant", "energy": 1})
+def test_count_and_exists_follow_select():
+    grid = Grid(8)
+    grid.data.add(Cell(1, 1), {"kind": "ant"})
+    grid.data.add(Cell(1, 1), {"kind": "food"})
+    grid.data.add(Cell(4, 4), {"kind": "ant"})
 
-        assert grid.data.count() == 3
-        assert grid.data.count(matches={"kind": "ant"}) == 2
-        assert grid.data.count(matches={"energy": 3}) == 1
-        assert grid.data.count(has={"energy"}) == 2
-        assert grid.data.count(matches={"kind": "ant"}, has={"energy"}) == 2
-        assert grid.data.count(at_cells={Cell(1, 1)}) == 2
-        assert grid.data.count(matches={"kind": "ant"}, at_cells={Cell(1, 1)}) == 1
-        assert grid.data.count(matches={"kind": "wasp"}) == 0
-        assert grid.data.count(at_cells=set()) == 0
-        assert grid.data.select_cells(matches={"kind": "ant"}) == {Cell(1, 1), Cell(4, 4)}
-        assert grid.data.exists(matches={"kind": "food"})
-        assert not grid.data.exists(matches={"kind": "wasp"})
+    for query in ({}, {"matches": {"kind": "ant"}}, {"matches": {"kind": "wasp"}}):
+        maps = grid.data.select(**query)
 
-        ant["energy"] = 9
+        assert grid.data.count(**query) == len(maps)
+        assert grid.data.exists(**query) == bool(maps)
 
-        assert grid.data.count(matches={"energy": 9}) == 1
-        assert grid.data.count(matches={"energy": 3}) == 0
 
-        ant.delete("energy")
+def test_select_cells_gives_the_cells_of_the_selected_maps():
+    grid = Grid(8)
+    grid.data.add(Cell(1, 1), {"kind": "ant"})
+    grid.data.add(Cell(1, 1), {"kind": "food"})
+    grid.data.add(Cell(4, 4), {"kind": "ant"})
 
-        assert grid.data.count(has={"energy"}) == 1
-
-        grid.data.delete(ant)
-
-        assert grid.data.count(matches={"kind": "ant"}) == 1
+    assert grid.data.select_cells(matches={"kind": "ant"}) == {Cell(1, 1), Cell(4, 4)}
+    assert grid.data.select_cells(matches={"kind": "wasp"}) == set()

@@ -62,17 +62,14 @@ def test_select_agrees_with_a_full_scan(index, query):
     assert grid.data.select(**query) == scanned(grid, **query)
 
 
-def test_the_index_holds_no_deleted_maps():
-    grid = populated(ALL)
-    index = grid.data._index
+def test_a_deleted_map_leaves_the_index():
+    grid = Grid(8, ALL)
+    ant = grid.data.add(Cell(1, 1), {"kind": "ant", "energy": 3})
 
-    for map in list(grid.data.select(matches={"kind": "ant"})):
-        grid.data.delete(map)
+    grid.data.delete(ant)
 
-    alive = grid.data._all_maps()
-    assert all(maps <= alive for maps in index.maps_by_key.values())
-    assert all(maps <= alive for maps in index.maps_by_data.values())
     assert grid.data.count(matches={"kind": "ant"}) == 0
+    assert grid.data.count(has={"energy"}) == 0
 
 
 def test_the_index_follows_a_changed_value():

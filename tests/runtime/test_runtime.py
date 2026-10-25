@@ -51,17 +51,30 @@ def test_the_settings_cannot_be_changed_through_the_runtime():
 def test_construction_runs_setup():
     runtime = Runtime(complete_program(size=4))
 
-    assert runtime.tick == 0
     assert runtime.grid.data.count(matches={"kind": "ant"}) == 1
 
 
-def test_a_step_runs_update_and_advances_the_tick():
+def test_a_step_runs_update():
     runtime = Runtime(complete_program(size=4))
 
     runtime.step()
 
-    assert runtime.tick == 1
     assert runtime.grid.data.count(matches={"kind": "trail"}) == 1
+
+
+def test_the_tick_counts_steps_and_starts_over_on_a_reset():
+    runtime = Runtime(complete_program(size=4))
+
+    assert runtime.tick == 0
+
+    runtime.step()
+    runtime.step()
+
+    assert runtime.tick == 2
+
+    runtime.reset()
+
+    assert runtime.tick == 0
 
 
 def test_reset_builds_a_fresh_grid_and_runs_setup_again():
@@ -71,7 +84,6 @@ def test_reset_builds_a_fresh_grid_and_runs_setup_again():
 
     runtime.reset()
 
-    assert runtime.tick == 0
     assert runtime.grid is not first_grid
     assert runtime.grid.data.count(matches={"kind": "trail"}) == 0
     assert runtime.grid.data.count(matches={"kind": "ant"}) == 1
@@ -88,12 +100,19 @@ def test_events_reach_the_program():
 
 
 def test_colors_gives_one_color_per_cell_row_by_row():
-    runtime = Runtime(complete_program(size=4))
+    program = complete_program(size=4)
 
-    colors = runtime.colors()
+    @program.color
+    def color(grid: Grid, cell: Cell) -> Color:
+        return Color(cell.x / 4, cell.y / 4, 0.0)
+
+    colors = Runtime(program).colors()
 
     assert len(colors) == 16
-    assert all(color == Color(1.0, 1.0, 1.0) for color in colors)
+    assert colors[0] == Color(0.0, 0.0, 0.0)
+    assert colors[1] == Color(0.25, 0.0, 0.0)
+    assert colors[4] == Color(0.0, 0.25, 0.0)
+    assert colors[15] == Color(0.75, 0.75, 0.0)
 
 
 def test_the_index_declaration_reaches_the_grid():
