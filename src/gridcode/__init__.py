@@ -4,6 +4,7 @@ from .cells import Cell, Neighborhood, Offset
 from .data import Fields
 from .gridcode import run
 from .runtime import Color, Grid, Program
+from .sets import only
 
 
 ALL = Fields.ALL
@@ -20,6 +21,7 @@ VERTICAL = Neighborhood.VERTICAL
 
 __all__ = [
     "run",
+    "only",
     "Program",
     "Color",
     "Grid",

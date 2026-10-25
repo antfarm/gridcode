@@ -243,3 +243,12 @@ type Value = bool | int | float | str | Cell | Offset
 |             | `data.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.data.select_cells(matches={"key": value})`                                 |
 | *Globals*   | `data.globals`                                                | `Map`          |              | `grid.data.globals["key"] = value`                                               |
 
+### Sets
+
+#### gridcode.sets
+
+|             | Member                | Type   | Raises       | Usage                                            |
+| ----------- | --------------------- | ------ | ------------ | ------------------------------------------------ |
+| *Reduction* | `only(set)`           | `Item` | `ValueError` | `only(grid.data.select(at_cells={cell}))`        |
+|             | `only(set, default)`  | `Item` | `ValueError` | `only(grid.data.select(at_cells={cell}), None)`  |
+

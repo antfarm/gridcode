@@ -25,37 +25,39 @@ def setup(grid: Grid) -> None:
 @program.update
 def update(grid: Grid) -> None:
     for cell in grid.cells.all():
-        for state in grid.data.select(at_cells={cell}):
-            neighbor_count = state["neighbors"]
-            if state.has("alive"):
-                if neighbor_count == 2 or neighbor_count == 3:
-                    state["age"] = state["age"] + 1
-                else:
-                    state.delete("alive", "age")
+        state = only(grid.data.select(at_cells={cell}))
+        neighbor_count = state["neighbors"]
+        if state.has("alive"):
+            if neighbor_count == 2 or neighbor_count == 3:
+                state["age"] = state["age"] + 1
             else:
-                if neighbor_count == 3:
-                    state.set({"alive": True, "age": 1})
+                state.delete("alive", "age")
+        else:
+            if neighbor_count == 3:
+                state.set({"alive": True, "age": 1})
 
     count_neighbors(grid, grid.cells.all())
 
 
 @program.color
 def color(grid: Grid, cell: Cell) -> Color:
-    for state in grid.data.select(at_cells={cell}):
-        if state.has("alive"):
-            opacity = (10 - min(state["age"], 6)) / 10.0
-            return Color(1.0, 0.8, 0.2).with_opacity(opacity)
+    state = only(grid.data.select(at_cells={cell}))
+
+    if state.has("alive"):
+        opacity = (10 - min(state["age"], 6)) / 10.0
+        return Color(1.0, 0.8, 0.2).with_opacity(opacity)
 
     return Color(0.0, 0.0, 0.0)
 
 
 @program.on_click
 def on_click(grid: Grid, cell: Cell) -> None:
-    for state in grid.data.select(at_cells={cell}):
-        if state.has("alive"):
-            state.delete("alive", "age")
-        else:
-            state.set({"alive": True, "age": 1})
+    state = only(grid.data.select(at_cells={cell}))
+
+    if state.has("alive"):
+        state.delete("alive", "age")
+    else:
+        state.set({"alive": True, "age": 1})
 
     affected_cells = grid.cells.neighbors(cell, kind=MOORE, wrap=True) | {cell}
     count_neighbors(grid, affected_cells)
@@ -68,8 +70,8 @@ def on_key(grid: Grid, key: str) -> None:
 
 def count_neighbors(grid: Grid, cells: set[Cell]) -> None:
     for cell in cells:
-        for state in grid.data.select(at_cells={cell}):
-            state["neighbors"] = neighbors_alive_count(grid, cell)
+        state = only(grid.data.select(at_cells={cell}))
+        state["neighbors"] = neighbors_alive_count(grid, cell)
 
 
 def neighbors_alive_count(grid: Grid, cell: Cell) -> int:
