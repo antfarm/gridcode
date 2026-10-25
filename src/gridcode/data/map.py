@@ -30,6 +30,8 @@ class Map:
         self._data = dict(data)
         self._deleted = False
 
+    # Data
+
     @check_deleted
     def __getitem__(self, key: str) -> Value:
         """``map[key]``"""
@@ -57,6 +59,8 @@ class Map:
         """``map.delete(key, key, ...)``"""
         for deleted_key in (key, *more_keys):
             del self._data[deleted_key]
+
+    # Querying
 
     @check_deleted
     def has(self, key: str, *more_keys: str) -> bool:

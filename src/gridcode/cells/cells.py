@@ -76,6 +76,8 @@ class CellGrid:
     def __init__(self, size: int):
         self.size = size
 
+    # Construction
+
     def all(self) -> set[Cell]:
         """``grid.cells.all()``"""
         return set(self._every_cell())
@@ -118,6 +120,8 @@ class CellGrid:
         cells = {cell + offset for offset in self._offsets(kind, radius)}
         return self._bounded(cells, wrap)
 
+    # Filter
+
     def nearest(self, candidates: set[Cell], to: Cell, *,
                 count: int | None = None) -> Cell | set[Cell]:
         """``grid.cells.nearest(candidates, to)``
@@ -139,6 +143,8 @@ class CellGrid:
         """``grid.cells.clip(cells)``"""
         return {cell for cell in cells if self.contains(cell)}
 
+    # Transformation
+
     def wrap(self, cell_or_cells: Cell | set[Cell]) -> Cell | set[Cell]:
         """``grid.cells.wrap(cell)``
 
@@ -157,6 +163,8 @@ class CellGrid:
         return {Cell(x, y)
                 for y in range(min(ys), max(ys) + 1)
                 for x in range(min(xs), max(xs) + 1)}
+
+    # Internal
 
     def _every_cell(self) -> list[Cell]:
         return [Cell(x, y) for y in range(self.size) for x in range(self.size)]

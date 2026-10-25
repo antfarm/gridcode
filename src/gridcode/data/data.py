@@ -51,6 +51,8 @@ class DataStore:
         self._map_locations: dict[CellMap, Cell] = {}
         self._index = Index(index) if index else None
 
+    # Lifecycle
+
     def add(self, cell: Cell, data: dict[str, Value]) -> CellMap:
         """``grid.data.add(cell, data)``"""
         map = CellMap(self, data)
@@ -93,6 +95,8 @@ class DataStore:
         self.clear_cells()
         self.clear_globals()
 
+    # Movement
+
     def move(self, map: CellMap, cell_or_offset: Cell | Offset) -> None:
         """``grid.data.move(map, cell)``
 
@@ -107,12 +111,16 @@ class DataStore:
             self._remove(map)
             self._place(target_cell, map)
 
+    # Location
+
     def cell_of(self, map: CellMap) -> Cell:
         """``grid.data.cell_of(map)``"""
         cell = self._map_locations.get(map)
         if cell is None:
             raise KeyError(f"{map!r} is not in the grid")
         return cell
+
+    # Querying
 
     def select(self, *,
                matches: dict[str, Value] | None = None,
@@ -160,6 +168,8 @@ class DataStore:
         """``grid.data.select_cells(matches, has, at_cells)``"""
         return {map.cell
                 for map in self.select(matches=matches, has=has, at_cells=at_cells)}
+
+    # Internal
 
     @property
     def _has_index(self) -> bool:

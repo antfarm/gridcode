@@ -29,6 +29,8 @@ class Program:
         for name in CALLBACKS:
             setattr(self, f"_{name}", None)
 
+    # Decorators
+
     def setup(self, function: Callable[[Grid], None]) -> Callable[[Grid], None]:
         """``@program.setup``"""
         self._setup = function
