@@ -116,6 +116,8 @@ The color of each cell is determined in every tick by calling `color` for the gi
 
 ### Program
 
+#### runtime.program.Program
+
 |              | Member             | Type                            | Usage               |
 | ------------ | ------------------ | ------------------------------- | ------------------- |
 | *Settings*   | `title`            | `str`                           | `Program("Snake")`  |
@@ -127,6 +129,13 @@ The color of each cell is determined in every tick by calling `color` for the gi
 |              | `program.color`    | `Callable[[Grid, Cell], Color]` | `@program.color`    |
 |              | `program.on_click` | `Callable[[Grid, Cell], None]`  | `@program.on_click` |
 |              | `program.on_key`   | `Callable[[Grid, str], None]`   | `@program.on_key`   |
+
+#### runtime.color.Color
+
+|                  | Member                  | Type    | Usage                       |
+| ---------------- | ----------------------- | ------- | --------------------------- |
+| *Construction*   | `Color(r, g, b, a=1.0)` | `Color` | `Color(1.0, 1.0, 1.0, 0.5)` |
+| *Transformation* | `color.with_opacity(a)` | `Color` | `color.with_opacity(0.5)`   |
 
 ### Grid Components
 
@@ -234,11 +243,3 @@ type Value = bool | int | float | str | Cell | Offset
 |             | `data.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.data.select_cells(matches={"key": value})`                                 |
 | *Globals*   | `data.globals`                                                | `Map`          |              | `grid.data.globals["key"] = value`                                               |
 
-### Runtime
-
-#### runtime.color.Color
-
-|                  | Member                  | Type    | Usage                       |
-| ---------------- | ----------------------- | ------- | --------------------------- |
-| *Construction*   | `Color(r, g, b, a=1.0)` | `Color` | `Color(1.0, 1.0, 1.0, 0.5)` |
-| *Transformation* | `color.with_opacity(a)` | `Color` | `color.with_opacity(0.5)`   |
