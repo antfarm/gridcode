@@ -50,7 +50,7 @@ source .venv/bin/activate
 pip install git+https://github.com/antfarm/gridcode.git
 ```
 
-Now you can write your program, e.g. in a file `my_program.py`, and execute it (`./examples/empty.py` in this repo is a good starting point):
+Now you can write your program, e.g. in a file `my_program.py` (`./examples/empty.py` is a good starting point) and execute it :
 
 ```sh
 chmod +x my_program.py
