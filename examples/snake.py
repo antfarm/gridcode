@@ -16,8 +16,8 @@ def setup(grid: Grid) -> None:
     grid.data.add(center_cell, {"type": "snake",
                                 "id": 0,
                                 "head": True})
-
-    snake_cells = grid.data.select_cells(matches={"type": "snake"})
+    snake = grid.data.select(matches={"type": "snake"})
+    snake_cells = {map.cell for map in snake}
     food_cell = random.choice(list(grid.cells.all() - snake_cells))
     grid.data.add(food_cell, {"type": "food"})
 

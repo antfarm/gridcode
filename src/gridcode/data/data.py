@@ -162,14 +162,6 @@ class DataStore:
         """``grid.data.count(matches, has, at_cells)``"""
         return len(self.select(matches=matches, has=has, at_cells=at_cells))
 
-    def select_cells(self, *,
-                     matches: dict[str, Value] | None = None,
-                     has: set[str] | None = None,
-                     at_cells: set[Cell] | None = None) -> set[Cell]:
-        """``grid.data.select_cells(matches, has, at_cells)``"""
-        return {map.cell
-                for map in self.select(matches=matches, has=has, at_cells=at_cells)}
-
     # Internal
 
     @property

@@ -240,7 +240,6 @@ type Value = bool | int | float | str | Cell | Offset
 | *Querying*  | `data.select(*, matches=None, has=None, at_cells=None)`       | `set[CellMap]` | `TypeError`  | `grid.data.select(matches={"key": value}, has={"key"}, at_cells={cell1, cell2})` |
 |             | `data.exists(*, matches=None, has=None, at_cells=None)`       | `bool`         | `TypeError`  | `grid.data.exists(matches={"key": value}, at_cells={cell})`                      |
 |             | `data.count(*, matches=None, has=None, at_cells=None)`        | `int`          | `TypeError`  | `grid.data.count(has={"key"}, at_cells=cells)`                                   |
-|             | `data.select_cells(*, matches=None, has=None, at_cells=None)` | `set[Cell]`    | `TypeError`  | `grid.data.select_cells(matches={"key": value})`                                 |
 | *Globals*   | `data.globals`                                                | `Map`          |              | `grid.data.globals["key"] = value`                                               |
 
 ### Sets

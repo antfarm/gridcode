@@ -97,11 +97,12 @@ def on_key(grid: Grid, key: str) -> None:
 def move_paddle(grid: Grid, direction: str) -> None:
     dx = -1 if direction == "left" else 1
 
-    paddle_cells = grid.data.select_cells(matches={"type": "paddle"})
-    wall_cells = grid.data.select_cells(matches={"type": "wall"})
+    paddle_segments = grid.data.select(matches={"type": "paddle"})
+    paddle_cells = {map.cell for map in paddle_segments}
+    wall_cells = {map.cell for map in grid.data.select(matches={"type": "wall"})}
 
     if not ({cell + Offset(dx, 0) for cell in paddle_cells} & wall_cells):
-        for paddle in grid.data.select(matches={"type": "paddle"}):
+        for paddle in paddle_segments:
             grid.data.move(paddle, Offset(dx, 0))
 
 

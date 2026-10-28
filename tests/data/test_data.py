@@ -198,13 +198,3 @@ def test_count_and_exists_follow_select():
 
         assert grid.data.count(**query) == len(maps)
         assert grid.data.exists(**query) == bool(maps)
-
-
-def test_select_cells_gives_the_cells_of_the_selected_maps():
-    grid = Grid(8)
-    grid.data.add(Cell(1, 1), {"kind": "ant"})
-    grid.data.add(Cell(1, 1), {"kind": "food"})
-    grid.data.add(Cell(4, 4), {"kind": "ant"})
-
-    assert grid.data.select_cells(matches={"kind": "ant"}) == {Cell(1, 1), Cell(4, 4)}
-    assert grid.data.select_cells(matches={"kind": "wasp"}) == set()
