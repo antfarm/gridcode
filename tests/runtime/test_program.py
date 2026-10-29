@@ -6,16 +6,19 @@ from gridcode import Cell, Color, Grid, Program
 from gridcode.runtime.runtime import Runtime
 
 
-def test_settings_have_defaults():
-    program = Program("Test")
+def test_size_and_frame_rate_are_required():
+    with pytest.raises(TypeError):
+        Program("Test")
 
-    assert program.size == 16
-    assert program.frame_rate == 8
+
+def test_the_index_is_optional():
+    program = Program("Test", size=4, frame_rate=1)
+
     assert program.index is None
 
 
 def test_a_decorator_returns_the_function_unchanged():
-    program = Program("Test")
+    program = Program("Test", size=4, frame_rate=1)
 
     def setup(grid: Grid) -> None:
         pass
@@ -24,7 +27,7 @@ def test_a_decorator_returns_the_function_unchanged():
 
 
 def test_a_decorator_registers_the_function():
-    program = Program("Test")
+    program = Program("Test", size=4, frame_rate=1)
 
     @program.setup
     def setup(grid: Grid) -> None:
@@ -34,7 +37,7 @@ def test_a_decorator_registers_the_function():
 
 
 def test_the_function_name_does_not_have_to_match_the_callback():
-    program = Program("Test")
+    program = Program("Test", size=4, frame_rate=1)
 
     @program.color
     def paint(grid: Grid, cell: Cell) -> Color:
@@ -44,14 +47,14 @@ def test_the_function_name_does_not_have_to_match_the_callback():
 
 
 def test_a_program_cannot_hold_extra_state():
-    program = Program("Test")
+    program = Program("Test", size=4, frame_rate=1)
 
     with pytest.raises(AttributeError):
         program.score = 0
 
 
 def test_an_incomplete_program_is_rejected_with_the_missing_names():
-    program = Program("Half")
+    program = Program("Half", size=4, frame_rate=1)
 
     @program.setup
     def setup(grid: Grid) -> None:

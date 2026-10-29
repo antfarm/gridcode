@@ -6,8 +6,8 @@ from gridcode import ALL, Cell, Color, Grid, Program
 from gridcode.runtime.runtime import Runtime
 
 
-def complete_program(title="Test", **settings):
-    program = Program(title, **settings)
+def complete_program(title="Test", size=4, frame_rate=1, **settings):
+    program = Program(title, size=size, frame_rate=frame_rate, **settings)
 
     @program.setup
     def setup(grid: Grid) -> None:

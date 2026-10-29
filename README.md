@@ -118,17 +118,14 @@ The color of each cell is determined in every tick by calling `color` for the gi
 
 #### runtime.program.Program
 
-|              | Member             | Type                            | Usage               |
-| ------------ | ------------------ | ------------------------------- | ------------------- |
-| *Settings*   | `title`            | `str`                           | `Program("Snake")`  |
-|              | `size=16`          | `int`                           | `size=32`           |
-|              | `frame_rate=8`     | `float`                         | `frame_rate=2`      |
-|              | `index=None`       | `list[str] \| ALL`              | `index=["id"]`      |
-| *Decorators* | `program.setup`    | `Callable[[Grid], None]`        | `@program.setup`    |
-|              | `program.update`   | `Callable[[Grid], None]`        | `@program.update`   |
-|              | `program.color`    | `Callable[[Grid, Cell], Color]` | `@program.color`    |
-|              | `program.on_click` | `Callable[[Grid, Cell], None]`  | `@program.on_click` |
-|              | `program.on_key`   | `Callable[[Grid, str], None]`   | `@program.on_key`   |
+|                | Member                                              | Type                            | Usage                                                  |
+| -------------- | --------------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
+| *Construction* | `Program(title, size, frame_rate, index=None)`      | `Program`                       | `Program("Snake", size=16, frame_rate=8, index=ALL)`   |
+| *Callbacks*    | `program.setup`                                     | `Callable[[Grid], None]`        | `@program.setup`                                       |
+|                | `program.update`                                    | `Callable[[Grid], None]`        | `@program.update`                                      |
+|                | `program.color`                                     | `Callable[[Grid, Cell], Color]` | `@program.color`                                       |
+|                | `program.on_click`                                  | `Callable[[Grid, Cell], None]`  | `@program.on_click`                                    |
+|                | `program.on_key`                                    | `Callable[[Grid, str], None]`   | `@program.on_key`                                      |
 
 #### runtime.color.Color
 
@@ -145,7 +142,7 @@ The `grid` instance that is passed to the program callback functions gives acces
 
 |            | Member  | Type        | Usage                                      |
 | ---------- | ------- | ----------- | ------------------------------------------ |
-| *Topology* | `cells` | `CellGrid`  | `grid.cells.all()`                         |
+| *Geometry* | `cells` | `CellGrid`  | `grid.cells.all()`                         |
 | *Data*     | `data`  | `DataStore` | `grid.data.select(matches={"key": value})` |
 
 ### Grid Geometry, Cells and Offsets

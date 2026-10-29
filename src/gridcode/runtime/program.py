@@ -18,8 +18,8 @@ class Program:
                  "_setup", "_update", "_color", "_on_click", "_on_key")
 
     def __init__(self, title: str, *,
-                 size: int = 16,
-                 frame_rate: float = 8,
+                 size: int,
+                 frame_rate: float,
                  index: list[str] | Fields | None = None):
         self.title = title
         self.size = size
