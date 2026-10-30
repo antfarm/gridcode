@@ -8,6 +8,8 @@ from ..runtime import Color
 
 
 CANVAS_SIZE = 640
+GRID_LINE_WIDTH = 2
+HIGHLIGHT_WIDTH = 5
 
 
 class GridView:
@@ -23,20 +25,20 @@ class GridView:
                                      highlightthickness=0)
         self.canvas.pack()
 
-        step = CANVAS_SIZE / size
+        cell_size = CANVAS_SIZE / size
 
         self.cell_items = []
         for y in range(size):
             for x in range(size):
-                left = x * step
-                top = y * step
+                left = x * cell_size
+                top = y * cell_size
                 cell_item = self.canvas.create_rectangle(left,
                                                          top,
-                                                         left + step,
-                                                         top + step,
+                                                         left + cell_size,
+                                                         top + cell_size,
                                                          fill="black",
                                                          outline="black",
-                                                         width=3)
+                                                         width=GRID_LINE_WIDTH)
                 self.canvas.tag_bind(cell_item, "<Button-1>",
                                      lambda event, x=x, y=y: ui.cell_clicked(x, y))
                 self.cell_items.append(cell_item)
@@ -49,13 +51,13 @@ class GridView:
     def add_cell_highlight(self, x: int, y: int) -> None:
         """``grid_view.add_cell_highlight(x, y)``"""
         cell_item = self._cell_item(x, y)
-        self.canvas.itemconfig(cell_item, outline="red", width=5)
+        self.canvas.itemconfig(cell_item, outline="red", width=HIGHLIGHT_WIDTH)
         self.canvas.tag_raise(cell_item)
 
     def remove_cell_highlight(self, x: int, y: int) -> None:
         """``grid_view.remove_cell_highlight(x, y)``"""
         cell_item = self._cell_item(x, y)
-        self.canvas.itemconfig(cell_item, outline="black", width=3)
+        self.canvas.itemconfig(cell_item, outline="black", width=GRID_LINE_WIDTH)
 
     def _cell_item(self, x: int, y: int) -> int:
         return self.cell_items[y * self.size + x]
