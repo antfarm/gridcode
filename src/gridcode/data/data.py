@@ -133,10 +133,7 @@ class DataStore:
         else:
             candidate_sets, rest_matches, rest_has = self._index.sets_for(matches, has)
         if at_cells is not None:
-            maps_at_cells = set()
-            for cell in at_cells:
-                maps_at_cells |= self._cell_store.item_at(cell) or set()
-            candidate_sets.append(maps_at_cells)
+            candidate_sets.append(self._maps_at_cells(at_cells))
         if not candidate_sets:
             candidate_sets.append(self._all_maps())
 
@@ -164,6 +161,11 @@ class DataStore:
 
     # Internal
 
+    def _all_maps(self) -> set[CellMap]:
+        return set(self._map_locations)
+
+    # Internal: Index
+
     @property
     def _has_index(self) -> bool:
         return self._index is not None
@@ -171,18 +173,20 @@ class DataStore:
     def _reindexing(self, map: CellMap):
         return self._index.reindexing(map)
 
-    def _all_maps(self) -> set[CellMap]:
-        return set(self._map_locations)
+    # Internal: Location
 
-    def _maps_at(self, cell: Cell) -> set[CellMap]:
+    def _maps_at_cells(self, cells: set[Cell]) -> set[CellMap]:
+        maps = set()
+        for cell in cells:
+            maps |= self._cell_store.item_at(cell) or set()
+        return maps
+
+    def _place(self, cell: Cell, map: CellMap) -> None:
         maps = self._cell_store.item_at(cell)
         if maps is None:
             maps = set()
             self._cell_store.set(cell, maps)
-        return maps
-
-    def _place(self, cell: Cell, map: CellMap) -> None:
-        self._maps_at(cell).add(map)
+        maps.add(map)
         self._map_locations[map] = cell
 
     def _remove(self, map: CellMap) -> None:
