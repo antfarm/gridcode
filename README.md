@@ -116,7 +116,7 @@ The color of each cell is determined in every tick by calling `color` for the gi
 
 ### Program
 
-#### runtime.program.Program
+#### gridcode.runtime.Program
 
 |                | Member                                              | Type                            | Usage                                                  |
 | -------------- | --------------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
@@ -127,7 +127,7 @@ The color of each cell is determined in every tick by calling `color` for the gi
 |                | `program.on_click`                                  | `Callable[[Grid, Cell], None]`  | `@program.on_click`                                    |
 |                | `program.on_key`                                    | `Callable[[Grid, str], None]`   | `@program.on_key`                                      |
 
-#### runtime.color.Color
+#### gridcode.runtime.Color
 
 |                  | Member                  | Type    | Usage                       |
 | ---------------- | ----------------------- | ------- | --------------------------- |
@@ -138,7 +138,7 @@ The color of each cell is determined in every tick by calling `color` for the gi
 
 The `grid` instance that is passed to the program callback functions gives access to cell data (`grid.data`) and global values (`grid.data.globals`). Cells and cell sets can be constructed, transformed or filtered (`grid.cells`).
 
-#### grid.Grid
+#### gridcode.runtime.Grid
 
 |            | Member  | Type        | Usage                                      |
 | ---------- | ------- | ----------- | ------------------------------------------ |
@@ -147,7 +147,7 @@ The `grid` instance that is passed to the program callback functions gives acces
 
 ### Grid Geometry, Cells and Offsets
 
-#### grid.cells.Cell
+#### gridcode.cells.Cell
 
 |                | Member            | Type     | Usage               |
 | -------------- | ----------------- | -------- | ------------------- |
@@ -156,7 +156,7 @@ The `grid` instance that is passed to the program callback functions gives acces
 |                | `__sub__(offset)` | `Cell`   | `cell - UP`         |
 |                | `__sub__(cell)`   | `Offset` | `cell - other_cell` |
 
-#### grid.cells.Offset
+#### gridcode.cells.Offset
 
 |                | Member                        | Type     | Usage           |
 | -------------- | ----------------------------- | -------- | --------------- |
@@ -166,13 +166,13 @@ The `grid` instance that is passed to the program callback functions gives acces
 |                | `__neg__()`                   | `Offset` | `-offset`       |
 | *Constants*    | `UP`, `DOWN`, `LEFT`, `RIGHT` | `Offset` | `cell + UP`     |
 
-#### grid.cells.Neighborhood
+#### gridcode.cells.Neighborhood
 
 |             | Member                                           | Type           | Usage                                               |
 | ----------- | ------------------------------------------------ | -------------- | --------------------------------------------------- |
 | *Constants* | `MOORE`, `VON_NEUMANN`, `HORIZONTAL`, `VERTICAL` | `Neighborhood` | `grid.cells.neighbors(cell, kind=MOORE, wrap=True)` |
 
-#### grid.cells.CellGrid
+#### gridcode.cells.CellGrid
 
 |                  | Member                                                 | Type        | Raises       | Usage                                                               |
 | ---------------- | ------------------------------------------------------ | ----------- | ------------ | ------------------------------------------------------------------- |
@@ -194,13 +194,13 @@ The `grid` instance that is passed to the program callback functions gives acces
 
 ### Key/Value Maps
 
-#### grid.data.Value
+#### gridcode.data.Value
 
 ```python
 type Value = bool | int | float | str | Cell | Offset
 ```
 
-#### grid.data.Map
+#### gridcode.data.Map
 
 |            | Member                      | Type                | Raises      | Usage                                       |
 | ---------- | --------------------------- | ------------------- | ----------- | ------------------------------------------- |
@@ -214,13 +214,15 @@ type Value = bool | int | float | str | Cell | Offset
 
 ### Maps on the Grid
 
-#### grid.data.CellMap
+#### gridcode.data.CellMap
+
+`CellMap` extends `Map`, adding its location on the grid.
 
 |            | Member     | Type   | Raises                  | Usage      |
 | ---------- | ---------- | ------ | ----------------------- | ---------- |
 | *Location* | `map.cell` | `Cell` | `ValueError` `KeyError` | `map.cell` |
 
-#### grid.data.DataStore
+#### gridcode.data.DataStore
 
 |             | Member                                                        | Type           | Raises       | Usage                                                                            |
 | ----------- | ------------------------------------------------------------- | -------------- | ------------ | -------------------------------------------------------------------------------- |
@@ -241,7 +243,7 @@ type Value = bool | int | float | str | Cell | Offset
 
 ### Sets
 
-#### gridcode.sets
+#### gridcode.sets.only
 
 |             | Member                | Type   | Raises       | Usage                                            |
 | ----------- | --------------------- | ------ | ------------ | ------------------------------------------------ |
